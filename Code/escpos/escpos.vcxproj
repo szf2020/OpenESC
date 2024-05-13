@@ -128,9 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="escpos.cpp" />
+    <ClCompile Include="esc_functions.cpp" />
     <ClCompile Include="RxBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="esc_functions.h" />
     <ClInclude Include="RxBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

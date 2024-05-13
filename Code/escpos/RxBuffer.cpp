@@ -1,3 +1,6 @@
+
+// This class will be replaced in the future
+
 #include "RxBuffer.h"
 
 RxBuffer::RxBuffer(std::string filename)

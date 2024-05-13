@@ -1,3 +1,6 @@
+
+// This class will be replaced in the future
+
 #pragma once
 
 #include <fstream>      // std::filebuf, std::ifstream

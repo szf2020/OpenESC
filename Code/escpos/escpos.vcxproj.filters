@@ -21,9 +21,15 @@
     <ClCompile Include="RxBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="esc_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RxBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="esc_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
