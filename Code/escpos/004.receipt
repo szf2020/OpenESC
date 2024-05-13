@@ -1,0 +1,26 @@
+﻿{width:auto}
+{width:auto; align:left}
+lll
+kkk
+|lll
+LLL|
+^^^TTT
+^^^^^^^TTT
+QFQTM!G
+{code:1234; option:code128,2,72,hri}
+{code:1234; option:code128,2,72,nohri}
+==
+`lll
+-
+{width:auto; border:line; align:left}
+ggg
+gg
+{width:auto; border:none}
+{code:https://receiptline.github.io/designer/; option:qrcode,3,L}
+{image:iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABYSURBVDhP1Y5BCgAgCAT9/6dN0EBNLCmi5lK7OiDgBu/IAKZx0XFa1kJNJpyc+BOZuCivc0hOzmNowe3UZPl1jJz44dRk3iAkK+JSXgX7IzJWBNU6X8qIDXAiQvY1QbuiAAAAAElFTkSuQmCC}
+
+{width:auto; border:none; text:nowrap; align:right}
+{align:right}
+fff
+
+

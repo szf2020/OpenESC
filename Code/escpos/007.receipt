@@ -1,0 +1,13 @@
+﻿{width:auto}
+lll
+kkk
+|lll
+LLL|
+^^^TTT
+^^^^^^^TTT
+QFQTM!G
+{code:1234; option:code39,2,72,nohri}
+{code:1234; option:code128,2,72,nohri}
+{code:12341111111; option:upc,2,72,nohri}
+{code:A123456789B; option:codabar,2,72,nohri}
+{code:https://receiptline.github.io/designer/; option:qrcode,3,L}
