@@ -679,7 +679,7 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
         (uint8_t)b->getNext()  //p4
     };
 
-    uint8_t m  = (uint8_t)b->getNext();   //48, also assumed to be color mode 
+    uint8_t m  = (uint8_t)b->getNext();  //48, also assumed to be color mode 
     uint8_t fn = (uint8_t)b->getNext();  //function mode
     uint8_t a  = (uint8_t)b->getNext();   
 
@@ -688,19 +688,13 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
         args[0], args[1], args[2], args[3]);
     printf("- m=0x%.2X, fn=0x%.2X, a=0x%.2X\n", m, fn, a);
 
-    if ((fn >= 0) && (fn <= 4)) {           //0-4
-        index = fn;
-    }
-    else if ((fn >= 48) && (fn <= 52)) {    //0-4
-        index = fn - 48;
-    }
-    else if ((fn >= 64) && (fn <= 69)) {    //5-10
+    if ((fn >= 67) && (fn <= 68)) {         //67-68
         index = (args[3] - 64) + 5;
     }
-    else if ((fn >= 80) && (fn <= 85)) {    //11-16
+    else if ((fn >= 83) && (fn <= 84)) {    //83-84
         index = (fn - 80) + 11;
     }
-    else if ((fn >= 112) && (fn <= 113)) {  //17-18
+    else if ((fn >= 112) && (fn <= 113)) {  //112-113
         index = (fn - 112) + 17;
     }
 
