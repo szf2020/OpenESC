@@ -28,8 +28,8 @@
 
 //-------------------------------------------------------
 typedef int (*operation_fp)(RxBuffer* b);
-typedef int (*operation_sym_fp)(RxBuffer* b, int k);
-typedef int (*operation_opta)(RxBuffer* b, int argc, uint8_t* argv);
+typedef int (*operation_sym)(RxBuffer* b, int k);
+typedef int (*operation_graph)(RxBuffer* b, int s);
 //-------------------------------------------------------
 struct CMD {
     uint8_t depth;
@@ -38,11 +38,11 @@ struct CMD {
 };
 //-------------------------------------------------------
 struct graphics {
-    operation_opta ptr;
+    operation_graph ptr;
 };
 //-------------------------------------------------------
 struct symbols {
-    operation_sym_fp ptr;
+    operation_sym ptr;
 };
 //-------------------------------------------------------
 int _HT(RxBuffer* b);                       // horizontal tab
@@ -178,28 +178,28 @@ int SYM_function_482(RxBuffer* b, int k);
 //-------------------------------------------------------
 int SYM_NULL(RxBuffer* b, int k);
 //-------------------------------------------------------
-int GS_function_48(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_49(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_50(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_51(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_52(RxBuffer* b, int argc, uint8_t* argv);
+int GS_function_48(RxBuffer* b, int s);
+int GS_function_49(RxBuffer* b, int s);
+int GS_function_50(RxBuffer* b, int s);
+int GS_function_51(RxBuffer* b, int s);
+int GS_function_52(RxBuffer* b, int s);
 //-------------------------------------------------------
-int GS_function_64(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_65(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_66(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_67(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_68(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_69(RxBuffer* b, int argc, uint8_t* argv);
+int GS_function_64(RxBuffer* b, int s);
+int GS_function_65(RxBuffer* b, int s);
+int GS_function_66(RxBuffer* b, int s);
+int GS_function_67(RxBuffer* b, int s);
+int GS_function_68(RxBuffer* b, int s);
+int GS_function_69(RxBuffer* b, int s);
 //-------------------------------------------------------
-int GS_function_80(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_81(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_82(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_83(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_84(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_85(RxBuffer* b, int argc, uint8_t* argv);
+int GS_function_80(RxBuffer* b, int s);
+int GS_function_81(RxBuffer* b, int s);
+int GS_function_82(RxBuffer* b, int s);
+int GS_function_83(RxBuffer* b, int s);
+int GS_function_84(RxBuffer* b, int s);
+int GS_function_85(RxBuffer* b, int s);
 //-------------------------------------------------------
-int GS_function_112(RxBuffer* b, int argc, uint8_t* argv);
-int GS_function_113(RxBuffer* b, int argc, uint8_t* argv);
+int GS_function_112(RxBuffer* b, int s);
+int GS_function_113(RxBuffer* b, int s);
 //----------------------------------------------------------------
 static CMD escpos[CMD_SIZE] =
 {

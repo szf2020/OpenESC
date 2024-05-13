@@ -10,7 +10,6 @@ static float vertical_motion_unit = 1;
 static float horizontal_motion_unit = 1;
 static int line_spacing = 30;
 
-
 // Command: Horizontal Tab 
 int _HT(RxBuffer* b)
 {
@@ -589,31 +588,36 @@ int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
     uint8_t args[4] = {
         (uint8_t)b->getNext(), //pL
         (uint8_t)b->getNext(), //pH
-        (uint8_t)b->getNext(), //m
-        (uint8_t)b->getNext()  //fn
+        (uint8_t) 0x00,
+        (uint8_t) 0x00
     };
 
-    printf("<GS ( L> pL=0x%.2X, pH=0x%.2X, m=0x%.2X, fn=0x%.2X\n",
-        args[0], args[1], args[2], args[3]);
+    uint8_t m = (uint8_t)b->getNext();  //m
+    uint8_t fn = (uint8_t)b->getNext(); //fn
 
-    if ((args[3] >= 0) && (args[3] <= 4)) {           //0-4
-        index = args[3];
+    int l = (args[0] + args[1] * 256 + args[2] * 65536 + args[3] * 16777216) - 2;
+
+    printf("<GS ( L> pL=0x%.2X, pH=0x%.2X, m=0x%.2X, fn=0x%.2X\n",
+        args[0], args[1], m, fn);
+
+    if ((fn >= 0) && (fn <= 4)) {           //0-4
+        index = fn;
     }
-    else if ((args[3] >= 48) && (args[3] <= 52)) {    //0-4
-        index = args[3] - 48;
+    else if ((fn >= 48) && (fn <= 52)) {    //0-4
+        index = fn - 48;
     }
-    else if ((args[3] >= 64) && (args[3] <= 69)) {    //5-10
-        index = (args[3] - 64) + 5;
+    else if ((fn >= 64) && (fn <= 69)) {    //5-10
+        index = (fn - 64) + 5;
     }
-    else if ((args[3] >= 80) && (args[3] <= 85)) {    //11-16
-        index = (args[3] - 80) + 11;
+    else if ((fn >= 80) && (fn <= 85)) {    //11-16
+        index = (fn - 80) + 11;
     }
-    else if ((args[3] >= 112) && (args[3] <= 113)) {  //17-18
-        index = (args[3] - 112) + 17;
+    else if ((fn >= 112) && (fn <= 113)) {  //17-18
+        index = (fn - 112) + 17;
     }
 
     if (index != -1)
-        gs_function[index].ptr(b, 4, args);
+        gs_function[index].ptr(b, l);
 
     return 0;
 }
@@ -639,7 +643,7 @@ int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
     uint8_t pH = (uint8_t)b->getNext();
     uint8_t cn = (uint8_t)b->getNext();
     uint8_t fn = (uint8_t)b->getNext();
-    int k = (pL + pH * 256);
+    int k = (pL + pH * 256);// -2;
 
     printf("<GS ( k> pL=0x%.2X, pH=0x%.2X, cn=0x%.2X, fn=0x%.2X, k:%d\n", pL, pH, cn, fn, k);
 
@@ -683,6 +687,8 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
     uint8_t fn = (uint8_t)b->getNext();  //function mode
     uint8_t a  = (uint8_t)b->getNext();   
 
+    int l = (args[0] + args[1] * 256 + args[2] * 65536 + args[3] * 16777216) - 3;
+
     printf("<GS 8 L>\n");
     printf("- p1=0x%.2X, p2=0x%.2X, p3=0x%.2X, p4=0x%.2X\n",
         args[0], args[1], args[2], args[3]);
@@ -699,7 +705,7 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
     }
 
     if (index != -1)
-        gs_function[index].ptr(b, 4, args);
+        gs_function[index].ptr(b, l);
 
     return -1;
 }
@@ -881,58 +887,91 @@ int _GS_LWR_w(RxBuffer* b)
     return 0;
 }
 
+// PDF417: Set the number of columns in the data region
 int SYM_function_065(RxBuffer* b, int k)
 {
+    uint8_t n = (uint8_t)b->getNext();
+    printf("(function 65) n=0x%.2X\n", n);
     return 0;
 }
 
+// PDF417: Set the number of rows
 int SYM_function_066(RxBuffer* b, int k)
 {
+    uint8_t n = (uint8_t)b->getNext();
+    printf("(function 66) n=0x%.2X\n", n);
     return 0;
 }
 
+// PDF417: Set the width of the module
 int SYM_function_067(RxBuffer* b, int k)
 {
+    uint8_t n = (uint8_t)b->getNext();
+    printf("(function 67) n=0x%.2X\n", n);
     return 0;
 }
 
+// PDF417: Set the row height
 int SYM_function_068(RxBuffer* b, int k)
 {
+    uint8_t n = (uint8_t)b->getNext();
+    printf("(function 68) n=0x%.2X\n", n);
     return 0;
 }
 
+// PDF417: Set the error correction level
 int SYM_function_069(RxBuffer* b, int k)
 {
+    uint8_t m = (uint8_t)b->getNext();
+    uint8_t n = (uint8_t)b->getNext();
+    printf("(function 69) m=0x%.2X, n=0x%.2X\n", m, n);
     return 0;
 }
 
+// PDF417: Select the options
 int SYM_function_070(RxBuffer* b, int k)
 {
+    uint8_t n = (uint8_t)b->getNext();
+    printf("(function 70) n=0x%.2X\n", n);
     return 0;
 }
 
+// PDF417: Store the data in the symbol storage area
 int SYM_function_080(RxBuffer* b, int k)
 {
     return 0;
 }
 
+// PDF417: Print the symbol data in the symbol storage area
 int SYM_function_081(RxBuffer* b, int k)
 {
+    uint8_t m = (uint8_t)b->getNext();
+    printf("(function 81) m=0x%.2X\n", m);
     return 0;
 }
 
+// PDF417: Transmit the size information of the symbol data in the symbol storage area
 int SYM_function_082(RxBuffer* b, int k)
 {
+    uint8_t m = (uint8_t)b->getNext();
+    printf("(function 82) m=0x%.2X\n", m);
     return 0;
 }
 
+// QR Code: Select the model
 int SYM_function_165(RxBuffer* b, int k)
 {
+    uint8_t n1 = (uint8_t)b->getNext();
+    uint8_t n2 = (uint8_t)b->getNext();
+    printf("(function 165) n1=0x%.2X, n2=0x%.2X\n", n1, n2);
     return 0;
 }
 
+// QR Code : Set the size of module
 int SYM_function_167(RxBuffer* b, int k)
 {
+    uint8_t n = (uint8_t)b->getNext();
+    printf("(function 167) n=0x%.2X\n", n);
     return 0;
 }
 
@@ -1036,126 +1075,199 @@ int SYM_NULL(RxBuffer* b, int k)
     return -1;
 }
 
-int GS_function_48(RxBuffer* b, int argc, uint8_t* argv)
+// Transmit the NV graphics memory capacity
+int GS_function_48(RxBuffer* b, int s)
 {
+    printf("(Function 480)\n");
     return 0;
 }
 
-int GS_function_49(RxBuffer* b, int argc, uint8_t* argv)
+// Set the reference dot density for graphics
+int GS_function_49(RxBuffer* b, int s)
 {
-    return 0;
-}
-
-int GS_function_50(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_51(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_52(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_64(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_65(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_66(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_67(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_68(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_69(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_80(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_81(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_82(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_83(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_84(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_85(RxBuffer* b, int argc, uint8_t* argv)
-{
-    return 0;
-}
-
-int GS_function_112(RxBuffer* b, int argc, uint8_t* argv)
-{
-    uint8_t bx = (uint8_t)b->getNext();
-    uint8_t by = (uint8_t)b->getNext();
-    uint8_t c  = (uint8_t)b->getNext();
-    uint8_t xl = (uint8_t)b->getNext();
-    uint8_t xh = (uint8_t)b->getNext();
-    uint8_t yl = (uint8_t)b->getNext();
-    uint8_t yh = (uint8_t)b->getNext();
-
-    int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
-    int sum = (argv[0] + argv[1] * 256 + argv[2] * 65536 + argv[3] * 16777216);
-
-    printf("--[raster info]--\n");
-    printf("p1:%d, p2:%d, p3:%d, p4:%d\n", argv[0], argv[1], argv[2], argv[3]);
-    printf("bx:%d, by:%d\n", bx, by);
-    printf("c:%d\n", c);
-    printf("xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
-    printf("k:%d\n", k);
-    printf("X: %d, Y: %d\n", (xl + xh * 256), (yl + yh * 256));
-    printf("sum:%d\n", sum);
-
-    //yBytes = (yl + 7) / 8; //total bytes in the y direction
-
-    printf("------ Raster Dump ----------\n");
-    for (int i = 0; i < k; i++) {
-        uint8_t h = (uint8_t)b->getNext();
-        printf("0x%.2X ", h);
+    if (s == 2) {
+        uint8_t x = (uint8_t)b->getNext();
+        uint8_t y = (uint8_t)b->getNext();
+        printf("(Function 49) x=0x%.2X, y=0x%.2X\n", x, y);
     }
-    printf("\n----------------------\n");
+    return 0;
+}
+
+// Print the graphics data in the print buffer
+int GS_function_50(RxBuffer* b, int s)
+{
+    printf("(Function 50)\n");
+    return 0;
+}
+
+// Transmit the remaining capacity of the NV graphics memory
+int GS_function_51(RxBuffer* b, int s)
+{
+    printf("(Function 51)\n");
+    return 0;
+}
+
+// Transmit the remaining capacity of the download graphics memory
+int GS_function_52(RxBuffer* b, int s)
+{
+    printf("(Function 52)\n");
+    return 0;
+}
+
+// Transmit the key code list for defined NV graphics
+int GS_function_64(RxBuffer* b, int s)
+{
+    if (s == 2) {
+        uint8_t d1 = (uint8_t)b->getNext();
+        uint8_t d2 = (uint8_t)b->getNext();
+        printf("(Function 64) d1=0x%.2X, d2=0x%.2X\n", d1, d2);
+    }
+    return 0;
+}
+
+// Delete all NV graphics data
+int GS_function_65(RxBuffer* b, int s)
+{
+    if (s == 3) {
+        uint8_t d1 = (uint8_t)b->getNext();
+        uint8_t d2 = (uint8_t)b->getNext();
+        uint8_t d3 = (uint8_t)b->getNext();
+        printf("(Function 65) d1=0x%.2X, d2=0x%.2X, d3=0x%.2X\n", d1, d2, d3);
+    }
+    return 0;
+}
+
+// Delete the specified NV graphics data
+int GS_function_66(RxBuffer* b, int s)
+{
+    if (s == 2) {
+        uint8_t kc1 = (uint8_t)b->getNext();
+        uint8_t kc2 = (uint8_t)b->getNext();
+        printf("(Function 66) kc1=0x%.2X, kc2=0x%.2X\n", kc1, kc2);
+    }
+    return 0;
+}
+
+// Define the NV graphics data (raster format)
+int GS_function_67(RxBuffer* b, int s)
+{
+    printf("(Function 67)\n");
+    return 0;
+}
+
+// Define the NV graphics data(column format)
+int GS_function_68(RxBuffer* b, int s)
+{
+    printf("(Function 69)\n");
+    return 0;
+}
+
+// Print the specified NV graphics data
+int GS_function_69(RxBuffer* b, int s)
+{
+    if (s == 4) {
+        uint8_t kc1 = (uint8_t)b->getNext();
+        uint8_t kc2 = (uint8_t)b->getNext();
+        uint8_t x = (uint8_t)b->getNext();
+        uint8_t y = (uint8_t)b->getNext();
+        printf("(Function 69) kc1=0x%.2X, kc2=0x%.2X, x=0x%.2X, y=0x%.2X\n", kc1, kc2, x, y);
+    }
+    return 0;
+}
+
+// Transmit the key code list for defined download graphics
+int GS_function_80(RxBuffer* b, int s)
+{
+    if (s == 2) {
+        uint8_t d1 = (uint8_t)b->getNext();
+        uint8_t d2 = (uint8_t)b->getNext();
+        printf("(Function 80) d1=0x%.2X, d2=0x%.2X\n", d1, d2);
+    }
+    return 0;
+}
+
+// Delete all NV graphics data
+int GS_function_81(RxBuffer* b, int s)
+{
+    if (s == 3) {
+        uint8_t d1 = (uint8_t)b->getNext();
+        uint8_t d2 = (uint8_t)b->getNext();
+        uint8_t d3 = (uint8_t)b->getNext();
+        printf("(Function 81) d1=0x%.2X, d2=0x%.2X, d3=0x%.2X\n", d1, d2, d3);
+    }
+    return 0;
+}
+
+// Delete the specified download graphics data
+int GS_function_82(RxBuffer* b, int s)
+{
+    if (s == 2) {
+        uint8_t kc1 = (uint8_t)b->getNext();
+        uint8_t kc2 = (uint8_t)b->getNext();
+        printf("(Function 82) kc1=0x%.2X, kc2=0x%.2X\n", kc1, kc2);
+    }
+    return 0;
+}
+
+// Define the downloaded graphics data (raster format)
+int GS_function_83(RxBuffer* b, int s)
+{
+    return 0;
+}
+
+// Define the downloaded graphics data
+int GS_function_84(RxBuffer* b, int s)
+{
+    return 0;
+}
+
+// Print the specified download graphics data
+int GS_function_85(RxBuffer* b, int s)
+{
+    return 0;
+}
+
+// Store the graphics data in the print buffer (raster format)
+int GS_function_112(RxBuffer* b, int s)
+{
+    if (s >= 7)
+    {
+        uint8_t bx = (uint8_t)b->getNext();
+        uint8_t by = (uint8_t)b->getNext();
+        uint8_t c = (uint8_t)b->getNext();
+        uint8_t xl = (uint8_t)b->getNext();
+        uint8_t xh = (uint8_t)b->getNext();
+        uint8_t yl = (uint8_t)b->getNext();
+        uint8_t yh = (uint8_t)b->getNext();
+
+        int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
+
+        printf("--[raster info]--\n");
+        printf("bx:%d, by:%d\n", bx, by);
+        printf("c:%d\n", c);
+        printf("xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
+        printf("k:%d\n", k);
+        printf("X: %d, Y: %d\n", (xl + xh * 256), (yl + yh * 256));
+        printf("sum:%d, new:%d\n", s, s - 7);
+
+        //yBytes = (yl + 7) / 8; //total bytes in the y direction
+
+        if ((s -= 7) == k)
+        {
+            printf("------ Raster Debug Dump ----------\n");
+            for (int i = 0; i < k; i++) {
+                uint8_t h = (uint8_t)b->getNext();
+                printf("0x%.2X ", h);
+            }
+            printf("\n---------------------------------\n");
+        }
+    }
 
     return 0;
 }
 
-int GS_function_113(RxBuffer* b, int argc, uint8_t* argv)
+// Store the graphics data in the print buffer (column format)
+int GS_function_113(RxBuffer* b, int s)
 {
     return 0;
 }

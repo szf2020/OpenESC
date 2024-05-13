@@ -44,44 +44,36 @@ int main()
 
 int8_t ESCPOS_parse(RxBuffer* b)
 {
-    if (b->peekNext() != -1)
-    {
+    if (b->peekNext() != -1) {
         uint8_t c = (uint8_t) b->getNext();
         /* ------------ operation codes ------------- */
-        if (c <= 0x1F)
-        {       
+        if (c <= 0x1F) {       
             int u = 0, depth = 1, i = 1;
             uint8_t g[BMAX] = { c, 0x00, 0x00 };
 
-            while ((u = find_esc_pos(u, escpos, depth++, g)) >= 0) //check at nth depth
+            while ((u = find_esc_pos(u, escpos, depth++, g)) >= 0)          //check at nth depth
             {
-                if ((depth <= escpos[u].depth) && (b->peekNext() != -1)) //if we can go deeper
-                {
-                    g[i++] = (uint8_t)b->getNext(); //pop a char
-                }
-                else 
-                {
+                if ((depth <= escpos[u].depth) && (b->peekNext() != -1)) {  //if we can go deeper
+                    g[i++] = (uint8_t)b->getNext();                         //pop a char
+                } 
+                else {
                     break; //else break
                 }
             }
 
-            if (u >= 0) //check result & run function
-            {
+            if (u >= 0) { //check result & run function
                 if(escpos[u].ptr != nullptr)
                     escpos[u].ptr(b);
-            }
-            else 
-            {
+            } 
+            else {
                 printf("NA [0x%.2X]\n", g[0]);
             }
         }
         /* -------- human readable text ------------ */
-        else
-        {
+        else {
             std::string str; str += (char)c;
             while (b->peekNext() > 0x1F)
                 str += (char) b->getNext();
-
             printf("[%s]\n", str.c_str()); 
         }
 
