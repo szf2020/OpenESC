@@ -33,13 +33,13 @@
 #define CMD_SIZE 87
 #define BMAX 3
 
-//const char* file_under_test = "001.prn";
-//const char* file_under_test = "002.prn";
-//const char* file_under_test = "003.prn";
-//const char* file_under_test = "004.prn";
-//const char* file_under_test = "005.prn";
-//const char* file_under_test = "006.prn";
-const char* file_under_test = "007.prn";
+//const char* file_under_test = "testFiles/001.prn";
+//const char* file_under_test = "testFiles/002.prn";
+//const char* file_under_test = "testFiles/003.prn";
+//const char* file_under_test = "testFiles/004.prn";
+//const char* file_under_test = "testFiles/005.prn";
+//const char* file_under_test = "testFiles/006.prn";
+const char* file_under_test = "testFiles/007.prn";
 
 const int DPI_203 = (int)(8.0 * 25.4); //real is 203.2 dots/inch
 
