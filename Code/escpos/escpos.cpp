@@ -74,7 +74,6 @@ int8_t ESCPOS_parse(RxBuffer* b)
             {
                 printf("NA [0x%.2X]\n", g[0]);
             }
-
         }
         /* -------- human readable text ------------ */
         else

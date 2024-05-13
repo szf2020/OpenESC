@@ -587,10 +587,10 @@ int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
 {
     int index = -1;
     uint8_t args[4] = {
-        (uint8_t)b->getNext(),
-        (uint8_t)b->getNext(),
-        (uint8_t)b->getNext(),
-        (uint8_t)b->getNext()
+        (uint8_t)b->getNext(), //pL
+        (uint8_t)b->getNext(), //pH
+        (uint8_t)b->getNext(), //m
+        (uint8_t)b->getNext()  //fn
     };
 
     printf("<GS ( L> pL=0x%.2X, pH=0x%.2X, m=0x%.2X, fn=0x%.2X\n",
@@ -671,20 +671,41 @@ int _ESC_FWRDSLASH_SYM(RxBuffer* b)
 // Command: Set graphics data
 int _GS_EIGHT_UPR_L(RxBuffer* b)
 {
-    // TODO:
+    int index = -1;
     uint8_t args[4] = {
-        (uint8_t)b->getNext(),
-        (uint8_t)b->getNext(),
-        (uint8_t)b->getNext(),
-        (uint8_t)b->getNext()
+        (uint8_t)b->getNext(), //p1
+        (uint8_t)b->getNext(), //p2
+        (uint8_t)b->getNext(), //p3
+        (uint8_t)b->getNext()  //p4
     };
 
-    uint8_t m = (uint8_t)b->getNext();   //48, also assumed to be color mode 
+    uint8_t m  = (uint8_t)b->getNext();   //48, also assumed to be color mode 
     uint8_t fn = (uint8_t)b->getNext();  //function mode
+    uint8_t a  = (uint8_t)b->getNext();   
 
-    if (fn == 0x70) { //112
-        return raster_function_112(b, 4, args);
+    printf("<GS 8 L>\n");
+    printf("- p1=0x%.2X, p2=0x%.2X, p3=0x%.2X, p4=0x%.2X\n",
+        args[0], args[1], args[2], args[3]);
+    printf("- m=0x%.2X, fn=0x%.2X, a=0x%.2X\n", m, fn, a);
+
+    if ((fn >= 0) && (fn <= 4)) {           //0-4
+        index = fn;
     }
+    else if ((fn >= 48) && (fn <= 52)) {    //0-4
+        index = fn - 48;
+    }
+    else if ((fn >= 64) && (fn <= 69)) {    //5-10
+        index = (args[3] - 64) + 5;
+    }
+    else if ((fn >= 80) && (fn <= 85)) {    //11-16
+        index = (fn - 80) + 11;
+    }
+    else if ((fn >= 112) && (fn <= 113)) {  //17-18
+        index = (fn - 112) + 17;
+    }
+
+    if (index != -1)
+        gs_function[index].ptr(b, 4, args);
 
     return -1;
 }
@@ -863,60 +884,6 @@ int _GS_LWR_w(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS w> n=0x%.2X\n", n);
-    return 0;
-}
-
-int raster_function_112(RxBuffer* b, int argc, uint8_t* argv)
-{
-    uint8_t a = (uint8_t)b->getNext();   //48 = monochrome, 52 = multi-tone
-    uint8_t bx = (uint8_t)b->getNext();
-    uint8_t by = (uint8_t)b->getNext();
-    uint8_t c = (uint8_t)b->getNext();
-    uint8_t xl = (uint8_t)b->getNext();
-    uint8_t xh = (uint8_t)b->getNext();
-    uint8_t yl = (uint8_t)b->getNext();
-    uint8_t yh = (uint8_t)b->getNext();
-
-    int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
-    int dhorz = (xl + xh * 256);
-    int dvertz = (yl + yh * 256);
-    int sum = (argv[0] + argv[1] * 256 + argv[2] * 65536 + argv[3] * 16777216);
-
-    printf("--[raster info]--\n");
-    printf("p1:%d\n", argv[0]);
-    printf("p2:%d\n", argv[1]);
-    printf("p3:%d\n", argv[2]);
-    printf("p4:%d\n", argv[3]);
-
-    //printf("m:%d\n", m);
-    //printf("fn:%d\n", fn);
-
-    printf("a:%d\n", a);
-    printf("bx:%d\n", bx);
-    printf("by:%d\n", by);
-    printf("c:%d\n", c);
-    printf("xl:%d\n", xl);
-    printf("xh:%d\n", xh);
-    printf("yl:%d\n", yl);
-    printf("yh:%d\n", yh);
-    printf("k:%d\n", k);
-    printf("dhorz:%d\n", dhorz);
-    printf("dvirtz:%d\n", dvertz);
-    printf("sum:%d\n", sum);
-
-    //yBytes = (yl + 7) / 8; //total bytes in the y direction
-
-    printf("------ Raster Dump ----------\n");
-
-    for (int i = 0; i < k; i++) {
-        uint8_t h = (uint8_t)b->getNext();
-        //printf(" i:%d {0x%.2X} " BYTE_TO_BINARY_PATTERN " ", i, h, BYTE_TO_BINARY(h));
-        //printf(BYTE_TO_BINARY_PATTERN "\n", BYTE_TO_BINARY(h));
-        printf("0x%.2X ", h);
-        //fflush(stdout);
-    }
-
-    printf("\n----------------------\n");
     return 0;
 }
 
@@ -1162,6 +1129,35 @@ int GS_function_85(RxBuffer* b, int argc, uint8_t* argv)
 
 int GS_function_112(RxBuffer* b, int argc, uint8_t* argv)
 {
+    uint8_t bx = (uint8_t)b->getNext();
+    uint8_t by = (uint8_t)b->getNext();
+    uint8_t c  = (uint8_t)b->getNext();
+    uint8_t xl = (uint8_t)b->getNext();
+    uint8_t xh = (uint8_t)b->getNext();
+    uint8_t yl = (uint8_t)b->getNext();
+    uint8_t yh = (uint8_t)b->getNext();
+
+    int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
+    int sum = (argv[0] + argv[1] * 256 + argv[2] * 65536 + argv[3] * 16777216);
+
+    printf("--[raster info]--\n");
+    printf("p1:%d, p2:%d, p3:%d, p4:%d\n", argv[0], argv[1], argv[2], argv[3]);
+    printf("bx:%d, by:%d\n", bx, by);
+    printf("c:%d\n", c);
+    printf("xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
+    printf("k:%d\n", k);
+    printf("X: %d, Y: %d\n", (xl + xh * 256), (yl + yh * 256));
+    printf("sum:%d\n", sum);
+
+    //yBytes = (yl + 7) / 8; //total bytes in the y direction
+
+    printf("------ Raster Dump ----------\n");
+    for (int i = 0; i < k; i++) {
+        uint8_t h = (uint8_t)b->getNext();
+        printf("0x%.2X ", h);
+    }
+    printf("\n----------------------\n");
+
     return 0;
 }
 

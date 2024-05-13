@@ -200,8 +200,6 @@ int GS_function_85(RxBuffer* b, int argc, uint8_t* argv);
 //-------------------------------------------------------
 int GS_function_112(RxBuffer* b, int argc, uint8_t* argv);
 int GS_function_113(RxBuffer* b, int argc, uint8_t* argv);
-//-------------------------------------------------------
-int raster_function_112(RxBuffer* b, int argc, uint8_t* argv);
 //----------------------------------------------------------------
 static CMD escpos[CMD_SIZE] =
 {
