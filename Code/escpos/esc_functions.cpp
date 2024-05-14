@@ -1395,6 +1395,25 @@ int8_t GS_function_85(RxBuffer* b, int s) {
     return 0;
 }
 
+// Helper dunction for debugging raster format
+static inline int16_t ascii_raster_dump(uint8_t* bmp, int s, int x, int y) {
+    int row_width = (x + 7) / 8;
+    int col_width = (x + 7) / 8;
+
+    for (int i = 0; i < s; i += row_width) {
+        uint8_t* r = &bmp[i];
+        for (int col = 0; col < col_width; col++) {
+            int mask = 128;
+            while (mask) {
+                if (r[col] & mask) printf("#");
+                else               printf(" ");
+                mask = mask >> 1;
+            }
+        } printf("\n");
+    }    
+    return 0;
+}
+
 // Store the graphics data in the print buffer (raster format)
 int8_t GS_function_112(RxBuffer* b, int s) {
     if (s >= 7) {
@@ -1407,26 +1426,28 @@ int8_t GS_function_112(RxBuffer* b, int s) {
         uint8_t yh = (uint8_t)b->getNext();
 
         int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
+        int X = (xl + xh * 256);
+        int Y = (yl + yh * 256);
 
-        printf("\n--[raster info]--\n");
-        printf("-bx:%d, by:%d\n", bx, by);
-        printf("-c:%d\n", c);
-        printf("-xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
-        printf("-k:%d\n", k);
-        printf("-X: %d, Y: %d\n", (xl + xh * 256), (yl + yh * 256));
-        printf("-sum:%d, new:%d\n", s, s - 7);
-
-        //yBytes = (yl + 7) / 8; //total bytes in the y direction
+        //printf("\n--[raster info]--\n");
+        //printf("-bx:%d, by:%d\n", bx, by);
+        //printf("-c:%d\n", c);
+        //printf("-xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
+        //printf("-k:%d\n", k);
+        //printf("-X: %d, Y: %d\n", X, Y);
+        //printf("-sum:%d, new:%d\n", s, s - 7);
 
         if ((s -= 7) == k) {
-            printf("\n------ Raster Debug Dump ----------\n");
-            for (int i = 0; i < k; i++) {
-                uint8_t h = (uint8_t)b->getNext();
-                printf("0x%.2X ", h);
+            uint8_t* raster_data = (uint8_t*)malloc(k * sizeof(uint8_t));
+            if (raster_data != NULL) {
+                for (int i = 0; i < k; i++) {
+                    raster_data[i] = (uint8_t)b->getNext();
+                }
+                ascii_raster_dump(raster_data, k, X, Y);
+                free(raster_data);
+                return 0;
             }
-            printf("\n---------------------------------\n");
         }
-        return 0;
     }
     return -1;
 }
@@ -1452,6 +1473,19 @@ static int8_t inline bcodeB_helper(RxBuffer* b, int s) {
     for (int i = 0; i < s; i++)
         printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
     printf("\n");
+    return 0;
+}
+
+// Helper function for preliminary debugging
+static int8_t inline ascii_barcode_dump(zint_symbol* bmp) {
+    int row, col, i = 0;
+    for (row = 0; row < bmp->bitmap_height; row++) {
+        for (col = 0; col < bmp->bitmap_width; col++) {
+            if (bmp->bitmap[i] == 0xFF) printf(" ");
+            else                        printf("#");
+            i += 3;
+        } printf("\n");
+    } printf("\n");
     return 0;
 }
 
@@ -1499,8 +1533,30 @@ int8_t BAR_06(RxBuffer* b) {
 
 // UPC-A
 int8_t BAR_65(RxBuffer* b, int s) {
-    printf("(UPC-A) data: ");
-    return bcodeB_helper(b, s);
+    printf("(UPC-A)\n");
+    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
+
+    if (data != NULL) {
+        for (int i = 0; i < s; i++)
+            data[i] = (uint8_t)b->getNext();
+
+        struct zint_symbol* my_symbol;
+        my_symbol = ZBarcode_Create();
+        my_symbol->symbology = BARCODE_UPCA;
+        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
+
+        if (err != 0) {
+            printf("%s\n", my_symbol->errtxt);
+        }
+        else {
+            ascii_barcode_dump(my_symbol);
+        }
+
+        ZBarcode_Delete(my_symbol);
+        free(data);
+        return 0;
+    }
+    return -1;
 }
 
 // UPC-E
@@ -1521,14 +1577,12 @@ int8_t BAR_68(RxBuffer* b, int s) {
     return bcodeB_helper(b, s);
 }
 
-
 // CODE39
 int8_t BAR_69(RxBuffer* b, int s) {
     printf("(CODE39) \n");
     uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
 
-    if (data != NULL) 
-    {
+    if (data != NULL) {
         for (int i = 0; i < s; i++)
             data[i] = (uint8_t)b->getNext();
 
@@ -1536,30 +1590,18 @@ int8_t BAR_69(RxBuffer* b, int s) {
         my_symbol = ZBarcode_Create();
         my_symbol->symbology = BARCODE_CODE39;
         int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
-        if (err != 0) 
-        {
-            printf("%s\n", my_symbol->errtxt); /* some warning or error occurred */
+        
+        if (err != 0) {
+            printf("%s\n", my_symbol->errtxt);
+        } else {
+            ascii_barcode_dump(my_symbol);
         }
-        else 
-        {
-            int row, col, i = 0;
-            for (row = 0; row < my_symbol->bitmap_height; row++) 
-            {
-                for (col = 0; col < my_symbol->bitmap_width; col++) 
-                {
-                    if (my_symbol->bitmap[i] == 0xFF) printf("#");
-                    else                              printf(".");
-                    i+=3;
-                }
-                printf("\n");
-            }
-            printf("\n");
-        }
+
         ZBarcode_Delete(my_symbol);
         free(data);
         return 0;
     }
-    return 1;
+    return -1;
 }
 
 // ITF (interleaved 2 of 5)
@@ -1570,8 +1612,30 @@ int8_t BAR_70(RxBuffer* b, int s) {
 
 // CODABAR (NW-7)
 int8_t BAR_71(RxBuffer* b, int s) {
-    printf("(CODABAR) data: ");
-    return bcodeB_helper(b, s);
+    printf("(CODABAR)\n");
+    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
+
+    if (data != NULL) {
+        for (int i = 0; i < s; i++)
+            data[i] = (uint8_t)b->getNext();
+
+        struct zint_symbol* my_symbol;
+        my_symbol = ZBarcode_Create();
+        my_symbol->symbology = BARCODE_CODABAR;
+        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
+
+        if (err != 0) {
+            printf("%s\n", my_symbol->errtxt);
+        }
+        else {
+            ascii_barcode_dump(my_symbol);
+        }
+
+        ZBarcode_Delete(my_symbol);
+        free(data);
+        return 0;
+    }
+    return -1;
 }
 
 // CODE93
@@ -1582,8 +1646,30 @@ int8_t BAR_72(RxBuffer* b, int s) {
 
 // CODE128
 int8_t BAR_73(RxBuffer* b, int s) {
-    printf("(CODE128) data: ");
-    return bcodeB_helper(b, s);
+    printf("(CODE128)\n");
+    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
+
+    if (data != NULL) {
+        for (int i = 0; i < s; i++)
+            data[i] = (uint8_t)b->getNext();
+
+        struct zint_symbol* my_symbol;
+        my_symbol = ZBarcode_Create();
+        my_symbol->symbology = BARCODE_CODE128;
+        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
+
+        if (err != 0) {
+            printf("%s\n", my_symbol->errtxt);
+        }
+        else {
+            ascii_barcode_dump(my_symbol);
+        }
+
+        ZBarcode_Delete(my_symbol);
+        free(data);
+        return 0;
+    }
+    return -1;
 }
 
 // UCC/EAN128
