@@ -1,6 +1,7 @@
-
+//
 // This class will be replaced in the future
 // MJM 2024
+//
 
 #pragma once
 
@@ -9,16 +10,11 @@
 
 class RxBuffer
 {
-public:
-	
-	//RxBuffer();
+public:	
 	RxBuffer(std::string filename);		//open file as rx buffer
-
 	int16_t peekNext();					//look at next char
 	int16_t getNext();					//get next char, index++
-
 	~RxBuffer();						//close file
-
 private:
 	uint32_t index = 0;
 	std::size_t size = 0;
@@ -26,4 +22,4 @@ private:
 	std::ifstream ifs;
 };
 
-// line 29
+// line 25

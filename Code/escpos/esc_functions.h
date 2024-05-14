@@ -29,7 +29,7 @@
 //-------------------------------------------------------
 //https://stackoverflow.com/a/3208376
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
-#define BYTE_TO_BINARY(byte)  \
+#define BYTE_TO_BINARY(byte)   \
   ((byte) & 0x80 ? '1' : '0'), \
   ((byte) & 0x40 ? '1' : '0'), \
   ((byte) & 0x20 ? '1' : '0'), \
@@ -166,7 +166,7 @@ int8_t _GS_LWR_r(RxBuffer* b);                 // r
 int8_t _GS_LWR_v_ZERO(RxBuffer* b);            // v 0
 int8_t _GS_LWR_w(RxBuffer* b);                 // w
 //-------------------------------------------------------
-int8_t SYM_function_065(RxBuffer* b, int s); //48
+int8_t SYM_function_065(RxBuffer* b, int s);   //48
 int8_t SYM_function_066(RxBuffer* b, int s);
 int8_t SYM_function_067(RxBuffer* b, int s);
 int8_t SYM_function_068(RxBuffer* b, int s);
@@ -176,25 +176,25 @@ int8_t SYM_function_080(RxBuffer* b, int s);
 int8_t SYM_function_081(RxBuffer* b, int s);
 int8_t SYM_function_082(RxBuffer* b, int s);
 //-------------------------------------------------------
-int8_t SYM_function_165(RxBuffer* b, int s); //49
+int8_t SYM_function_165(RxBuffer* b, int s);   //49
 int8_t SYM_function_167(RxBuffer* b, int s);
 int8_t SYM_function_169(RxBuffer* b, int s);
 int8_t SYM_function_180(RxBuffer* b, int s);
 int8_t SYM_function_181(RxBuffer* b, int s);
 int8_t SYM_function_182(RxBuffer* b, int s);
 //-------------------------------------------------------
-int8_t SYM_function_265(RxBuffer* b, int s); //50
+int8_t SYM_function_265(RxBuffer* b, int s);   //50
 int8_t SYM_function_280(RxBuffer* b, int s);
 int8_t SYM_function_281(RxBuffer* b, int s);
 int8_t SYM_function_282(RxBuffer* b, int s);
 //-------------------------------------------------------
-int8_t SYM_function_367(RxBuffer* b, int s); //51
+int8_t SYM_function_367(RxBuffer* b, int s);   //51
 int8_t SYM_function_371(RxBuffer* b, int s);
 int8_t SYM_function_380(RxBuffer* b, int s);
 int8_t SYM_function_381(RxBuffer* b, int s);
 int8_t SYM_function_382(RxBuffer* b, int s);
 //-------------------------------------------------------
-int8_t SYM_function_467(RxBuffer* b, int s); //52
+int8_t SYM_function_467(RxBuffer* b, int s);   //52
 int8_t SYM_function_471(RxBuffer* b, int s);
 int8_t SYM_function_472(RxBuffer* b, int s);
 int8_t SYM_function_480(RxBuffer* b, int s);
@@ -226,13 +226,13 @@ int8_t GS_function_85(RxBuffer* b, int s);
 int8_t GS_function_112(RxBuffer* b, int s);
 int8_t GS_function_113(RxBuffer* b, int s);
 //----------------------------------------------------------------
-int8_t BAR_00(RxBuffer* b);    //UPC-A
-int8_t BAR_01(RxBuffer* b);    //UPC-E
-int8_t BAR_02(RxBuffer* b);    //JAN(EAN13)
-int8_t BAR_03(RxBuffer* b);    //JAN8(EAN8)
-int8_t BAR_04(RxBuffer* b);    //CODE39
-int8_t BAR_05(RxBuffer* b);    //ITF(int8_terleaved 2 of 5)
-int8_t BAR_06(RxBuffer* b);    //CODABAR(NW-7)
+int8_t BAR_00(RxBuffer* b);        //UPC-A
+int8_t BAR_01(RxBuffer* b);        //UPC-E
+int8_t BAR_02(RxBuffer* b);        //JAN(EAN13)
+int8_t BAR_03(RxBuffer* b);        //JAN8(EAN8)
+int8_t BAR_04(RxBuffer* b);        //CODE39
+int8_t BAR_05(RxBuffer* b);        //ITF(int8_terleaved 2 of 5)
+int8_t BAR_06(RxBuffer* b);        //CODABAR(NW-7)
 
 int8_t BAR_65(RxBuffer* b, int s); //UPC-A
 int8_t BAR_66(RxBuffer* b, int s); //UPC-E
@@ -347,15 +347,15 @@ static symbols sym_000[SYM_ARRAY_SIZE] = {     //48
     SYM_function_068, //3
     SYM_function_069, //4
     SYM_function_070, //5
-    SYM_NULL, //6
-    SYM_NULL, //7
-    SYM_NULL, //8
-    SYM_NULL, //9
-    SYM_NULL, //10
-    SYM_NULL, //11
-    SYM_NULL, //12
-    SYM_NULL, //13
-    SYM_NULL, //14
+    SYM_NULL,         //6
+    SYM_NULL,         //7
+    SYM_NULL,         //8
+    SYM_NULL,         //9
+    SYM_NULL,         //10
+    SYM_NULL,         //11
+    SYM_NULL,         //12
+    SYM_NULL,         //13
+    SYM_NULL,         //14
     SYM_function_080, //15
     SYM_function_081, //16
     SYM_function_082, //17
@@ -363,20 +363,20 @@ static symbols sym_000[SYM_ARRAY_SIZE] = {     //48
 //-------------------------------------------------------
 static symbols sym_001[SYM_ARRAY_SIZE] = {     //49
     SYM_function_165, //0
-    SYM_NULL, //1
+    SYM_NULL,         //1
     SYM_function_167, //2
-    SYM_NULL, //3
+    SYM_NULL,         //3
     SYM_function_169, //4
-    SYM_NULL, //5
-    SYM_NULL, //6
-    SYM_NULL, //7
-    SYM_NULL, //8
-    SYM_NULL, //9
-    SYM_NULL, //10
-    SYM_NULL, //11
-    SYM_NULL, //12
-    SYM_NULL, //13
-    SYM_NULL, //14
+    SYM_NULL,         //5
+    SYM_NULL,         //6
+    SYM_NULL,         //7
+    SYM_NULL,         //8
+    SYM_NULL,         //9
+    SYM_NULL,         //10
+    SYM_NULL,         //11
+    SYM_NULL,         //12
+    SYM_NULL,         //13
+    SYM_NULL,         //14
     SYM_function_180, //15
     SYM_function_181, //16
     SYM_function_182, //17
@@ -384,62 +384,62 @@ static symbols sym_001[SYM_ARRAY_SIZE] = {     //49
 //-------------------------------------------------------
 static symbols sym_002[SYM_ARRAY_SIZE] = {     //50
     SYM_function_265, //0
-    SYM_NULL, //1
-    SYM_NULL, //2
-    SYM_NULL, //3
-    SYM_NULL, //4
-    SYM_NULL, //5
-    SYM_NULL, //6
-    SYM_NULL, //7
-    SYM_NULL, //8
-    SYM_NULL, //9
-    SYM_NULL, //10
-    SYM_NULL, //11
-    SYM_NULL, //12
-    SYM_NULL, //13
-    SYM_NULL, //14
+    SYM_NULL,         //1
+    SYM_NULL,         //2
+    SYM_NULL,         //3
+    SYM_NULL,         //4
+    SYM_NULL,         //5
+    SYM_NULL,         //6
+    SYM_NULL,         //7
+    SYM_NULL,         //8
+    SYM_NULL,         //9
+    SYM_NULL,         //10
+    SYM_NULL,         //11
+    SYM_NULL,         //12
+    SYM_NULL,         //13
+    SYM_NULL,         //14
     SYM_function_280, //15
     SYM_function_281, //16
     SYM_function_282, //17
 };
 //-------------------------------------------------------
 static symbols sym_003[SYM_ARRAY_SIZE] = {     //51
-    SYM_NULL, //0
-    SYM_NULL, //1
+    SYM_NULL,         //0
+    SYM_NULL,         //1
     SYM_function_367, //2
-    SYM_NULL, //3
-    SYM_NULL, //4
-    SYM_NULL, //5
-    SYM_NULL, //6
-    SYM_NULL, //7
-    SYM_NULL, //8
-    SYM_NULL, //9
-    SYM_NULL, //10
-    SYM_NULL, //11
-    SYM_NULL, //12
-    SYM_NULL, //13
-    SYM_NULL, //14
+    SYM_NULL,         //3
+    SYM_NULL,         //4
+    SYM_NULL,         //5
+    SYM_NULL,         //6
+    SYM_NULL,         //7
+    SYM_NULL,         //8
+    SYM_NULL,         //9
+    SYM_NULL,         //10
+    SYM_NULL,         //11
+    SYM_NULL,         //12
+    SYM_NULL,         //13
+    SYM_NULL,         //14
     SYM_function_380, //15
     SYM_function_381, //16
     SYM_function_382, //17
 };
 //-------------------------------------------------------
 static symbols sym_004[SYM_ARRAY_SIZE] = {      //52
-    SYM_NULL, //0
-    SYM_NULL, //1
+    SYM_NULL,         //0
+    SYM_NULL,         //1
     SYM_function_467, //2
-    SYM_NULL, //3
-    SYM_NULL, //4
-    SYM_NULL, //5
+    SYM_NULL,         //3
+    SYM_NULL,         //4
+    SYM_NULL,         //5
     SYM_function_471, //6
     SYM_function_472, //7
-    SYM_NULL, //8
-    SYM_NULL, //9
-    SYM_NULL, //10
-    SYM_NULL, //11
-    SYM_NULL, //12
-    SYM_NULL, //13
-    SYM_NULL, //14
+    SYM_NULL,         //8
+    SYM_NULL,         //9
+    SYM_NULL,         //10
+    SYM_NULL,         //11
+    SYM_NULL,         //12
+    SYM_NULL,         //13
+    SYM_NULL,         //14
     SYM_function_480, //15
     SYM_function_481, //16
     SYM_function_482, //17
