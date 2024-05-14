@@ -42,6 +42,10 @@ int main()
     return 0;
 }
 
+
+// I don't see how ESCPOS can be used with a steaming buffer
+// I think one would need to buffer the chars up first, then parse.
+
 int8_t ESCPOS_parse(RxBuffer* b)
 {
     if (b->peekNext() != -1) {
@@ -61,7 +65,7 @@ int8_t ESCPOS_parse(RxBuffer* b)
                 }
             }
 
-            if (u >= 0) { //check result & run function
+            if (u >= 0) { //check result & run 'fun!'-ction
                 if(escpos[u].ptr != nullptr)
                     escpos[u].ptr(b);
             } 

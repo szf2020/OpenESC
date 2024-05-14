@@ -877,6 +877,31 @@ int _GS_LWR_k(RxBuffer* b)
 {
     uint8_t m = (uint8_t)b->getNext();
     printf("<GS k> m=0x%.2X (m=%d)\n", m, m);
+
+    //function a
+    if (m == 0)      { printf("{A} (UPC-A)\n"); }
+    else if(m == 1)  { printf("{A} (UPC-E)\n"); }
+    else if (m == 2) { printf("{A} (JAN13 [EAN13])\n"); }
+    else if (m == 3) { printf("{A} (JAN8 [EAN8])\n"); }
+    else if (m == 4) { printf("{A} (CODE39)\n"); }
+    else if (m == 5) { printf("{A} (ITF [Interleaved 2 of 5])\n"); }
+    else if (m == 6) { printf("{A} (CODEBAR [NW-7])\n"); }
+    // function b
+    else if (m == 65) { printf("{B} (UPC-A)\n"); }
+    else if (m == 66) { printf("{B} (UPC-E)\n"); }
+    else if (m == 67) { printf("{B} (JAN13 [EAN13])\n"); }
+    else if (m == 68) { printf("{B} (JAN8 [EAN8])\n"); }
+    else if (m == 69) { printf("{B} (CODE39)\n"); }
+    else if (m == 70) { printf("{B} (ITF [Interleaved 2 of 5])\n"); }
+    else if (m == 71) { printf("{B} (CODEBAR [NW-7])\n"); }
+    else if (m == 72) { printf("{B} (CODE93)\n"); }
+    else if (m == 73) { printf("{B} (CODE128)\n"); }
+    else if (m == 74) { printf("{B} (UCC/EAN128)\n"); }
+    else if (m == 75) { printf("{B} (RSS-14)\n"); }
+    else if (m == 76) { printf("{B} (RSS-14) [Truncated]\n"); }
+    else if (m == 77) { printf("{B} (RSS) [Limited]\n"); }
+    else if (m == 78) { printf("{B} (RSS) [Expanded]\n"); }
+
     return 0;
 }
 
@@ -1011,101 +1036,181 @@ int SYM_function_167(RxBuffer* b, int s)
     return 0;
 }
 
+// QR Code: Select the error correction level
 int SYM_function_169(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 169) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
+// QR Code: Store the data in the symbol storage area
 int SYM_function_180(RxBuffer* b, int s)
 {
     return 0;
 }
 
+// QR Code: Print the symbol data in the symbol storage area
 int SYM_function_181(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 181) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// QR Code: Transmit the size information of the symbol data in the symbol storage area
 int SYM_function_182(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 182) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// MaxiCode: Select the mode
 int SYM_function_265(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 265) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
+// MaxiCode: Store the data in the symbol storage area
 int SYM_function_280(RxBuffer* b, int s)
 {
     return 0;
 }
 
+// MaxiCode: Print the symbol data in the symbol storage area
 int SYM_function_281(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 281) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// MaxiCode: Transmit the size information of the symbol data in the symbol storage area
 int SYM_function_282(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 282) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// RSS: Set the width of the module
 int SYM_function_367(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 367) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
+// 2-dimensional RSS: RSS Expanded Stacked maximum width setting
 int SYM_function_371(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 371) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
+// 2-dimensional RSS: Store the data in the symbol storage area
 int SYM_function_380(RxBuffer* b, int s)
 {
     return 0;
 }
 
+// 2-dimensional RSS: Print the symbol data in the symbol storage area
 int SYM_function_381(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 381) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// 2-dimensional RSS: Transmit the size information of the symbol data in the symbol storage area
 int SYM_function_382(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 382) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// Composite Symbol: Set the width of the module
 int SYM_function_467(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 467) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
+// Composite Symbol: RSS Expanded Stacked maximum width setting
 int SYM_function_471(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 471) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
+// Composite Symbol: Select font HRI characters
 int SYM_function_472(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 472) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
+// Composite Symbol: Store the data in the symbol storage area
 int SYM_function_480(RxBuffer* b, int s)
 {
     return 0;
 }
 
+// Composite Symbol: Print the symbol data in the symbol storage area
 int SYM_function_481(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 481) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// Composite Symbol: Transmit the size information of the symbol data in the symbol storage area
 int SYM_function_482(RxBuffer* b, int s)
 {
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 482) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
+// NULL function to fill up pointer array
 int SYM_NULL(RxBuffer* b, int s)
 {
     return -1;
