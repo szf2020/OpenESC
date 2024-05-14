@@ -11,35 +11,35 @@ static float horizontal_motion_unit = 1;
 static uint16_t line_spacing = 30;
 
 // Command: Horizontal Tab 
-int _HT(RxBuffer* b)
+int8_t _HT(RxBuffer* b)
 {
     printf("<HT>\n");
     return 0;
 }
 
 // Command: Print a line feed
-int _LF(RxBuffer* b)
+int8_t _LF(RxBuffer* b)
 {
     printf("<LF>\n");
     return 0;
 }
 
 // Command: Print and return to standard mode (in page mode)
-int _FF(RxBuffer* b)
+int8_t _FF(RxBuffer* b)
 {
     printf("<FF>\n");
     return 0;
 }
 
 // Command: Print a carriage return
-int _CR(RxBuffer* b)
+int8_t _CR(RxBuffer* b)
 {
     printf("<CR>\n");
     return 0;
 }
 
 // Command: Transmit real-time status
-int _DLE_ENQ(RxBuffer* b)
+int8_t _DLE_ENQ(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<DLE ENQ> n=0x%.2X\n", n);
@@ -47,7 +47,7 @@ int _DLE_ENQ(RxBuffer* b)
 }
 
 // ?
-int _DLE_DC4(RxBuffer* b)
+int8_t _DLE_DC4(RxBuffer* b)
 {
     // TODO:
     printf("<DLE DC4>\n");
@@ -55,7 +55,7 @@ int _DLE_DC4(RxBuffer* b)
 }
 
 // Command: Transmit real-time status
-int _DLE_EOT(RxBuffer* b)
+int8_t _DLE_EOT(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     uint8_t a = (uint8_t)b->getNext();
@@ -64,21 +64,21 @@ int _DLE_EOT(RxBuffer* b)
 }
 
 // Command: Cancel print data in page mode
-int _CAN(RxBuffer* b)
+int8_t _CAN(RxBuffer* b)
 {
     printf("<CAN>\n");
     return 0;
 }
 
 // Command: Print data in page mode
-int _ESC_FF(RxBuffer* b)
+int8_t _ESC_FF(RxBuffer* b)
 {
     printf("<ESC FF>\n");
     return 0;
 }
 
 // Command: Set right-side character spacing
-int _ESC_SP(RxBuffer* b)
+int8_t _ESC_SP(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     uint16_t right_scs = (uint16_t)(n * horizontal_motion_unit);
@@ -87,7 +87,7 @@ int _ESC_SP(RxBuffer* b)
 }
 
 // Command: Select print modes(s)
-int _ESC_EXCLAMATION_SYM(RxBuffer* b)
+int8_t _ESC_EXCLAMATION_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC !> n=0x%.2X\n", n);
@@ -113,7 +113,7 @@ int _ESC_EXCLAMATION_SYM(RxBuffer* b)
 }
 
 // Command: Set absolute print position
-int _ESC_DOLLAR_SYM(RxBuffer* b)
+int8_t _ESC_DOLLAR_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
@@ -123,7 +123,7 @@ int _ESC_DOLLAR_SYM(RxBuffer* b)
 }
 
 // Command: Select / cancel user-defined character set
-int _ESC_PERCENT_SYM(RxBuffer* b)
+int8_t _ESC_PERCENT_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC %%> n=0x%.2X\n", n);
@@ -133,7 +133,7 @@ int _ESC_PERCENT_SYM(RxBuffer* b)
 }
 
 // Command: Define user-defined characters
-int _ESC_AND_SYM(RxBuffer* b)
+int8_t _ESC_AND_SYM(RxBuffer* b)
 {
     // TODO:
     printf("<ESC &>\n");
@@ -141,7 +141,7 @@ int _ESC_AND_SYM(RxBuffer* b)
 }
 
 // Command: Select bit-image mode
-int _ESC_STAR_SYM(RxBuffer* b)
+int8_t _ESC_STAR_SYM(RxBuffer* b)
 {
     // TODO:
     printf("<ESC *>\n");
@@ -149,7 +149,7 @@ int _ESC_STAR_SYM(RxBuffer* b)
 }
 
 // Command: Turn underline mode on/off
-int _ESC_SUBTRACT_SYM(RxBuffer* b)
+int8_t _ESC_SUBTRACT_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC -> n=0x%.2X\n", n);
@@ -165,7 +165,7 @@ int _ESC_SUBTRACT_SYM(RxBuffer* b)
 }
 
 // Command: Select default line spacing
-int _ESC_ASCII_TWO(RxBuffer* b)
+int8_t _ESC_ASCII_TWO(RxBuffer* b)
 {
     printf("<ESC 2>\n");
     printf("-Default line spacing set\n");
@@ -174,7 +174,7 @@ int _ESC_ASCII_TWO(RxBuffer* b)
 }
 
 // Command: Set line spacing
-int _ESC_ASCII_THREE(RxBuffer* b)
+int8_t _ESC_ASCII_THREE(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     line_spacing = (uint16_t)(n * vertical_motion_unit);
@@ -183,7 +183,7 @@ int _ESC_ASCII_THREE(RxBuffer* b)
 }
 
 // Command: Select peripheral device
-int _ESC_EQUAL_SYM(RxBuffer* b)
+int8_t _ESC_EQUAL_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC => n=0x%.2X\n", n);
@@ -191,7 +191,7 @@ int _ESC_EQUAL_SYM(RxBuffer* b)
 }
 
 // Command: Cancel user-defined characters
-int _ESC_QUESTION_SYM(RxBuffer* b)
+int8_t _ESC_QUESTION_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC ?> n=0x%.2X\n", n);
@@ -199,14 +199,14 @@ int _ESC_QUESTION_SYM(RxBuffer* b)
 }
 
 // Command: initialize printer
-int _ESC_AT_SYM(RxBuffer* b)
+int8_t _ESC_AT_SYM(RxBuffer* b)
 {
     printf("<ESC @>\n");
     return 0;
 }
 
 // Command: Set horizontal tab position 
-int _ESC_UPR_D(RxBuffer* b)
+int8_t _ESC_UPR_D(RxBuffer* b)
 {
     // TODO:
     printf("<ESC D>\n");
@@ -214,7 +214,7 @@ int _ESC_UPR_D(RxBuffer* b)
 }
 
 // Command: Turn emphasized mode on/off
-int _ESC_UPR_E(RxBuffer* b)
+int8_t _ESC_UPR_E(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC E> n=0x%.2X\n", n);
@@ -224,7 +224,7 @@ int _ESC_UPR_E(RxBuffer* b)
 }
 
 // Command: Turn double-strike mode on/off
-int _ESC_UPR_G(RxBuffer* b)
+int8_t _ESC_UPR_G(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC G> n=0x%.2X\n", n);
@@ -232,7 +232,7 @@ int _ESC_UPR_G(RxBuffer* b)
 }
 
 // Command: Print and feed paper
-int _ESC_UPR_J(RxBuffer* b)
+int8_t _ESC_UPR_J(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC J> n=0x%.2X\n", n);
@@ -240,14 +240,14 @@ int _ESC_UPR_J(RxBuffer* b)
 }
 
 // Command: Select page mode
-int _ESC_UPR_L(RxBuffer* b)
+int8_t _ESC_UPR_L(RxBuffer* b)
 {
     printf("<ESC L>\n");
     return 0;
 }
 
 // Command: Select character font
-int _ESC_UPR_M(RxBuffer* b)
+int8_t _ESC_UPR_M(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC M> n=0x%.2X\n", n);
@@ -264,7 +264,7 @@ int _ESC_UPR_M(RxBuffer* b)
 }
 
 // Command: Select an international character set
-int _ESC_UPR_R(RxBuffer* b)
+int8_t _ESC_UPR_R(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC R> n=0x%.2X\n", n);
@@ -272,14 +272,14 @@ int _ESC_UPR_R(RxBuffer* b)
 }
 
 // Command: Select standard mode
-int _ESC_UPR_S(RxBuffer* b)
+int8_t _ESC_UPR_S(RxBuffer* b)
 {
     printf("<ESC S>\n");
     return 0;
 }
 
 // Command: Select print direction in page mode
-int _ESC_UPR_T(RxBuffer* b)
+int8_t _ESC_UPR_T(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC T> n=0x%.2X\n", n);
@@ -294,7 +294,7 @@ int _ESC_UPR_T(RxBuffer* b)
 }
 
 // Command: Turn clockwise rotation mode on/off
-int _ESC_UPR_V(RxBuffer* b)
+int8_t _ESC_UPR_V(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC V> n=0x%.2X\n", n);
@@ -302,7 +302,7 @@ int _ESC_UPR_V(RxBuffer* b)
 }
 
 // Command: Set print area in page mode
-int _ESC_UPR_W(RxBuffer* b)
+int8_t _ESC_UPR_W(RxBuffer* b)
 {
     // TODO:
     uint8_t xL = (uint8_t)b->getNext();
@@ -335,7 +335,7 @@ int _ESC_UPR_W(RxBuffer* b)
 }
 
 // Command: Set relative print position
-int _ESC_BACKSLASH_SYM(RxBuffer* b)
+int8_t _ESC_BACKSLASH_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
@@ -348,7 +348,7 @@ int _ESC_BACKSLASH_SYM(RxBuffer* b)
 }
 
 // Command: Select justification
-int _ESC_LWR_a(RxBuffer* b)
+int8_t _ESC_LWR_a(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC a> n=0x%.2X\n", n);
@@ -362,7 +362,7 @@ int _ESC_LWR_a(RxBuffer* b)
 }
 
 // Command: Select paper sensor to output paper-end signals
-int _ESC_LWR_c_THREE(RxBuffer* b)
+int8_t _ESC_LWR_c_THREE(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC c 3> n=0x%.2X\n", n);
@@ -370,7 +370,7 @@ int _ESC_LWR_c_THREE(RxBuffer* b)
 }
 
 // Command: Select paper sensor to stop printing
-int _ESC_LWR_c_FOUR(RxBuffer* b)
+int8_t _ESC_LWR_c_FOUR(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC c 4> n=0x%.2X\n", n);
@@ -378,7 +378,7 @@ int _ESC_LWR_c_FOUR(RxBuffer* b)
 }
 
 // Command: Enable / disable panel buttons
-int _ESC_LWR_c_FIVE(RxBuffer* b)
+int8_t _ESC_LWR_c_FIVE(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC c 5> n=0x%.2X\n", n);
@@ -386,7 +386,7 @@ int _ESC_LWR_c_FIVE(RxBuffer* b)
 }
 
 // Command: Print and feed n lines
-int _ESC_LWR_d(RxBuffer* b)
+int8_t _ESC_LWR_d(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC d> n=0x%.2X\n", n);
@@ -394,7 +394,7 @@ int _ESC_LWR_d(RxBuffer* b)
 }
 
 // Command: Generate pulse
-int _ESC_LWR_p(RxBuffer* b)
+int8_t _ESC_LWR_p(RxBuffer* b)
 {
     uint8_t m = (uint8_t)b->getNext();
     uint8_t t1 = (uint8_t)b->getNext();
@@ -404,7 +404,7 @@ int _ESC_LWR_p(RxBuffer* b)
 }
 
 // Command: Select character code table
-int _ESC_LWR_t(RxBuffer* b)
+int8_t _ESC_LWR_t(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC t> n=0x%.2X\n", n);
@@ -430,7 +430,7 @@ int _ESC_LWR_t(RxBuffer* b)
 }
 
 // Command: Turn upside-down print mode on/off
-int _ESC_LEFT_QBRACKET_SYM(RxBuffer* b)
+int8_t _ESC_LEFT_QBRACKET_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC {> n=0x%.2X\n", n);
@@ -440,7 +440,7 @@ int _ESC_LEFT_QBRACKET_SYM(RxBuffer* b)
 }
 
 // Command: Select print mode(s) for Kanji characters
-int _FS_EXCLAMATION_SYM(RxBuffer* b)
+int8_t _FS_EXCLAMATION_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<FS !> n=0x%.2X\n", n);
@@ -448,14 +448,14 @@ int _FS_EXCLAMATION_SYM(RxBuffer* b)
 }
 
 // Command: Select Kanji character mode
-int _FS_AND_SYM(RxBuffer* b)
+int8_t _FS_AND_SYM(RxBuffer* b)
 {
     printf("<FS &>\n");
     return 0;
 }
 
 // Command: Define character effects of Kanji characters
-int _FS_LEFT_PERNTH_UPR_A(RxBuffer* b)
+int8_t _FS_LEFT_PERNTH_UPR_A(RxBuffer* b)
 {
     uint8_t pL = (uint8_t)b->getNext();
     uint8_t pH = (uint8_t)b->getNext();
@@ -478,7 +478,7 @@ int _FS_LEFT_PERNTH_UPR_A(RxBuffer* b)
 }
 
 // Command: Turn underline mode on/off for Kanji characters
-int _FS_SUBTRACT_SYM(RxBuffer* b)
+int8_t _FS_SUBTRACT_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<FS -> n=0x%.2X\n", n);
@@ -493,7 +493,7 @@ int _FS_SUBTRACT_SYM(RxBuffer* b)
 }
 
 // Command: Cancel Kanji character mode
-int _FS_PERIOD_SYM(RxBuffer* b)
+int8_t _FS_PERIOD_SYM(RxBuffer* b)
 {
     printf("<FS .>\n");
     printf("-Cancel Kanji character mode\n");
@@ -501,7 +501,7 @@ int _FS_PERIOD_SYM(RxBuffer* b)
 }
 
 // Command: Define user-defined Kanji characters
-int _FS_ASCII_TWO(RxBuffer* b)
+int8_t _FS_ASCII_TWO(RxBuffer* b)
 {
     // TODO:
     printf("<FS 2>\n");
@@ -509,7 +509,7 @@ int _FS_ASCII_TWO(RxBuffer* b)
 }
 
 // Command: Select Kanji character code system
-int _FS_UPR_C(RxBuffer* b)
+int8_t _FS_UPR_C(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<FS C> n=0x%.2X\n", n);
@@ -523,7 +523,7 @@ int _FS_UPR_C(RxBuffer* b)
 }
 
 // Command: Set Kanji character spacing
-int _FS_UPR_S(RxBuffer* b)
+int8_t _FS_UPR_S(RxBuffer* b)
 {
     uint8_t n1 = (uint8_t)b->getNext();
     uint8_t n2 = (uint8_t)b->getNext();
@@ -532,7 +532,7 @@ int _FS_UPR_S(RxBuffer* b)
 }
 
 // Command: Turn quadruple-size mode on/off for Kanji characters
-int _FS_UPR_W(RxBuffer* b)
+int8_t _FS_UPR_W(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<FS W> n=0x%.2X\n", n);
@@ -540,7 +540,7 @@ int _FS_UPR_W(RxBuffer* b)
 }
 
 // Command: Print NV bit image
-int _FS_LWR_p(RxBuffer* b)
+int8_t _FS_LWR_p(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     uint8_t m = (uint8_t)b->getNext();
@@ -549,7 +549,7 @@ int _FS_LWR_p(RxBuffer* b)
 }
 
 // Command: Select character size
-int _GS_EXCLAMATION_SYM(RxBuffer* b)
+int8_t _GS_EXCLAMATION_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS !> n=0x%.2X\n", n);
@@ -559,7 +559,7 @@ int _GS_EXCLAMATION_SYM(RxBuffer* b)
 }
 
 // Command: Set absolute vertical print position in page mode
-int _GS_DOLLAR_SYM(RxBuffer* b)
+int8_t _GS_DOLLAR_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
@@ -569,7 +569,7 @@ int _GS_DOLLAR_SYM(RxBuffer* b)
 }
 
 // Command: Execute test print
-int _GS_LEFT_PERNTH_UPR_A(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_A(RxBuffer* b)
 {
     uint8_t pL = (uint8_t)b->getNext();
     uint8_t pH = (uint8_t)b->getNext();
@@ -598,7 +598,7 @@ int _GS_LEFT_PERNTH_UPR_A(RxBuffer* b)
 }
 
 // Command: Edit NV user memory
-int _GS_LEFT_PERNTH_UPR_C(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_C(RxBuffer* b)
 {
     // TODO:
     printf("<GS ( C>\n");
@@ -606,7 +606,7 @@ int _GS_LEFT_PERNTH_UPR_C(RxBuffer* b)
 }
 
 // Command: Enable / disable real-time command
-int _GS_LEFT_PERNTH_UPR_D(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_D(RxBuffer* b)
 {
     // TODO:
     printf("<GS ( D>\n");
@@ -614,7 +614,7 @@ int _GS_LEFT_PERNTH_UPR_D(RxBuffer* b)
 }
 
 // Command: Set user commands
-int _GS_LEFT_PERNTH_UPR_E(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_E(RxBuffer* b)
 {
     // TODO:
     printf("<GS ( E>\n");
@@ -622,7 +622,7 @@ int _GS_LEFT_PERNTH_UPR_E(RxBuffer* b)
 }
 
 // Command: Request transmission of response or status
-int _GS_LEFT_PERNTH_UPR_H(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_H(RxBuffer* b)
 {
     // TODO:
     printf("<GS ( H>\n");
@@ -630,7 +630,7 @@ int _GS_LEFT_PERNTH_UPR_H(RxBuffer* b)
 }
 
 // Command: Select print control method(s)
-int _GS_LEFT_PERNTH_UPR_K(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_K(RxBuffer* b)
 {
     // TODO:
     printf("<GS ( K>\n");
@@ -638,7 +638,7 @@ int _GS_LEFT_PERNTH_UPR_K(RxBuffer* b)
 }
 
 // Command: Set graphics data
-int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
 {
     int index = -1;
     uint8_t args[4] = {
@@ -680,7 +680,7 @@ int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
 }
 
 // Command: Customize printer control value(s)
-int _GS_LEFT_PERNTH_UPR_M(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_M(RxBuffer* b)
 {
     // TODO:
     printf("<GS ( M>\n");
@@ -688,7 +688,7 @@ int _GS_LEFT_PERNTH_UPR_M(RxBuffer* b)
 }
 
 // Command: Select character effects
-int _GS_LEFT_PERNTH_UPR_N(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_UPR_N(RxBuffer* b)
 {
     // TODO:
     printf("<GS ( N>\n");
@@ -696,7 +696,7 @@ int _GS_LEFT_PERNTH_UPR_N(RxBuffer* b)
 }
 
 // Command: Set up and print the symbol
-int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
+int8_t _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
 {
     uint8_t pL = (uint8_t)b->getNext();
     uint8_t pH = (uint8_t)b->getNext();
@@ -719,7 +719,7 @@ int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
 }
 
 // Command: Define downloaded bit image
-int _GS_STAR_SYM(RxBuffer* b)
+int8_t _GS_STAR_SYM(RxBuffer* b)
 {
     // TODO:
     printf("<GS *>\n");
@@ -727,7 +727,7 @@ int _GS_STAR_SYM(RxBuffer* b)
 }
 
 // Command: Print downloaded bit image
-int _ESC_FWRDSLASH_SYM(RxBuffer* b)
+int8_t _ESC_FWRDSLASH_SYM(RxBuffer* b)
 {
     uint8_t m = (uint8_t)b->getNext();
     printf("<GS /> m=0x%.2X\n", m);
@@ -735,7 +735,7 @@ int _ESC_FWRDSLASH_SYM(RxBuffer* b)
 }
 
 // Command: Set graphics data
-int _GS_EIGHT_UPR_L(RxBuffer* b)
+int8_t _GS_EIGHT_UPR_L(RxBuffer* b)
 {
     int index = -1;
     uint8_t args[4] = {
@@ -774,14 +774,14 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
 }
 
 // Command: Start/end macro definition 
-int _GS_COLON_SYM(RxBuffer* b)
+int8_t _GS_COLON_SYM(RxBuffer* b)
 {
     printf("<GS :>\n");
     return 0;
 }
 
 // Command: Turn white/black reverse print mode on/off
-int _GS_UPR_B(RxBuffer* b)
+int8_t _GS_UPR_B(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS B> n=0x%.2X\n", n);
@@ -791,7 +791,7 @@ int _GS_UPR_B(RxBuffer* b)
 }
 
 // Command: Select print position of HRI characters
-int _GS_UPR_H(RxBuffer* b)
+int8_t _GS_UPR_H(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS H> n=0x%.2X\n", n);
@@ -799,7 +799,7 @@ int _GS_UPR_H(RxBuffer* b)
 }
 
 // Command: Transmit printer ID
-int _GS_UPR_I(RxBuffer* b)
+int8_t _GS_UPR_I(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS I> n=0x%.2X\n", n);
@@ -807,7 +807,7 @@ int _GS_UPR_I(RxBuffer* b)
 }
 
 // Command: Set left margin
-int _GS_UPR_L(RxBuffer* b)
+int8_t _GS_UPR_L(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
@@ -817,7 +817,7 @@ int _GS_UPR_L(RxBuffer* b)
 }
 
 // Command: Set horizontal and vertical motion units
-int _GS_UPR_P(RxBuffer* b)
+int8_t _GS_UPR_P(RxBuffer* b)
 {
     uint8_t x = (uint8_t)b->getNext();
     uint8_t y = (uint8_t)b->getNext();
@@ -826,7 +826,7 @@ int _GS_UPR_P(RxBuffer* b)
 }
 
 // Command: Set print position to the beginning of print line
-int _GS_UPR_T(RxBuffer* b)
+int8_t _GS_UPR_T(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS T> n=0x%.2X\n", n);
@@ -834,7 +834,7 @@ int _GS_UPR_T(RxBuffer* b)
 }
 
 // Command: Select cut mode and cut paper
-int _GS_UPR_V(RxBuffer* b)
+int8_t _GS_UPR_V(RxBuffer* b)
 {
     uint8_t m = (uint8_t)b->getNext();
     uint8_t n = (uint8_t)b->getNext();
@@ -843,7 +843,7 @@ int _GS_UPR_V(RxBuffer* b)
 }
 
 // Command: Set print area width
-int _GS_UPR_W(RxBuffer* b)
+int8_t _GS_UPR_W(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
@@ -853,7 +853,7 @@ int _GS_UPR_W(RxBuffer* b)
 }
 
 // Command: Set relative vertical print position in page mode
-int _GS_BACKSLASH_SYM(RxBuffer* b)
+int8_t _GS_BACKSLASH_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
@@ -863,7 +863,7 @@ int _GS_BACKSLASH_SYM(RxBuffer* b)
 }
 
 // Command: Execute macro
-int _GS_CARROT_SYM(RxBuffer* b)
+int8_t _GS_CARROT_SYM(RxBuffer* b)
 {
     uint8_t r = (uint8_t)b->getNext();
     uint8_t t = (uint8_t)b->getNext();
@@ -873,7 +873,7 @@ int _GS_CARROT_SYM(RxBuffer* b)
 }
 
 // Command: Enable /disable Automatic Status Back (ASB)
-int _GS_LWR_a(RxBuffer* b)
+int8_t _GS_LWR_a(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS a> n=0x%.2X\n", n);
@@ -881,7 +881,7 @@ int _GS_LWR_a(RxBuffer* b)
 }
 
 // Command: Turn smoothing mode on / off
-int _GS_LWR_b(RxBuffer* b)
+int8_t _GS_LWR_b(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS b> n=0x%.2X\n", n);
@@ -889,7 +889,7 @@ int _GS_LWR_b(RxBuffer* b)
 }
 
 // Command: Select font for HRI characters
-int _GS_LWR_f(RxBuffer* b)
+int8_t _GS_LWR_f(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS f> n=0x%.2X\n", n);
@@ -897,7 +897,7 @@ int _GS_LWR_f(RxBuffer* b)
 }
 
 // Command: Initialize maintenance counter
-int _GS_LWR_g_ZERO(RxBuffer* b)
+int8_t _GS_LWR_g_ZERO(RxBuffer* b)
 {
     uint8_t m = (uint8_t)b->getNext();
     uint8_t nL = (uint8_t)b->getNext();
@@ -908,7 +908,7 @@ int _GS_LWR_g_ZERO(RxBuffer* b)
 }
 
 // Command: Transmit maintenance counter
-int _GS_LWR_g_TWO(RxBuffer* b)
+int8_t _GS_LWR_g_TWO(RxBuffer* b)
 {
     uint8_t m = (uint8_t)b->getNext();
     uint8_t nL = (uint8_t)b->getNext();
@@ -919,7 +919,7 @@ int _GS_LWR_g_TWO(RxBuffer* b)
 }
 
 // Command: Set bar code height
-int _GS_LWR_h(RxBuffer* b)
+int8_t _GS_LWR_h(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS h> n=0x%.2X\n", n);
@@ -927,7 +927,7 @@ int _GS_LWR_h(RxBuffer* b)
 }
 
 // Command: Print bar code
-int _GS_LWR_k(RxBuffer* b)
+int8_t _GS_LWR_k(RxBuffer* b)
 {
     uint8_t m = (uint8_t)b->getNext();
     printf("<GS k> m=0x%.2X (m=%d)\n", m, m);
@@ -943,7 +943,7 @@ int _GS_LWR_k(RxBuffer* b)
 }
 
 // Command: Transmit status
-int _GS_LWR_r(RxBuffer* b)
+int8_t _GS_LWR_r(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS r> n=0x%.2X\n", n);
@@ -951,7 +951,7 @@ int _GS_LWR_r(RxBuffer* b)
 }
 
 // Command: Print raster bit image
-int _GS_LWR_v_ZERO(RxBuffer* b)
+int8_t _GS_LWR_v_ZERO(RxBuffer* b)
 {
     // TODO:
     printf("<GS v 0>\n");
@@ -959,7 +959,7 @@ int _GS_LWR_v_ZERO(RxBuffer* b)
 }
 
 // Command: Set bar code width
-int _GS_LWR_w(RxBuffer* b)
+int8_t _GS_LWR_w(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS w> n=0x%.2X\n", n);
@@ -967,7 +967,7 @@ int _GS_LWR_w(RxBuffer* b)
 }
 
 // PDF417: Set the number of columns in the data region
-int SYM_function_065(RxBuffer* b, int s)
+int8_t SYM_function_065(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -978,7 +978,7 @@ int SYM_function_065(RxBuffer* b, int s)
 }
 
 // PDF417: Set the number of rows
-int SYM_function_066(RxBuffer* b, int s)
+int8_t SYM_function_066(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -989,7 +989,7 @@ int SYM_function_066(RxBuffer* b, int s)
 }
 
 // PDF417: Set the width of the module
-int SYM_function_067(RxBuffer* b, int s)
+int8_t SYM_function_067(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1000,7 +1000,7 @@ int SYM_function_067(RxBuffer* b, int s)
 }
 
 // PDF417: Set the row height
-int SYM_function_068(RxBuffer* b, int s)
+int8_t SYM_function_068(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1011,7 +1011,7 @@ int SYM_function_068(RxBuffer* b, int s)
 }
 
 // PDF417: Set the error correction level
-int SYM_function_069(RxBuffer* b, int s)
+int8_t SYM_function_069(RxBuffer* b, int s)
 {
     if (s == 2) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1023,7 +1023,7 @@ int SYM_function_069(RxBuffer* b, int s)
 }
 
 // PDF417: Select the options
-int SYM_function_070(RxBuffer* b, int s)
+int8_t SYM_function_070(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1034,14 +1034,14 @@ int SYM_function_070(RxBuffer* b, int s)
 }
 
 // PDF417: Store the data in the symbol storage area
-int SYM_function_080(RxBuffer* b, int s)
+int8_t SYM_function_080(RxBuffer* b, int s)
 {
     printf("(Function 80)\n");
     return 0;
 }
 
 // PDF417: Print the symbol data in the symbol storage area
-int SYM_function_081(RxBuffer* b, int s)
+int8_t SYM_function_081(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1052,7 +1052,7 @@ int SYM_function_081(RxBuffer* b, int s)
 }
 
 // PDF417: Transmit the size information of the symbol data in the symbol storage area
-int SYM_function_082(RxBuffer* b, int s)
+int8_t SYM_function_082(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1063,7 +1063,7 @@ int SYM_function_082(RxBuffer* b, int s)
 }
 
 // QR Code: Select the model
-int SYM_function_165(RxBuffer* b, int s)
+int8_t SYM_function_165(RxBuffer* b, int s)
 {
     if (s == 2) {
         uint8_t n1 = (uint8_t)b->getNext();
@@ -1075,7 +1075,7 @@ int SYM_function_165(RxBuffer* b, int s)
 }
 
 // QR Code : Set the size of module
-int SYM_function_167(RxBuffer* b, int s)
+int8_t SYM_function_167(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1086,7 +1086,7 @@ int SYM_function_167(RxBuffer* b, int s)
 }
 
 // QR Code: Select the error correction level
-int SYM_function_169(RxBuffer* b, int s)
+int8_t SYM_function_169(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1097,14 +1097,14 @@ int SYM_function_169(RxBuffer* b, int s)
 }
 
 // QR Code: Store the data in the symbol storage area
-int SYM_function_180(RxBuffer* b, int s)
+int8_t SYM_function_180(RxBuffer* b, int s)
 {
     printf("(Function 180)\n");
     return 0;
 }
 
 // QR Code: Print the symbol data in the symbol storage area
-int SYM_function_181(RxBuffer* b, int s)
+int8_t SYM_function_181(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1115,7 +1115,7 @@ int SYM_function_181(RxBuffer* b, int s)
 }
 
 // QR Code: Transmit the size information of the symbol data in the symbol storage area
-int SYM_function_182(RxBuffer* b, int s)
+int8_t SYM_function_182(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1126,7 +1126,7 @@ int SYM_function_182(RxBuffer* b, int s)
 }
 
 // MaxiCode: Select the mode
-int SYM_function_265(RxBuffer* b, int s)
+int8_t SYM_function_265(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1137,14 +1137,14 @@ int SYM_function_265(RxBuffer* b, int s)
 }
 
 // MaxiCode: Store the data in the symbol storage area
-int SYM_function_280(RxBuffer* b, int s)
+int8_t SYM_function_280(RxBuffer* b, int s)
 {
     printf("(Function 280)\n");
     return 0;
 }
 
 // MaxiCode: Print the symbol data in the symbol storage area
-int SYM_function_281(RxBuffer* b, int s)
+int8_t SYM_function_281(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1155,7 +1155,7 @@ int SYM_function_281(RxBuffer* b, int s)
 }
 
 // MaxiCode: Transmit the size information of the symbol data in the symbol storage area
-int SYM_function_282(RxBuffer* b, int s)
+int8_t SYM_function_282(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1166,7 +1166,7 @@ int SYM_function_282(RxBuffer* b, int s)
 }
 
 // RSS: Set the width of the module
-int SYM_function_367(RxBuffer* b, int s)
+int8_t SYM_function_367(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1177,7 +1177,7 @@ int SYM_function_367(RxBuffer* b, int s)
 }
 
 // 2-dimensional RSS: RSS Expanded Stacked maximum width setting
-int SYM_function_371(RxBuffer* b, int s)
+int8_t SYM_function_371(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1188,14 +1188,14 @@ int SYM_function_371(RxBuffer* b, int s)
 }
 
 // 2-dimensional RSS: Store the data in the symbol storage area
-int SYM_function_380(RxBuffer* b, int s)
+int8_t SYM_function_380(RxBuffer* b, int s)
 {
     printf("(Function 380)\n");
     return 0;
 }
 
 // 2-dimensional RSS: Print the symbol data in the symbol storage area
-int SYM_function_381(RxBuffer* b, int s)
+int8_t SYM_function_381(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1206,7 +1206,7 @@ int SYM_function_381(RxBuffer* b, int s)
 }
 
 // 2-dimensional RSS: Transmit the size information of the symbol data in the symbol storage area
-int SYM_function_382(RxBuffer* b, int s)
+int8_t SYM_function_382(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1217,7 +1217,7 @@ int SYM_function_382(RxBuffer* b, int s)
 }
 
 // Composite Symbol: Set the width of the module
-int SYM_function_467(RxBuffer* b, int s)
+int8_t SYM_function_467(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1228,7 +1228,7 @@ int SYM_function_467(RxBuffer* b, int s)
 }
 
 // Composite Symbol: RSS Expanded Stacked maximum width setting
-int SYM_function_471(RxBuffer* b, int s)
+int8_t SYM_function_471(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1239,7 +1239,7 @@ int SYM_function_471(RxBuffer* b, int s)
 }
 
 // Composite Symbol: Select font HRI characters
-int SYM_function_472(RxBuffer* b, int s)
+int8_t SYM_function_472(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
@@ -1250,14 +1250,14 @@ int SYM_function_472(RxBuffer* b, int s)
 }
 
 // Composite Symbol: Store the data in the symbol storage area
-int SYM_function_480(RxBuffer* b, int s)
+int8_t SYM_function_480(RxBuffer* b, int s)
 {
     printf("(Function 480)\n");
     return 0;
 }
 
 // Composite Symbol: Print the symbol data in the symbol storage area
-int SYM_function_481(RxBuffer* b, int s)
+int8_t SYM_function_481(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1268,7 +1268,7 @@ int SYM_function_481(RxBuffer* b, int s)
 }
 
 // Composite Symbol: Transmit the size information of the symbol data in the symbol storage area
-int SYM_function_482(RxBuffer* b, int s)
+int8_t SYM_function_482(RxBuffer* b, int s)
 {
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
@@ -1279,21 +1279,21 @@ int SYM_function_482(RxBuffer* b, int s)
 }
 
 // NULL function to fill up pointer array
-int SYM_NULL(RxBuffer* b, int s)
+int8_t SYM_NULL(RxBuffer* b, int s)
 {
     printf("<NOT LOLZ, BUT NULLZ!>\n");
     return -1;
 }
 
 // Transmit the NV graphics memory capacity
-int GS_function_48(RxBuffer* b, int s)
+int8_t GS_function_48(RxBuffer* b, int s)
 {
     printf("(Function 480)\n");
     return 0;
 }
 
 // Set the reference dot density for graphics
-int GS_function_49(RxBuffer* b, int s)
+int8_t GS_function_49(RxBuffer* b, int s)
 {
     if (s == 2) {
         uint8_t x = (uint8_t)b->getNext();
@@ -1305,28 +1305,28 @@ int GS_function_49(RxBuffer* b, int s)
 }
 
 // Print the graphics data in the print buffer
-int GS_function_50(RxBuffer* b, int s)
+int8_t GS_function_50(RxBuffer* b, int s)
 {
     printf("(Function 50) s=%d\n", s);
     return 0;
 }
 
 // Transmit the remaining capacity of the NV graphics memory
-int GS_function_51(RxBuffer* b, int s)
+int8_t GS_function_51(RxBuffer* b, int s)
 {
     printf("(Function 51)\n");
     return 0;
 }
 
 // Transmit the remaining capacity of the download graphics memory
-int GS_function_52(RxBuffer* b, int s)
+int8_t GS_function_52(RxBuffer* b, int s)
 {
     printf("(Function 52)\n");
     return 0;
 }
 
 // Transmit the key code list for defined NV graphics
-int GS_function_64(RxBuffer* b, int s)
+int8_t GS_function_64(RxBuffer* b, int s)
 {
     if (s == 2) {
         uint8_t d1 = (uint8_t)b->getNext();
@@ -1338,7 +1338,7 @@ int GS_function_64(RxBuffer* b, int s)
 }
 
 // Delete all NV graphics data
-int GS_function_65(RxBuffer* b, int s)
+int8_t GS_function_65(RxBuffer* b, int s)
 {
     if (s == 3) {
         uint8_t d1 = (uint8_t)b->getNext();
@@ -1351,7 +1351,7 @@ int GS_function_65(RxBuffer* b, int s)
 }
 
 // Delete the specified NV graphics data
-int GS_function_66(RxBuffer* b, int s)
+int8_t GS_function_66(RxBuffer* b, int s)
 {
     if (s == 2) {
         uint8_t kc1 = (uint8_t)b->getNext();
@@ -1363,21 +1363,21 @@ int GS_function_66(RxBuffer* b, int s)
 }
 
 // Define the NV graphics data (raster format)
-int GS_function_67(RxBuffer* b, int s)
+int8_t GS_function_67(RxBuffer* b, int s)
 {
     printf("(Function 67)\n");
     return 0;
 }
 
 // Define the NV graphics data(column format)
-int GS_function_68(RxBuffer* b, int s)
+int8_t GS_function_68(RxBuffer* b, int s)
 {
     printf("(Function 69)\n");
     return 0;
 }
 
 // Print the specified NV graphics data
-int GS_function_69(RxBuffer* b, int s)
+int8_t GS_function_69(RxBuffer* b, int s)
 {
     if (s == 4) {
         uint8_t kc1 = (uint8_t)b->getNext();
@@ -1391,7 +1391,7 @@ int GS_function_69(RxBuffer* b, int s)
 }
 
 // Transmit the key code list for defined download graphics
-int GS_function_80(RxBuffer* b, int s)
+int8_t GS_function_80(RxBuffer* b, int s)
 {
     if (s == 2) {
         uint8_t d1 = (uint8_t)b->getNext();
@@ -1403,7 +1403,7 @@ int GS_function_80(RxBuffer* b, int s)
 }
 
 // Delete all NV graphics data
-int GS_function_81(RxBuffer* b, int s)
+int8_t GS_function_81(RxBuffer* b, int s)
 {
     if (s == 3) {
         uint8_t d1 = (uint8_t)b->getNext();
@@ -1416,7 +1416,7 @@ int GS_function_81(RxBuffer* b, int s)
 }
 
 // Delete the specified download graphics data
-int GS_function_82(RxBuffer* b, int s)
+int8_t GS_function_82(RxBuffer* b, int s)
 {
     if (s == 2) {
         uint8_t kc1 = (uint8_t)b->getNext();
@@ -1428,28 +1428,28 @@ int GS_function_82(RxBuffer* b, int s)
 }
 
 // Define the downloaded graphics data (raster format)
-int GS_function_83(RxBuffer* b, int s)
+int8_t GS_function_83(RxBuffer* b, int s)
 {
     printf("(Function 83)\n");
     return 0;
 }
 
 // Define the downloaded graphics data
-int GS_function_84(RxBuffer* b, int s)
+int8_t GS_function_84(RxBuffer* b, int s)
 {
     printf("(Function 84)\n");
     return 0;
 }
 
 // Print the specified download graphics data
-int GS_function_85(RxBuffer* b, int s)
+int8_t GS_function_85(RxBuffer* b, int s)
 {
     printf("(Function 85)\n");
     return 0;
 }
 
 // Store the graphics data in the print buffer (raster format)
-int GS_function_112(RxBuffer* b, int s)
+int8_t GS_function_112(RxBuffer* b, int s)
 {
     if (s >= 7)
     {
@@ -1487,225 +1487,172 @@ int GS_function_112(RxBuffer* b, int s)
 }
 
 // Store the graphics data in the print buffer (column format)
-int GS_function_113(RxBuffer* b, int s)
+int8_t GS_function_113(RxBuffer* b, int s)
 {
     printf("(Function 113)\n");
     return 0;
 }
 
-// UPC-A
-int BAR_00(RxBuffer* b)
+static int8_t inline bcodeA_helper(RxBuffer* b)
 {
     int i = 0;
-    printf("(UPC-A) data: ");
     while (b->peekNext() != NULL)
         printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
     printf("\n");
     return 0;
 }
 
-// UPC-E
-int BAR_01(RxBuffer* b)
+static int8_t inline bcodeB_helper(RxBuffer* b, int s)
 {
-    int i = 0;
-    printf("(UPC-E) data: ");
-    while (b->peekNext() != NULL)
-        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
-}
-
-// JAN13 (EAN13)
-int BAR_02(RxBuffer* b)
-{
-    int i = 0;
-    printf("(JAN13|EAN13) data: ");
-    while (b->peekNext() != NULL)
-        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
-}
-
-// JAN8 (EAN8)
-int BAR_03(RxBuffer* b)
-{
-    int i = 0;
-    printf("(JAN8|EAN8) data: ");
-    while (b->peekNext() != NULL)
-        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
-}
-
-// CODE39
-int BAR_04(RxBuffer* b)
-{
-    int i = 0;
-    printf("(CODE39) data: ");
-    while (b->peekNext() != NULL)
-        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
-}
-
-// ITF (interleaved 2 of 5)
-int BAR_05(RxBuffer* b)
-{
-    int i = 0;
-    printf("(ITF) data: ");
-    while (b->peekNext() != NULL)
-        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
-}
-
-// CODABAR (NW-7)
-int BAR_06(RxBuffer* b)
-{
-    int i = 0;
-    printf("(CODABAR) data: ");
-    while (b->peekNext() != NULL)
-        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
     printf("\n");
     return 0;
 }
 
 // UPC-A
-int BAR_65(RxBuffer* b, int s)
+int8_t BAR_00(RxBuffer* b)
 {
     printf("(UPC-A) data: ");
-    for(int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeA_helper(b);    
 }
 
 // UPC-E
-int BAR_66(RxBuffer* b, int s)
+int8_t BAR_01(RxBuffer* b)
 {
     printf("(UPC-E) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeA_helper(b);
 }
 
 // JAN13 (EAN13)
-int BAR_67(RxBuffer* b, int s)
+int8_t BAR_02(RxBuffer* b)
 {
     printf("(JAN13|EAN13) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeA_helper(b);
 }
 
 // JAN8 (EAN8)
-int BAR_68(RxBuffer* b, int s)
-{
+int8_t BAR_03(RxBuffer* b)
+{ 
     printf("(JAN8|EAN8) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeA_helper(b);
 }
 
 // CODE39
-int BAR_69(RxBuffer* b, int s)
+int8_t BAR_04(RxBuffer* b)
 {
     printf("(CODE39) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeA_helper(b);
 }
 
 // ITF (interleaved 2 of 5)
-int BAR_70(RxBuffer* b, int s)
+int8_t BAR_05(RxBuffer* b)
 {
     printf("(ITF) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeA_helper(b);
 }
 
 // CODABAR (NW-7)
-int BAR_71(RxBuffer* b, int s)
+int8_t BAR_06(RxBuffer* b)
 {
     printf("(CODABAR) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeA_helper(b);
+}
+
+// UPC-A
+int8_t BAR_65(RxBuffer* b, int s)
+{
+    printf("(UPC-A) data: ");
+    return bcodeB_helper(b, s);
+}
+
+// UPC-E
+int8_t BAR_66(RxBuffer* b, int s)
+{
+    printf("(UPC-E) data: ");
+    return bcodeB_helper(b, s);
+}
+
+// JAN13 (EAN13)
+int8_t BAR_67(RxBuffer* b, int s)
+{
+    printf("(JAN13|EAN13) data: ");
+    return bcodeB_helper(b, s);
+}
+
+// JAN8 (EAN8)
+int8_t BAR_68(RxBuffer* b, int s)
+{
+    printf("(JAN8|EAN8) data: ");
+    return bcodeB_helper(b, s);
+}
+
+// CODE39
+int8_t BAR_69(RxBuffer* b, int s)
+{
+    printf("(CODE39) data: ");
+    return bcodeB_helper(b, s);
+}
+
+// ITF (interleaved 2 of 5)
+int8_t BAR_70(RxBuffer* b, int s)
+{
+    printf("(ITF) data: ");
+    return bcodeB_helper(b, s);
+}
+
+// CODABAR (NW-7)
+int8_t BAR_71(RxBuffer* b, int s)
+{
+    printf("(CODABAR) data: ");
+    return bcodeB_helper(b, s);
 }
 
 // CODE93
-int BAR_72(RxBuffer* b, int s)
+int8_t BAR_72(RxBuffer* b, int s)
 {
     printf("(CODE93) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeB_helper(b, s);
 }
 
 // CODE128
-int BAR_73(RxBuffer* b, int s)
+int8_t BAR_73(RxBuffer* b, int s)
 {
     printf("(CODE128) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeB_helper(b, s);
 }
 
 // UCC/EAN128
-int BAR_74(RxBuffer* b, int s)
+int8_t BAR_74(RxBuffer* b, int s)
 {
     printf("(UCC|EAN128) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeB_helper(b, s);
 }
 
 // RSS-14
-int BAR_75(RxBuffer* b, int s)
+int8_t BAR_75(RxBuffer* b, int s)
 {
     printf("(RSS-14) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeB_helper(b, s);
 }
 
 // RSS-14 Truncated
-int BAR_76(RxBuffer* b, int s)
+int8_t BAR_76(RxBuffer* b, int s)
 {
     printf("(RSS-14 Truncated) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeB_helper(b, s);
 }
 
 // RSS Limited
-int BAR_77(RxBuffer* b, int s)
+int8_t BAR_77(RxBuffer* b, int s)
 {
     printf("(RSS Limited) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeB_helper(b, s);
 }
 
 // RSS Expanded
-int BAR_78(RxBuffer* b, int s)
+int8_t BAR_78(RxBuffer* b, int s)
 {
     printf("(RSS Expanded) data: ");
-    for (int i = 0; i < s; i++)
-        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
-    printf("\n");
-    return 0;
+    return bcodeB_helper(b, s);
 }

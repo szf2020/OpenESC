@@ -28,8 +28,8 @@
 #define SYM_ARRAY_SIZE 18
 
 //-------------------------------------------------------
-typedef int (*operation_fp)(RxBuffer* b);
-typedef int (*operation_fpa)(RxBuffer* b, int s);
+typedef int8_t (*operation_fp)(RxBuffer* b);
+typedef int8_t(*operation_fpa)(RxBuffer* b, int s);
 //-------------------------------------------------------
 struct CMD {
     uint8_t depth;
@@ -53,184 +53,184 @@ struct barcode_b {
     operation_fpa ptr;
 };
 //-------------------------------------------------------
-int _HT(RxBuffer* b);                       // horizontal tab
+int8_t _HT(RxBuffer* b);                       // horizontal tab
 //-------------------------------------------------------
-int _LF(RxBuffer* b);                       // line feed
+int8_t _LF(RxBuffer* b);                       // line feed
 //-------------------------------------------------------
-int _FF(RxBuffer* b);                       // form feed
+int8_t _FF(RxBuffer* b);                       // form feed
 //-------------------------------------------------------
-int _CR(RxBuffer* b);                       // carriage return
+int8_t _CR(RxBuffer* b);                       // carriage return
 //-------------------------------------------------------
-int _DLE_ENQ(RxBuffer* b);                  // inquiry
-int _DLE_DC4(RxBuffer* b);                  // DC4
-int _DLE_EOT(RxBuffer* b);                  // end of transmit
+int8_t _DLE_ENQ(RxBuffer* b);                  // inquiry
+int8_t _DLE_DC4(RxBuffer* b);                  // DC4
+int8_t _DLE_EOT(RxBuffer* b);                  // end of transmit
 //-------------------------------------------------------
-int _CAN(RxBuffer* b);                      // cancel 
+int8_t _CAN(RxBuffer* b);                      // cancel 
 //-------------------------------------------------------
-int _ESC_FF(RxBuffer* b);                   // form feed
-int _ESC_SP(RxBuffer* b);                   // space
-int _ESC_EXCLAMATION_SYM(RxBuffer* b);      // !
-int _ESC_DOLLAR_SYM(RxBuffer* b);           // $
-int _ESC_PERCENT_SYM(RxBuffer* b);          // %
-int _ESC_AND_SYM(RxBuffer* b);              // &
-int _ESC_STAR_SYM(RxBuffer* b);             // *
-int _ESC_SUBTRACT_SYM(RxBuffer* b);         // -
-int _ESC_ASCII_TWO(RxBuffer* b);            // 2
-int _ESC_ASCII_THREE(RxBuffer* b);          // 3
-int _ESC_EQUAL_SYM(RxBuffer* b);            // =
-int _ESC_QUESTION_SYM(RxBuffer* b);         // ?
-int _ESC_AT_SYM(RxBuffer* b);               // @
-int _ESC_UPR_D(RxBuffer* b);                // D
-int _ESC_UPR_E(RxBuffer* b);                // E
-int _ESC_UPR_G(RxBuffer* b);                // G
-int _ESC_UPR_J(RxBuffer* b);                // J
-int _ESC_UPR_L(RxBuffer* b);                // L
-int _ESC_UPR_M(RxBuffer* b);                // M
-int _ESC_UPR_R(RxBuffer* b);                // R
-int _ESC_UPR_S(RxBuffer* b);                // S
-int _ESC_UPR_T(RxBuffer* b);                // T
-int _ESC_UPR_V(RxBuffer* b);                // V
-int _ESC_UPR_W(RxBuffer* b);                // W
-int _ESC_BACKSLASH_SYM(RxBuffer* b);        // '\'
-int _ESC_LWR_a(RxBuffer* b);                // a
-int _ESC_LWR_c_THREE(RxBuffer* b);          // c 3
-int _ESC_LWR_c_FOUR(RxBuffer* b);           // c 4
-int _ESC_LWR_c_FIVE(RxBuffer* b);           // c 5
-int _ESC_LWR_d(RxBuffer* b);                // d
-int _ESC_LWR_p(RxBuffer* b);                // p
-int _ESC_LWR_t(RxBuffer* b);                // t
-int _ESC_LEFT_QBRACKET_SYM(RxBuffer* b);    // {
+int8_t _ESC_FF(RxBuffer* b);                   // form feed
+int8_t _ESC_SP(RxBuffer* b);                   // space
+int8_t _ESC_EXCLAMATION_SYM(RxBuffer* b);      // !
+int8_t _ESC_DOLLAR_SYM(RxBuffer* b);           // $
+int8_t _ESC_PERCENT_SYM(RxBuffer* b);          // %
+int8_t _ESC_AND_SYM(RxBuffer* b);              // &
+int8_t _ESC_STAR_SYM(RxBuffer* b);             // *
+int8_t _ESC_SUBTRACT_SYM(RxBuffer* b);         // -
+int8_t _ESC_ASCII_TWO(RxBuffer* b);            // 2
+int8_t _ESC_ASCII_THREE(RxBuffer* b);          // 3
+int8_t _ESC_EQUAL_SYM(RxBuffer* b);            // =
+int8_t _ESC_QUESTION_SYM(RxBuffer* b);         // ?
+int8_t _ESC_AT_SYM(RxBuffer* b);               // @
+int8_t _ESC_UPR_D(RxBuffer* b);                // D
+int8_t _ESC_UPR_E(RxBuffer* b);                // E
+int8_t _ESC_UPR_G(RxBuffer* b);                // G
+int8_t _ESC_UPR_J(RxBuffer* b);                // J
+int8_t _ESC_UPR_L(RxBuffer* b);                // L
+int8_t _ESC_UPR_M(RxBuffer* b);                // M
+int8_t _ESC_UPR_R(RxBuffer* b);                // R
+int8_t _ESC_UPR_S(RxBuffer* b);                // S
+int8_t _ESC_UPR_T(RxBuffer* b);                // T
+int8_t _ESC_UPR_V(RxBuffer* b);                // V
+int8_t _ESC_UPR_W(RxBuffer* b);                // W
+int8_t _ESC_BACKSLASH_SYM(RxBuffer* b);        // '\'
+int8_t _ESC_LWR_a(RxBuffer* b);                // a
+int8_t _ESC_LWR_c_THREE(RxBuffer* b);          // c 3
+int8_t _ESC_LWR_c_FOUR(RxBuffer* b);           // c 4
+int8_t _ESC_LWR_c_FIVE(RxBuffer* b);           // c 5
+int8_t _ESC_LWR_d(RxBuffer* b);                // d
+int8_t _ESC_LWR_p(RxBuffer* b);                // p
+int8_t _ESC_LWR_t(RxBuffer* b);                // t
+int8_t _ESC_LEFT_QBRACKET_SYM(RxBuffer* b);    // {
 //-------------------------------------------------------
-int _FS_EXCLAMATION_SYM(RxBuffer* b);       // !
-int _FS_AND_SYM(RxBuffer* b);               // &
-int _FS_LEFT_PERNTH_UPR_A(RxBuffer* b);     // ( A
-int _FS_SUBTRACT_SYM(RxBuffer* b);          // -
-int _FS_PERIOD_SYM(RxBuffer* b);            // .
-int _FS_ASCII_TWO(RxBuffer* b);             // 2
-int _FS_UPR_C(RxBuffer* b);                 // C
-int _FS_UPR_S(RxBuffer* b);                 // S
-int _FS_UPR_W(RxBuffer* b);                 // W
-int _FS_LWR_p(RxBuffer* b);                 // p
+int8_t _FS_EXCLAMATION_SYM(RxBuffer* b);       // !
+int8_t _FS_AND_SYM(RxBuffer* b);               // &
+int8_t _FS_LEFT_PERNTH_UPR_A(RxBuffer* b);     // ( A
+int8_t _FS_SUBTRACT_SYM(RxBuffer* b);          // -
+int8_t _FS_PERIOD_SYM(RxBuffer* b);            // .
+int8_t _FS_ASCII_TWO(RxBuffer* b);             // 2
+int8_t _FS_UPR_C(RxBuffer* b);                 // C
+int8_t _FS_UPR_S(RxBuffer* b);                 // S
+int8_t _FS_UPR_W(RxBuffer* b);                 // W
+int8_t _FS_LWR_p(RxBuffer* b);                 // p
 //-------------------------------------------------------
-int _GS_EXCLAMATION_SYM(RxBuffer* b);       // !
-int _GS_DOLLAR_SYM(RxBuffer* b);            // $
-int _GS_LEFT_PERNTH_UPR_A(RxBuffer* b);     // ( A
-int _GS_LEFT_PERNTH_UPR_C(RxBuffer* b);     // ( C
-int _GS_LEFT_PERNTH_UPR_D(RxBuffer* b);     // ( D
-int _GS_LEFT_PERNTH_UPR_E(RxBuffer* b);     // ( E
-int _GS_LEFT_PERNTH_UPR_H(RxBuffer* b);     // ( H
-int _GS_LEFT_PERNTH_UPR_K(RxBuffer* b);     // ( K
-int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b);     // ( L
-int _GS_LEFT_PERNTH_UPR_M(RxBuffer* b);     // ( M
-int _GS_LEFT_PERNTH_UPR_N(RxBuffer* b);     // ( N
-int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b);     // ( k
-int _GS_STAR_SYM(RxBuffer* b);              // *
-int _ESC_FWRDSLASH_SYM(RxBuffer* b);        // '/'
-int _GS_EIGHT_UPR_L(RxBuffer* b);           // 8 L
-int _GS_COLON_SYM(RxBuffer* b);             // :
-int _GS_UPR_B(RxBuffer* b);                 // B
-int _GS_UPR_H(RxBuffer* b);                 // H
-int _GS_UPR_I(RxBuffer* b);                 // I
-int _GS_UPR_L(RxBuffer* b);                 // L
-int _GS_UPR_P(RxBuffer* b);                 // P
-int _GS_UPR_T(RxBuffer* b);                 // T
-int _GS_UPR_V(RxBuffer* b);                 // V
-int _GS_UPR_W(RxBuffer* b);                 // W
-int _GS_BACKSLASH_SYM(RxBuffer* b);         // '\'
-int _GS_CARROT_SYM(RxBuffer* b);            // '^'
-int _GS_LWR_a(RxBuffer* b);                 // a
-int _GS_LWR_b(RxBuffer* b);                 // b
-int _GS_LWR_f(RxBuffer* b);                 // f
-int _GS_LWR_g_ZERO(RxBuffer* b);            // g 0
-int _GS_LWR_g_TWO(RxBuffer* b);             // g 0
-int _GS_LWR_h(RxBuffer* b);                 // h
-int _GS_LWR_k(RxBuffer* b);                 // k
-int _GS_LWR_r(RxBuffer* b);                 // r
-int _GS_LWR_v_ZERO(RxBuffer* b);            // v 0
-int _GS_LWR_w(RxBuffer* b);                 // w
+int8_t _GS_EXCLAMATION_SYM(RxBuffer* b);       // !
+int8_t _GS_DOLLAR_SYM(RxBuffer* b);            // $
+int8_t _GS_LEFT_PERNTH_UPR_A(RxBuffer* b);     // ( A
+int8_t _GS_LEFT_PERNTH_UPR_C(RxBuffer* b);     // ( C
+int8_t _GS_LEFT_PERNTH_UPR_D(RxBuffer* b);     // ( D
+int8_t _GS_LEFT_PERNTH_UPR_E(RxBuffer* b);     // ( E
+int8_t _GS_LEFT_PERNTH_UPR_H(RxBuffer* b);     // ( H
+int8_t _GS_LEFT_PERNTH_UPR_K(RxBuffer* b);     // ( K
+int8_t _GS_LEFT_PERNTH_UPR_L(RxBuffer* b);     // ( L
+int8_t _GS_LEFT_PERNTH_UPR_M(RxBuffer* b);     // ( M
+int8_t _GS_LEFT_PERNTH_UPR_N(RxBuffer* b);     // ( N
+int8_t _GS_LEFT_PERNTH_LWR_k(RxBuffer* b);     // ( k
+int8_t _GS_STAR_SYM(RxBuffer* b);              // *
+int8_t _ESC_FWRDSLASH_SYM(RxBuffer* b);        // '/'
+int8_t _GS_EIGHT_UPR_L(RxBuffer* b);           // 8 L
+int8_t _GS_COLON_SYM(RxBuffer* b);             // :
+int8_t _GS_UPR_B(RxBuffer* b);                 // B
+int8_t _GS_UPR_H(RxBuffer* b);                 // H
+int8_t _GS_UPR_I(RxBuffer* b);                 // I
+int8_t _GS_UPR_L(RxBuffer* b);                 // L
+int8_t _GS_UPR_P(RxBuffer* b);                 // P
+int8_t _GS_UPR_T(RxBuffer* b);                 // T
+int8_t _GS_UPR_V(RxBuffer* b);                 // V
+int8_t _GS_UPR_W(RxBuffer* b);                 // W
+int8_t _GS_BACKSLASH_SYM(RxBuffer* b);         // '\'
+int8_t _GS_CARROT_SYM(RxBuffer* b);            // '^'
+int8_t _GS_LWR_a(RxBuffer* b);                 // a
+int8_t _GS_LWR_b(RxBuffer* b);                 // b
+int8_t _GS_LWR_f(RxBuffer* b);                 // f
+int8_t _GS_LWR_g_ZERO(RxBuffer* b);            // g 0
+int8_t _GS_LWR_g_TWO(RxBuffer* b);             // g 0
+int8_t _GS_LWR_h(RxBuffer* b);                 // h
+int8_t _GS_LWR_k(RxBuffer* b);                 // k
+int8_t _GS_LWR_r(RxBuffer* b);                 // r
+int8_t _GS_LWR_v_ZERO(RxBuffer* b);            // v 0
+int8_t _GS_LWR_w(RxBuffer* b);                 // w
 //-------------------------------------------------------
-int SYM_function_065(RxBuffer* b, int s); //48
-int SYM_function_066(RxBuffer* b, int s);
-int SYM_function_067(RxBuffer* b, int s);
-int SYM_function_068(RxBuffer* b, int s);
-int SYM_function_069(RxBuffer* b, int s);
-int SYM_function_070(RxBuffer* b, int s);
-int SYM_function_080(RxBuffer* b, int s);
-int SYM_function_081(RxBuffer* b, int s);
-int SYM_function_082(RxBuffer* b, int s);
+int8_t SYM_function_065(RxBuffer* b, int s); //48
+int8_t SYM_function_066(RxBuffer* b, int s);
+int8_t SYM_function_067(RxBuffer* b, int s);
+int8_t SYM_function_068(RxBuffer* b, int s);
+int8_t SYM_function_069(RxBuffer* b, int s);
+int8_t SYM_function_070(RxBuffer* b, int s);
+int8_t SYM_function_080(RxBuffer* b, int s);
+int8_t SYM_function_081(RxBuffer* b, int s);
+int8_t SYM_function_082(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_165(RxBuffer* b, int s); //49
-int SYM_function_167(RxBuffer* b, int s);
-int SYM_function_169(RxBuffer* b, int s);
-int SYM_function_180(RxBuffer* b, int s);
-int SYM_function_181(RxBuffer* b, int s);
-int SYM_function_182(RxBuffer* b, int s);
+int8_t SYM_function_165(RxBuffer* b, int s); //49
+int8_t SYM_function_167(RxBuffer* b, int s);
+int8_t SYM_function_169(RxBuffer* b, int s);
+int8_t SYM_function_180(RxBuffer* b, int s);
+int8_t SYM_function_181(RxBuffer* b, int s);
+int8_t SYM_function_182(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_265(RxBuffer* b, int s); //50
-int SYM_function_280(RxBuffer* b, int s);
-int SYM_function_281(RxBuffer* b, int s);
-int SYM_function_282(RxBuffer* b, int s);
+int8_t SYM_function_265(RxBuffer* b, int s); //50
+int8_t SYM_function_280(RxBuffer* b, int s);
+int8_t SYM_function_281(RxBuffer* b, int s);
+int8_t SYM_function_282(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_367(RxBuffer* b, int s); //51
-int SYM_function_371(RxBuffer* b, int s);
-int SYM_function_380(RxBuffer* b, int s);
-int SYM_function_381(RxBuffer* b, int s);
-int SYM_function_382(RxBuffer* b, int s);
+int8_t SYM_function_367(RxBuffer* b, int s); //51
+int8_t SYM_function_371(RxBuffer* b, int s);
+int8_t SYM_function_380(RxBuffer* b, int s);
+int8_t SYM_function_381(RxBuffer* b, int s);
+int8_t SYM_function_382(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_467(RxBuffer* b, int s); //52
-int SYM_function_471(RxBuffer* b, int s);
-int SYM_function_472(RxBuffer* b, int s);
-int SYM_function_480(RxBuffer* b, int s);
-int SYM_function_481(RxBuffer* b, int s);
-int SYM_function_482(RxBuffer* b, int s);
+int8_t SYM_function_467(RxBuffer* b, int s); //52
+int8_t SYM_function_471(RxBuffer* b, int s);
+int8_t SYM_function_472(RxBuffer* b, int s);
+int8_t SYM_function_480(RxBuffer* b, int s);
+int8_t SYM_function_481(RxBuffer* b, int s);
+int8_t SYM_function_482(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_NULL(RxBuffer* b, int s);
+int8_t SYM_NULL(RxBuffer* b, int s);
 //-------------------------------------------------------
-int GS_function_48(RxBuffer* b, int s);
-int GS_function_49(RxBuffer* b, int s);
-int GS_function_50(RxBuffer* b, int s);
-int GS_function_51(RxBuffer* b, int s);
-int GS_function_52(RxBuffer* b, int s);
+int8_t GS_function_48(RxBuffer* b, int s);
+int8_t GS_function_49(RxBuffer* b, int s);
+int8_t GS_function_50(RxBuffer* b, int s);
+int8_t GS_function_51(RxBuffer* b, int s);
+int8_t GS_function_52(RxBuffer* b, int s);
 //-------------------------------------------------------
-int GS_function_64(RxBuffer* b, int s);
-int GS_function_65(RxBuffer* b, int s);
-int GS_function_66(RxBuffer* b, int s);
-int GS_function_67(RxBuffer* b, int s);
-int GS_function_68(RxBuffer* b, int s);
-int GS_function_69(RxBuffer* b, int s);
+int8_t GS_function_64(RxBuffer* b, int s);
+int8_t GS_function_65(RxBuffer* b, int s);
+int8_t GS_function_66(RxBuffer* b, int s);
+int8_t GS_function_67(RxBuffer* b, int s);
+int8_t GS_function_68(RxBuffer* b, int s);
+int8_t GS_function_69(RxBuffer* b, int s);
 //-------------------------------------------------------
-int GS_function_80(RxBuffer* b, int s);
-int GS_function_81(RxBuffer* b, int s);
-int GS_function_82(RxBuffer* b, int s);
-int GS_function_83(RxBuffer* b, int s);
-int GS_function_84(RxBuffer* b, int s);
-int GS_function_85(RxBuffer* b, int s);
+int8_t GS_function_80(RxBuffer* b, int s);
+int8_t GS_function_81(RxBuffer* b, int s);
+int8_t GS_function_82(RxBuffer* b, int s);
+int8_t GS_function_83(RxBuffer* b, int s);
+int8_t GS_function_84(RxBuffer* b, int s);
+int8_t GS_function_85(RxBuffer* b, int s);
 //-------------------------------------------------------
-int GS_function_112(RxBuffer* b, int s);
-int GS_function_113(RxBuffer* b, int s);
+int8_t GS_function_112(RxBuffer* b, int s);
+int8_t GS_function_113(RxBuffer* b, int s);
 //----------------------------------------------------------------
-int BAR_00(RxBuffer* b);    //UPC-A
-int BAR_01(RxBuffer* b);    //UPC-E
-int BAR_02(RxBuffer* b);    //JAN(EAN13)
-int BAR_03(RxBuffer* b);    //JAN8(EAN8)
-int BAR_04(RxBuffer* b);    //CODE39
-int BAR_05(RxBuffer* b);    //ITF(interleaved 2 of 5)
-int BAR_06(RxBuffer* b);    //CODABAR(NW-7)
+int8_t BAR_00(RxBuffer* b);    //UPC-A
+int8_t BAR_01(RxBuffer* b);    //UPC-E
+int8_t BAR_02(RxBuffer* b);    //JAN(EAN13)
+int8_t BAR_03(RxBuffer* b);    //JAN8(EAN8)
+int8_t BAR_04(RxBuffer* b);    //CODE39
+int8_t BAR_05(RxBuffer* b);    //ITF(int8_terleaved 2 of 5)
+int8_t BAR_06(RxBuffer* b);    //CODABAR(NW-7)
 
-int BAR_65(RxBuffer* b, int s); //UPC-A
-int BAR_66(RxBuffer* b, int s); //UPC-E
-int BAR_67(RxBuffer* b, int s); //JAN(EAN13)
-int BAR_68(RxBuffer* b, int s); //JAN8(EAN8)
-int BAR_69(RxBuffer* b, int s); //CODE39
-int BAR_70(RxBuffer* b, int s); //ITF(interleaved 2 of 5)
-int BAR_71(RxBuffer* b, int s); //CODABAR(NW-7)
-int BAR_72(RxBuffer* b, int s); //CODE93
-int BAR_73(RxBuffer* b, int s); //CODE128
-int BAR_74(RxBuffer* b, int s); //UCC/EAN128
-int BAR_75(RxBuffer* b, int s); //RSS-14
-int BAR_76(RxBuffer* b, int s); //RSS-14 Truncated
-int BAR_77(RxBuffer* b, int s); //RSS Limited
-int BAR_78(RxBuffer* b, int s); //RSS Expanded
+int8_t BAR_65(RxBuffer* b, int s); //UPC-A
+int8_t BAR_66(RxBuffer* b, int s); //UPC-E
+int8_t BAR_67(RxBuffer* b, int s); //JAN(EAN13)
+int8_t BAR_68(RxBuffer* b, int s); //JAN8(EAN8)
+int8_t BAR_69(RxBuffer* b, int s); //CODE39
+int8_t BAR_70(RxBuffer* b, int s); //ITF(interleaved 2 of 5)
+int8_t BAR_71(RxBuffer* b, int s); //CODABAR(NW-7)
+int8_t BAR_72(RxBuffer* b, int s); //CODE93
+int8_t BAR_73(RxBuffer* b, int s); //CODE128
+int8_t BAR_74(RxBuffer* b, int s); //UCC/EAN128
+int8_t BAR_75(RxBuffer* b, int s); //RSS-14
+int8_t BAR_76(RxBuffer* b, int s); //RSS-14 Truncated
+int8_t BAR_77(RxBuffer* b, int s); //RSS Limited
+int8_t BAR_78(RxBuffer* b, int s); //RSS Expanded
 //----------------------------------------------------------------
 static CMD escpos[CMD_SIZE] =
 {
