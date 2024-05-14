@@ -65,8 +65,11 @@ int8_t ESCPOS_parse(RxBuffer* b)
             }
 
             if (u >= 0) { //check result & run 'fun!'-ction
-                if(escpos[u].ptr != nullptr)
-                    escpos[u].ptr(b);
+                if (escpos[u].ptr != nullptr)
+                    if (escpos[u].ptr(b) != 0) {
+                        printf("something broke!\n");
+                        return -1;
+                    }
             } 
             else {
                 printf("NA [0x%.2X]\n", g[0]);

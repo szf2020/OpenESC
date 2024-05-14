@@ -161,7 +161,6 @@ int _ESC_SUBTRACT_SYM(RxBuffer* b)
     case 2: case 50: printf("-Underline 2 dots thick\n"); break;
     default:                                              break;
     }
-
     return 0;
 }
 
@@ -261,7 +260,6 @@ int _ESC_UPR_M(RxBuffer* b)
     case 97:         printf("-Extended Font\n"); break;
     default:                                     break;
     }
-
     return 0;
 }
 
@@ -332,6 +330,7 @@ int _ESC_UPR_W(RxBuffer* b)
     // Print area width          = (dxL + dxH × 256) × (horizontal motion unit)
     // Print area height         = (dyL + dyH × 256) × (vertical motion unit)
     // motion units              = DPI or PDMM
+
     return 0;
 }
 
@@ -359,7 +358,6 @@ int _ESC_LWR_a(RxBuffer* b)
         case 2: case 50: printf("-Right Justification\n");   break;
         default:                                             break;
     }
-
     return 0;
 }
 
@@ -428,7 +426,6 @@ int _ESC_LWR_t(RxBuffer* b)
         case 255: printf("-Page 255\n");                            break;
         default:                                                    break;
     }
-
     return 0;
 }
 
@@ -475,9 +472,9 @@ int _FS_LEFT_PERNTH_UPR_A(RxBuffer* b)
         case 2: case 50: printf("-Select Kanji character Font C\n"); break;
         default:                                                     break;
         }
+        return 0;
     }
-
-    return 0;
+    return -1;
 }
 
 // Command: Turn underline mode on/off for Kanji characters
@@ -492,7 +489,6 @@ int _FS_SUBTRACT_SYM(RxBuffer* b)
         case 2: case 50: printf("-Turns on Kanji-underline mode (2-dots thick)\n"); break;
         default:                                                                    break;
     }
-
     return 0;
 }
 
@@ -523,7 +519,6 @@ int _FS_UPR_C(RxBuffer* b)
         case 1: case 49: printf("-SHIFT JIS Code\n");  break;
         default:                                       break;
     }
-
     return 0;
 }
 
@@ -597,9 +592,9 @@ int _GS_LEFT_PERNTH_UPR_A(RxBuffer* b)
         case 64:         printf("-Auto Setting of Paper Layout\n");  break;
         default:                                                     break;
         }
+        return 0;
     }
-
-    return 0;
+    return -1;
 }
 
 // Command: Edit NV user memory
@@ -679,10 +674,9 @@ int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
         }
 
         if (index != -1)
-            gs_function[index].ptr(b, l - 2);
+            return gs_function[index].ptr(b, l - 2);
     }
-
-    return 0;
+    return -1;
 }
 
 // Command: Customize printer control value(s)
@@ -708,8 +702,7 @@ int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
     uint8_t pH = (uint8_t)b->getNext();
     int k = (pL + pH * 256);
 
-    if (k > 2)
-    {
+    if (k > 2) {
         uint8_t cn = (uint8_t)b->getNext();
         uint8_t fn = (uint8_t)b->getNext();
         
@@ -722,7 +715,6 @@ int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
             return -1;
         }
     }
-
     return -1;
 }
 
@@ -776,9 +768,8 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
         }
 
         if (index != -1)
-            gs_function[index].ptr(b, l - 3);
+            return gs_function[index].ptr(b, l - 3);
     }
-
     return -1;
 }
 
@@ -942,14 +933,13 @@ int _GS_LWR_k(RxBuffer* b)
     printf("<GS k> m=0x%.2X (m=%d)\n", m, m);
 
     if ((m >= 0) && (m <= 6)) {
-        barcode_function_a[m].ptr(b);
+        return barcode_function_a[m].ptr(b);
     }
     else if ((m >= 65) && (m <= 78)) {
         uint8_t len = (uint8_t)b->getNext();
-        barcode_function_b[(m - 65)].ptr(b, len);
+        return barcode_function_b[(m - 65)].ptr(b, len);
     }
-
-    return 0;
+    return -1;
 }
 
 // Command: Transmit status
@@ -982,8 +972,9 @@ int SYM_function_065(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 65) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // PDF417: Set the number of rows
@@ -992,8 +983,9 @@ int SYM_function_066(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 66) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // PDF417: Set the width of the module
@@ -1002,8 +994,9 @@ int SYM_function_067(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 67) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // PDF417: Set the row height
@@ -1012,8 +1005,9 @@ int SYM_function_068(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 68) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // PDF417: Set the error correction level
@@ -1023,8 +1017,9 @@ int SYM_function_069(RxBuffer* b, int s)
         uint8_t m = (uint8_t)b->getNext();
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 69) m=0x%.2X, n=0x%.2X\n", m, n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // PDF417: Select the options
@@ -1033,8 +1028,9 @@ int SYM_function_070(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 70) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // PDF417: Store the data in the symbol storage area
@@ -1050,8 +1046,9 @@ int SYM_function_081(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 81) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // PDF417: Transmit the size information of the symbol data in the symbol storage area
@@ -1060,8 +1057,9 @@ int SYM_function_082(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 82) m=0x%.2X\n", m);
+        return -0;
     }
-    return 0;
+    return -1;
 }
 
 // QR Code: Select the model
@@ -1071,8 +1069,9 @@ int SYM_function_165(RxBuffer* b, int s)
         uint8_t n1 = (uint8_t)b->getNext();
         uint8_t n2 = (uint8_t)b->getNext();
         printf("(function 165) n1=0x%.2X, n2=0x%.2X\n", n1, n2);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // QR Code : Set the size of module
@@ -1081,8 +1080,9 @@ int SYM_function_167(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 167) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // QR Code: Select the error correction level
@@ -1091,8 +1091,9 @@ int SYM_function_169(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 169) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // QR Code: Store the data in the symbol storage area
@@ -1108,8 +1109,9 @@ int SYM_function_181(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 181) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // QR Code: Transmit the size information of the symbol data in the symbol storage area
@@ -1118,8 +1120,9 @@ int SYM_function_182(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 182) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // MaxiCode: Select the mode
@@ -1128,8 +1131,9 @@ int SYM_function_265(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 265) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // MaxiCode: Store the data in the symbol storage area
@@ -1145,8 +1149,9 @@ int SYM_function_281(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 281) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // MaxiCode: Transmit the size information of the symbol data in the symbol storage area
@@ -1155,8 +1160,9 @@ int SYM_function_282(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 282) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // RSS: Set the width of the module
@@ -1165,8 +1171,9 @@ int SYM_function_367(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 367) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // 2-dimensional RSS: RSS Expanded Stacked maximum width setting
@@ -1175,8 +1182,9 @@ int SYM_function_371(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 371) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // 2-dimensional RSS: Store the data in the symbol storage area
@@ -1192,8 +1200,9 @@ int SYM_function_381(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 381) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // 2-dimensional RSS: Transmit the size information of the symbol data in the symbol storage area
@@ -1202,8 +1211,9 @@ int SYM_function_382(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 382) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Composite Symbol: Set the width of the module
@@ -1212,8 +1222,9 @@ int SYM_function_467(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 467) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Composite Symbol: RSS Expanded Stacked maximum width setting
@@ -1222,8 +1233,9 @@ int SYM_function_471(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 471) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Composite Symbol: Select font HRI characters
@@ -1232,8 +1244,9 @@ int SYM_function_472(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t n = (uint8_t)b->getNext();
         printf("(function 472) n=0x%.2X\n", n);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Composite Symbol: Store the data in the symbol storage area
@@ -1249,8 +1262,9 @@ int SYM_function_481(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 481) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Composite Symbol: Transmit the size information of the symbol data in the symbol storage area
@@ -1259,8 +1273,9 @@ int SYM_function_482(RxBuffer* b, int s)
     if (s == 1) {
         uint8_t m = (uint8_t)b->getNext();
         printf("(function 482) m=0x%.2X\n", m);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // NULL function to fill up pointer array
@@ -1284,8 +1299,9 @@ int GS_function_49(RxBuffer* b, int s)
         uint8_t x = (uint8_t)b->getNext();
         uint8_t y = (uint8_t)b->getNext();
         printf("(Function 49) x=0x%.2X, y=0x%.2X\n", x, y);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Print the graphics data in the print buffer
@@ -1316,8 +1332,9 @@ int GS_function_64(RxBuffer* b, int s)
         uint8_t d1 = (uint8_t)b->getNext();
         uint8_t d2 = (uint8_t)b->getNext();
         printf("(Function 64) d1=0x%.2X, d2=0x%.2X\n", d1, d2);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Delete all NV graphics data
@@ -1328,8 +1345,9 @@ int GS_function_65(RxBuffer* b, int s)
         uint8_t d2 = (uint8_t)b->getNext();
         uint8_t d3 = (uint8_t)b->getNext();
         printf("(Function 65) d1=0x%.2X, d2=0x%.2X, d3=0x%.2X\n", d1, d2, d3);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Delete the specified NV graphics data
@@ -1339,8 +1357,9 @@ int GS_function_66(RxBuffer* b, int s)
         uint8_t kc1 = (uint8_t)b->getNext();
         uint8_t kc2 = (uint8_t)b->getNext();
         printf("(Function 66) kc1=0x%.2X, kc2=0x%.2X\n", kc1, kc2);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Define the NV graphics data (raster format)
@@ -1366,8 +1385,9 @@ int GS_function_69(RxBuffer* b, int s)
         uint8_t x = (uint8_t)b->getNext();
         uint8_t y = (uint8_t)b->getNext();
         printf("(Function 69) kc1=0x%.2X, kc2=0x%.2X, x=0x%.2X, y=0x%.2X\n", kc1, kc2, x, y);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Transmit the key code list for defined download graphics
@@ -1377,8 +1397,9 @@ int GS_function_80(RxBuffer* b, int s)
         uint8_t d1 = (uint8_t)b->getNext();
         uint8_t d2 = (uint8_t)b->getNext();
         printf("(Function 80) d1=0x%.2X, d2=0x%.2X\n", d1, d2);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Delete all NV graphics data
@@ -1389,8 +1410,9 @@ int GS_function_81(RxBuffer* b, int s)
         uint8_t d2 = (uint8_t)b->getNext();
         uint8_t d3 = (uint8_t)b->getNext();
         printf("(Function 81) d1=0x%.2X, d2=0x%.2X, d3=0x%.2X\n", d1, d2, d3);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Delete the specified download graphics data
@@ -1400,8 +1422,9 @@ int GS_function_82(RxBuffer* b, int s)
         uint8_t kc1 = (uint8_t)b->getNext();
         uint8_t kc2 = (uint8_t)b->getNext();
         printf("(Function 82) kc1=0x%.2X, kc2=0x%.2X\n", kc1, kc2);
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 // Define the downloaded graphics data (raster format)
@@ -1458,9 +1481,9 @@ int GS_function_112(RxBuffer* b, int s)
             }
             printf("\n---------------------------------\n");
         }
+        return 0;
     }
-
-    return 0;
+    return -1;
 }
 
 // Store the graphics data in the print buffer (column format)
