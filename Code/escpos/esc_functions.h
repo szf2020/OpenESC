@@ -8,9 +8,9 @@
  *   `88b    d88'  888   888 888    .o  888   888   888       o oo     .d8P `88b    ooo
  *    `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o o888ooooood8 8""88888P'   `Y8bood8P'
  *                 888
- *                o888o
+ *                o888o                                                 (MJM 5-13-2024)
  *
- *   Wrote from the EPSON TM-T90 spec sheet                              (MJM 5-13-2024)
+ *   Wrote from the EPSON TM-T90 Technical Specification
  *
  *   File: esc_functions.h
  *   Note: none
@@ -46,7 +46,7 @@
 
 //-------------------------------------------------------
 typedef int8_t (*operation_fp)(RxBuffer* b);
-typedef int8_t(*operation_fpa)(RxBuffer* b, int s);
+typedef int8_t (*operation_fpa)(RxBuffer* b, int s);
 //-------------------------------------------------------
 struct CMD {
     uint8_t depth;

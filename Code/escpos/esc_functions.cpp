@@ -8,9 +8,9 @@
  *   `88b    d88'  888   888 888    .o  888   888   888       o oo     .d8P `88b    ooo
  *    `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o o888ooooood8 8""88888P'   `Y8bood8P'
  *                 888
- *                o888o
+ *                o888o                                                 (MJM 5-13-2024)
  *
- *   Wrote from the EPSON TM-T90 spec sheet                              (MJM 5-13-2024)
+ *   Wrote from the EPSON TM-T90 Technical Specification
  *
  *   File: esc_functions.cpp
  *   Note: none
@@ -155,8 +155,7 @@ int8_t _ESC_SUBTRACT_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC -> n=0x%.2X\n", n);
 
-    switch (n)
-    {
+    switch (n) {
         case 0: case 48: printf("-Underline mode off\n");     break;
         case 1: case 49: printf("-Underline 1 dot thick\n");  break;
         case 2: case 50: printf("-Underline 2 dots thick\n"); break;
@@ -242,10 +241,9 @@ int8_t _ESC_UPR_M(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC M> n=0x%.2X\n", n);
 
-    switch (n)
-    {
-        case 0: case 48: printf("-Font A\n");        break;
-        case 1: case 49: printf("-Font B\n");        break;
+    switch (n) {
+        case 0: case 48: printf("-Font A\n");        break; //Font A (12x24)
+        case 1: case 49: printf("-Font B\n");        break; //Font B (9x17)
         case 2: case 50: printf("-Font C\n");        break;
         case 97:         printf("-Extended Font\n"); break;
         default:                                     break;
@@ -314,7 +312,6 @@ int8_t _ESC_UPR_W(RxBuffer* b) {
     // Vertical logical origin   = (yL + yH × 256)   × (vertical motion unit) from absolute origin.
     // Print area width          = (dxL + dxH × 256) × (horizontal motion unit)
     // Print area height         = (dyL + dyH × 256) × (vertical motion unit)
-    // motion units              = DPI or PDMM
 
     return 0;
 }
@@ -544,16 +541,16 @@ int8_t _GS_LEFT_PERNTH_UPR_A(RxBuffer* b) {
         printf("<GS ( A> pL=0x%.2X, pH=0x%.2X, n=0x%.2X, m=0x%.2X\n", pL, pH, n, m);
 
         switch (n) {
-        case 1: case 42: case 2: case 50: printf("-Roll Paper\n");   break;
-        default:                          printf("-Basic Sheet\n");  break;
+            case 1: case 42: case 2: case 50: printf("-Roll Paper\n");   break;
+            default:                          printf("-Basic Sheet\n");  break;
         }
 
         switch (m) {
-        case 1: case 49: printf("-Hex Dump\n");                      break;
-        case 2: case 50: printf("-Printer Status Settings\n");       break;
-        case 3: case 51: printf("-Rolling Pattern\n");               break;
-        case 64:         printf("-Auto Setting of Paper Layout\n");  break;
-        default:                                                     break;
+            case 1: case 49: printf("-Hex Dump\n");                      break;
+            case 2: case 50: printf("-Printer Status Settings\n");       break;
+            case 3: case 51: printf("-Rolling Pattern\n");               break;
+            case 64:         printf("-Auto Setting of Paper Layout\n");  break;
+            default:                                                     break;
         }
         return 0;
     }
@@ -1411,7 +1408,7 @@ int8_t GS_function_112(RxBuffer* b, int s) {
 
         int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
 
-        printf("--[raster info]--\n");
+        printf("\n--[raster info]--\n");
         printf("-bx:%d, by:%d\n", bx, by);
         printf("-c:%d\n", c);
         printf("-xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
@@ -1422,7 +1419,7 @@ int8_t GS_function_112(RxBuffer* b, int s) {
         //yBytes = (yl + 7) / 8; //total bytes in the y direction
 
         if ((s -= 7) == k) {
-            printf("------ Raster Debug Dump ----------\n");
+            printf("\n------ Raster Debug Dump ----------\n");
             for (int i = 0; i < k; i++) {
                 uint8_t h = (uint8_t)b->getNext();
                 printf("0x%.2X ", h);
@@ -1441,7 +1438,7 @@ int8_t GS_function_113(RxBuffer* b, int s) {
     return 0;
 }
 
-// Inline Barcode Type A Helper function (NULL TERM)
+// In-line Bar-code Type A Helper function (NULL TERM)
 static int8_t inline bcodeA_helper(RxBuffer* b) {
     int i = 0;
     while (b->peekNext() != NULL)
@@ -1450,7 +1447,7 @@ static int8_t inline bcodeA_helper(RxBuffer* b) {
     return 0;
 }
 
-// Inline Barcode Type B Helper function (SIZE = s)
+// In-line Bar-code Type B Helper function (SIZE = s)
 static int8_t inline bcodeB_helper(RxBuffer* b, int s) {
     for (int i = 0; i < s; i++)
         printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
@@ -1584,4 +1581,4 @@ int8_t BAR_78(RxBuffer* b, int s) {
     return bcodeB_helper(b, s);
 }
 
-// YaY only... 1587 lines!?
+// YaY only... 1584 lines!?

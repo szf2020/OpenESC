@@ -8,9 +8,9 @@
  *   `88b    d88'  888   888 888    .o  888   888   888       o oo     .d8P `88b    ooo  
  *    `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o o888ooooood8 8""88888P'   `Y8bood8P'  
  *                 888                                                                   
- *                o888o                                                                  
+ *                o888o                                                 (MJM 5-13-2024)
  * 
- *   Wrote from the EPSON TM-T90 spec sheet                              (MJM 5-13-2024)
+ *   Wrote from the EPSON TM-T90 Technical Specification
  *
  *   File: open_esc.cpp (main)
  *   Note: This is a prelude to the firmware implementation.
@@ -53,6 +53,32 @@ int main() {
 
 // I don't see how ESCPOS can be used with a steaming buffer
 // I think one would need to buffer the chars up first, then parse.
+
+/*---------------------------------------------------------------------------------
+    Target Operating Specification (from T88II)
+
+        4k      Receive Buffer
+        256K    Non-Volatile Bit Image Buffer
+        1K      User NVM
+        12k     User-defined characters & User-defined bit-image
+        2k      Macro buffer (but not really, I may drop macro support)
+
+-----------------------------------------------------------------------------------
+
+    Scratch pad / Notes to Self:
+
+    80mm @ 8dpmm = 640dots | 80 bytes
+    (256 x 1024) / 80 = 3276.6 [row of 80 bytes]
+    3276.2 / 8 = 409.525mm in length | 16.12"
+    ...so, thats pretty reasonable.... 
+
+    Test File: 007.prn is 1.57k, 
+        converted to BMP_MONO, 50.4k (aprox. render size),
+        At 203DPI, the image width is 2.84" x 3.53" | 72.136mm x 89.662mm (wxh)
+
+    ...It might be wise to double the Rx buffer to 8K
+
+-----------------------------------------------------------------------------------*/
 
 int8_t ESCPOS_parse(RxBuffer* b) {
     if (b->peekNext() != -1) {
@@ -108,5 +134,3 @@ int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c) {
     if (i >= CMD_SIZE) return -1; //over run / not found
     return i;
 }
-
-// line 112
