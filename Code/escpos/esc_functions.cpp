@@ -414,15 +414,19 @@ int _FS_LEFT_PERNTH_UPR_A(RxBuffer* b)
 {
     uint8_t pL = (uint8_t)b->getNext();
     uint8_t pH = (uint8_t)b->getNext();
-    uint8_t fn = (uint8_t)b->getNext();
-    uint8_t m = (uint8_t)b->getNext();
-    printf("<FS ( A> pL=0x%.2X, pH=0x%.2X, fn=0x%.2X, m=0x%.2X\n", pL, pH, fn, m);
+    int l = (pL + pH * 256);
 
-    switch (m) {
+    if (l == 2) {
+        uint8_t fn = (uint8_t)b->getNext();
+        uint8_t m = (uint8_t)b->getNext();
+        printf("<FS ( A> pL=0x%.2X, pH=0x%.2X, fn=0x%.2X, m=0x%.2X\n", pL, pH, fn, m);
+
+        switch (m) {
         case 0: case 48: printf("-Select Kanji character Font A\n"); break;
         case 1: case 49: printf("-Select Kanji character Font B\n"); break;
         case 2: case 50: printf("-Select Kanji character Font C\n"); break;
         default:                                                     break;
+        }
     }
 
     return 0;
@@ -526,21 +530,25 @@ int _GS_LEFT_PERNTH_UPR_A(RxBuffer* b)
 {
     uint8_t pL = (uint8_t)b->getNext();
     uint8_t pH = (uint8_t)b->getNext();
-    uint8_t n = (uint8_t)b->getNext();
-    uint8_t m = (uint8_t)b->getNext();
-    printf("<GS ( A> pL=0x%.2X, pH=0x%.2X, n=0x%.2X, m=0x%.2X\n", pL, pH, n, m);
+    int l = (pL + pH * 256);
 
-    switch (n) {
+    if (l == 2) {
+        uint8_t n = (uint8_t)b->getNext();
+        uint8_t m = (uint8_t)b->getNext();
+        printf("<GS ( A> pL=0x%.2X, pH=0x%.2X, n=0x%.2X, m=0x%.2X\n", pL, pH, n, m);
+
+        switch (n) {
         case 1: case 42: case 2: case 50: printf("-Roll Paper\n");   break;
         default:                          printf("-Basic Sheet\n");  break;
-    }
+        }
 
-    switch (m) {
+        switch (m) {
         case 1: case 49: printf("-Hex Dump\n");                      break;
         case 2: case 50: printf("-Printer Status Settings\n");       break;
         case 3: case 51: printf("-Rolling Pattern\n");               break;
         case 64:         printf("-Auto Setting of Paper Layout\n");  break;
         default:                                                     break;
+        }
     }
 
     return 0;
@@ -592,32 +600,34 @@ int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
         (uint8_t) 0x00
     };
 
-    uint8_t m = (uint8_t)b->getNext();  //m
-    uint8_t fn = (uint8_t)b->getNext(); //fn
+    int l = (args[0] + args[1] * 256 + args[2] * 65536 + args[3] * 16777216);
 
-    int l = (args[0] + args[1] * 256 + args[2] * 65536 + args[3] * 16777216) - 2;
+    if (l >= 2) {
+        uint8_t m = (uint8_t)b->getNext();  //m
+        uint8_t fn = (uint8_t)b->getNext(); //fn
 
-    printf("<GS ( L> pL=0x%.2X, pH=0x%.2X, m=0x%.2X, fn=0x%.2X\n",
-        args[0], args[1], m, fn);
+        printf("<GS ( L> pL=0x%.2X, pH=0x%.2X, m=0x%.2X, fn=0x%.2X\n",
+            args[0], args[1], m, fn);
 
-    if ((fn >= 0) && (fn <= 4)) {           //0-4
-        index = fn;
-    }
-    else if ((fn >= 48) && (fn <= 52)) {    //0-4
-        index = fn - 48;
-    }
-    else if ((fn >= 64) && (fn <= 69)) {    //5-10
-        index = (fn - 64) + 5;
-    }
-    else if ((fn >= 80) && (fn <= 85)) {    //11-16
-        index = (fn - 80) + 11;
-    }
-    else if ((fn >= 112) && (fn <= 113)) {  //17-18
-        index = (fn - 112) + 17;
-    }
+        if ((fn >= 0) && (fn <= 4)) {           //0-4
+            index = fn;
+        }
+        else if ((fn >= 48) && (fn <= 52)) {    //0-4
+            index = fn - 48;
+        }
+        else if ((fn >= 64) && (fn <= 69)) {    //5-10
+            index = (fn - 64) + 5;
+        }
+        else if ((fn >= 80) && (fn <= 85)) {    //11-16
+            index = (fn - 80) + 11;
+        }
+        else if ((fn >= 112) && (fn <= 113)) {  //17-18
+            index = (fn - 112) + 17;
+        }
 
-    if (index != -1)
-        gs_function[index].ptr(b, l);
+        if (index != -1)
+            gs_function[index].ptr(b, l - 2);
+    }
 
     return 0;
 }
@@ -641,17 +651,21 @@ int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
 {
     uint8_t pL = (uint8_t)b->getNext();
     uint8_t pH = (uint8_t)b->getNext();
-    uint8_t cn = (uint8_t)b->getNext();
-    uint8_t fn = (uint8_t)b->getNext();
-    int k = (pL + pH * 256);// -2;
+    int k = (pL + pH * 256);
 
-    printf("<GS ( k> pL=0x%.2X, pH=0x%.2X, cn=0x%.2X, fn=0x%.2X, k:%d\n", pL, pH, cn, fn, k);
+    if (k > 2)
+    {
+        uint8_t cn = (uint8_t)b->getNext();
+        uint8_t fn = (uint8_t)b->getNext();
+        
+        printf("<GS ( k> pL=0x%.2X, pH=0x%.2X, cn=0x%.2X, fn=0x%.2X, k:%d\n", pL, pH, cn, fn, k);
 
-    if ((cn < 53) && (cn > 47)) {
-        symbols* ptr = sym_ptr[cn - 48];    //index symbol type
-        if ((fn < 83) && (fn > 64))
-            return ptr[fn - 65].ptr(b, k);  //index function code
-        return -1;
+        if ((cn < 53) && (cn > 47)) {
+            symbols* ptr = sym_ptr[cn - 48];    //index symbol type
+            if ((fn < 83) && (fn > 64))
+                return ptr[fn - 65].ptr(b, k - 2);  //index function code
+            return -1;
+        }
     }
 
     return -1;
@@ -683,29 +697,31 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
         (uint8_t)b->getNext()  //p4
     };
 
-    uint8_t m  = (uint8_t)b->getNext();  //48, also assumed to be color mode 
-    uint8_t fn = (uint8_t)b->getNext();  //function mode
-    uint8_t a  = (uint8_t)b->getNext();   
+    int l = (args[0] + args[1] * 256 + args[2] * 65536 + args[3] * 16777216);
 
-    int l = (args[0] + args[1] * 256 + args[2] * 65536 + args[3] * 16777216) - 3;
+    if (l >= 3) {
+        uint8_t m = (uint8_t)b->getNext();  //48, also assumed to be color mode 
+        uint8_t fn = (uint8_t)b->getNext();  //function mode
+        uint8_t a = (uint8_t)b->getNext();
 
-    printf("<GS 8 L>\n");
-    printf("- p1=0x%.2X, p2=0x%.2X, p3=0x%.2X, p4=0x%.2X\n",
-        args[0], args[1], args[2], args[3]);
-    printf("- m=0x%.2X, fn=0x%.2X, a=0x%.2X\n", m, fn, a);
+        printf("<GS 8 L>\n");
+        printf("- p1=0x%.2X, p2=0x%.2X, p3=0x%.2X, p4=0x%.2X\n",
+            args[0], args[1], args[2], args[3]);
+        printf("- m=0x%.2X, fn=0x%.2X, a=0x%.2X\n", m, fn, a);
 
-    if ((fn >= 67) && (fn <= 68)) {         //67-68
-        index = (args[3] - 64) + 5;
+        if ((fn >= 67) && (fn <= 68)) {         //67-68
+            index = (args[3] - 64) + 5;
+        }
+        else if ((fn >= 83) && (fn <= 84)) {    //83-84
+            index = (fn - 80) + 11;
+        }
+        else if ((fn >= 112) && (fn <= 113)) {  //112-113
+            index = (fn - 112) + 17;
+        }
+
+        if (index != -1)
+            gs_function[index].ptr(b, l - 3);
     }
-    else if ((fn >= 83) && (fn <= 84)) {    //83-84
-        index = (fn - 80) + 11;
-    }
-    else if ((fn >= 112) && (fn <= 113)) {  //112-113
-        index = (fn - 112) + 17;
-    }
-
-    if (index != -1)
-        gs_function[index].ptr(b, l);
 
     return -1;
 }
@@ -888,189 +904,209 @@ int _GS_LWR_w(RxBuffer* b)
 }
 
 // PDF417: Set the number of columns in the data region
-int SYM_function_065(RxBuffer* b, int k)
+int SYM_function_065(RxBuffer* b, int s)
 {
-    uint8_t n = (uint8_t)b->getNext();
-    printf("(function 65) n=0x%.2X\n", n);
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 65) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
 // PDF417: Set the number of rows
-int SYM_function_066(RxBuffer* b, int k)
+int SYM_function_066(RxBuffer* b, int s)
 {
-    uint8_t n = (uint8_t)b->getNext();
-    printf("(function 66) n=0x%.2X\n", n);
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 66) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
 // PDF417: Set the width of the module
-int SYM_function_067(RxBuffer* b, int k)
+int SYM_function_067(RxBuffer* b, int s)
 {
-    uint8_t n = (uint8_t)b->getNext();
-    printf("(function 67) n=0x%.2X\n", n);
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 67) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
 // PDF417: Set the row height
-int SYM_function_068(RxBuffer* b, int k)
+int SYM_function_068(RxBuffer* b, int s)
 {
-    uint8_t n = (uint8_t)b->getNext();
-    printf("(function 68) n=0x%.2X\n", n);
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 68) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
 // PDF417: Set the error correction level
-int SYM_function_069(RxBuffer* b, int k)
+int SYM_function_069(RxBuffer* b, int s)
 {
-    uint8_t m = (uint8_t)b->getNext();
-    uint8_t n = (uint8_t)b->getNext();
-    printf("(function 69) m=0x%.2X, n=0x%.2X\n", m, n);
+    if (s == 2) {
+        uint8_t m = (uint8_t)b->getNext();
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 69) m=0x%.2X, n=0x%.2X\n", m, n);
+    }
     return 0;
 }
 
 // PDF417: Select the options
-int SYM_function_070(RxBuffer* b, int k)
+int SYM_function_070(RxBuffer* b, int s)
 {
-    uint8_t n = (uint8_t)b->getNext();
-    printf("(function 70) n=0x%.2X\n", n);
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 70) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
 // PDF417: Store the data in the symbol storage area
-int SYM_function_080(RxBuffer* b, int k)
+int SYM_function_080(RxBuffer* b, int s)
 {
     return 0;
 }
 
 // PDF417: Print the symbol data in the symbol storage area
-int SYM_function_081(RxBuffer* b, int k)
+int SYM_function_081(RxBuffer* b, int s)
 {
-    uint8_t m = (uint8_t)b->getNext();
-    printf("(function 81) m=0x%.2X\n", m);
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 81) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
 // PDF417: Transmit the size information of the symbol data in the symbol storage area
-int SYM_function_082(RxBuffer* b, int k)
+int SYM_function_082(RxBuffer* b, int s)
 {
-    uint8_t m = (uint8_t)b->getNext();
-    printf("(function 82) m=0x%.2X\n", m);
+    if (s == 1) {
+        uint8_t m = (uint8_t)b->getNext();
+        printf("(function 82) m=0x%.2X\n", m);
+    }
     return 0;
 }
 
 // QR Code: Select the model
-int SYM_function_165(RxBuffer* b, int k)
+int SYM_function_165(RxBuffer* b, int s)
 {
-    uint8_t n1 = (uint8_t)b->getNext();
-    uint8_t n2 = (uint8_t)b->getNext();
-    printf("(function 165) n1=0x%.2X, n2=0x%.2X\n", n1, n2);
+    if (s == 2) {
+        uint8_t n1 = (uint8_t)b->getNext();
+        uint8_t n2 = (uint8_t)b->getNext();
+        printf("(function 165) n1=0x%.2X, n2=0x%.2X\n", n1, n2);
+    }
     return 0;
 }
 
 // QR Code : Set the size of module
-int SYM_function_167(RxBuffer* b, int k)
+int SYM_function_167(RxBuffer* b, int s)
 {
-    uint8_t n = (uint8_t)b->getNext();
-    printf("(function 167) n=0x%.2X\n", n);
+    if (s == 1) {
+        uint8_t n = (uint8_t)b->getNext();
+        printf("(function 167) n=0x%.2X\n", n);
+    }
     return 0;
 }
 
-int SYM_function_169(RxBuffer* b, int k)
-{
-    return 0;
-}
-
-int SYM_function_180(RxBuffer* b, int k)
+int SYM_function_169(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_181(RxBuffer* b, int k)
+int SYM_function_180(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_182(RxBuffer* b, int k)
+int SYM_function_181(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_265(RxBuffer* b, int k)
+int SYM_function_182(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_280(RxBuffer* b, int k)
+int SYM_function_265(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_281(RxBuffer* b, int k)
+int SYM_function_280(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_282(RxBuffer* b, int k)
+int SYM_function_281(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_367(RxBuffer* b, int k)
+int SYM_function_282(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_371(RxBuffer* b, int k)
+int SYM_function_367(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_380(RxBuffer* b, int k)
+int SYM_function_371(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_381(RxBuffer* b, int k)
+int SYM_function_380(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_382(RxBuffer* b, int k)
+int SYM_function_381(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_467(RxBuffer* b, int k)
+int SYM_function_382(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_471(RxBuffer* b, int k)
+int SYM_function_467(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_472(RxBuffer* b, int k)
+int SYM_function_471(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_480(RxBuffer* b, int k)
+int SYM_function_472(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_481(RxBuffer* b, int k)
+int SYM_function_480(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_function_482(RxBuffer* b, int k)
+int SYM_function_481(RxBuffer* b, int s)
 {
     return 0;
 }
 
-int SYM_NULL(RxBuffer* b, int k)
+int SYM_function_482(RxBuffer* b, int s)
+{
+    return 0;
+}
+
+int SYM_NULL(RxBuffer* b, int s)
 {
     return -1;
 }
@@ -1096,7 +1132,7 @@ int GS_function_49(RxBuffer* b, int s)
 // Print the graphics data in the print buffer
 int GS_function_50(RxBuffer* b, int s)
 {
-    printf("(Function 50)\n");
+    printf("(Function 50) s=%d\n", s);
     return 0;
 }
 

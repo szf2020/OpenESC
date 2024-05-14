@@ -28,8 +28,7 @@
 
 //-------------------------------------------------------
 typedef int (*operation_fp)(RxBuffer* b);
-typedef int (*operation_sym)(RxBuffer* b, int k);
-typedef int (*operation_graph)(RxBuffer* b, int s);
+typedef int (*operation_fpa)(RxBuffer* b, int s);
 //-------------------------------------------------------
 struct CMD {
     uint8_t depth;
@@ -38,11 +37,11 @@ struct CMD {
 };
 //-------------------------------------------------------
 struct graphics {
-    operation_graph ptr;
+    operation_fpa ptr;
 };
 //-------------------------------------------------------
 struct symbols {
-    operation_sym ptr;
+    operation_fpa ptr;
 };
 //-------------------------------------------------------
 int _HT(RxBuffer* b);                       // horizontal tab
@@ -141,42 +140,42 @@ int _GS_LWR_r(RxBuffer* b);                 // r
 int _GS_LWR_v_ZERO(RxBuffer* b);            // v 0
 int _GS_LWR_w(RxBuffer* b);                 // w
 //-------------------------------------------------------
-int SYM_function_065(RxBuffer* b, int k); //48
-int SYM_function_066(RxBuffer* b, int k);
-int SYM_function_067(RxBuffer* b, int k);
-int SYM_function_068(RxBuffer* b, int k);
-int SYM_function_069(RxBuffer* b, int k);
-int SYM_function_070(RxBuffer* b, int k);
-int SYM_function_080(RxBuffer* b, int k);
-int SYM_function_081(RxBuffer* b, int k);
-int SYM_function_082(RxBuffer* b, int k);
+int SYM_function_065(RxBuffer* b, int s); //48
+int SYM_function_066(RxBuffer* b, int s);
+int SYM_function_067(RxBuffer* b, int s);
+int SYM_function_068(RxBuffer* b, int s);
+int SYM_function_069(RxBuffer* b, int s);
+int SYM_function_070(RxBuffer* b, int s);
+int SYM_function_080(RxBuffer* b, int s);
+int SYM_function_081(RxBuffer* b, int s);
+int SYM_function_082(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_165(RxBuffer* b, int k); //49
-int SYM_function_167(RxBuffer* b, int k);
-int SYM_function_169(RxBuffer* b, int k);
-int SYM_function_180(RxBuffer* b, int k);
-int SYM_function_181(RxBuffer* b, int k);
-int SYM_function_182(RxBuffer* b, int k);
+int SYM_function_165(RxBuffer* b, int s); //49
+int SYM_function_167(RxBuffer* b, int s);
+int SYM_function_169(RxBuffer* b, int s);
+int SYM_function_180(RxBuffer* b, int s);
+int SYM_function_181(RxBuffer* b, int s);
+int SYM_function_182(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_265(RxBuffer* b, int k); //50
-int SYM_function_280(RxBuffer* b, int k);
-int SYM_function_281(RxBuffer* b, int k);
-int SYM_function_282(RxBuffer* b, int k);
+int SYM_function_265(RxBuffer* b, int s); //50
+int SYM_function_280(RxBuffer* b, int s);
+int SYM_function_281(RxBuffer* b, int s);
+int SYM_function_282(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_367(RxBuffer* b, int k); //51
-int SYM_function_371(RxBuffer* b, int k);
-int SYM_function_380(RxBuffer* b, int k);
-int SYM_function_381(RxBuffer* b, int k);
-int SYM_function_382(RxBuffer* b, int k);
+int SYM_function_367(RxBuffer* b, int s); //51
+int SYM_function_371(RxBuffer* b, int s);
+int SYM_function_380(RxBuffer* b, int s);
+int SYM_function_381(RxBuffer* b, int s);
+int SYM_function_382(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_function_467(RxBuffer* b, int k); //52
-int SYM_function_471(RxBuffer* b, int k);
-int SYM_function_472(RxBuffer* b, int k);
-int SYM_function_480(RxBuffer* b, int k);
-int SYM_function_481(RxBuffer* b, int k);
-int SYM_function_482(RxBuffer* b, int k);
+int SYM_function_467(RxBuffer* b, int s); //52
+int SYM_function_471(RxBuffer* b, int s);
+int SYM_function_472(RxBuffer* b, int s);
+int SYM_function_480(RxBuffer* b, int s);
+int SYM_function_481(RxBuffer* b, int s);
+int SYM_function_482(RxBuffer* b, int s);
 //-------------------------------------------------------
-int SYM_NULL(RxBuffer* b, int k);
+int SYM_NULL(RxBuffer* b, int s);
 //-------------------------------------------------------
 int GS_function_48(RxBuffer* b, int s);
 int GS_function_49(RxBuffer* b, int s);
