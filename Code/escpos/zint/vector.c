@@ -34,9 +34,9 @@
 #include "output.h"
 #include "zfiletypes.h"
 
-INTERNAL int ps_plot(struct zint_symbol *symbol);
-INTERNAL int svg_plot(struct zint_symbol *symbol);
-INTERNAL int emf_plot(struct zint_symbol *symbol, int rotate_angle);
+//INTERNAL int ps_plot(struct zint_symbol *symbol);
+//INTERNAL int svg_plot(struct zint_symbol *symbol);
+//INTERNAL int emf_plot(struct zint_symbol *symbol, int rotate_angle);
 
 static int vector_add_rect(struct zint_symbol *symbol, const float x, const float y, const float width,
             const float height, struct zint_vector_rect **last_rect) {
@@ -1015,13 +1015,13 @@ INTERNAL int plot_vector(struct zint_symbol *symbol, int rotate_angle, int file_
 
     switch (file_type) {
         case OUT_EPS_FILE:
-            error_number = ps_plot(symbol);
+            error_number = ZINT_ERROR_INVALID_OPTION; // ps_plot(symbol);
             break;
         case OUT_SVG_FILE:
-            error_number = svg_plot(symbol);
+            error_number = ZINT_ERROR_INVALID_OPTION; // svg_plot(symbol);
             break;
         case OUT_EMF_FILE:
-            error_number = emf_plot(symbol, rotate_angle);
+            error_number = ZINT_ERROR_INVALID_OPTION; // emf_plot(symbol, rotate_angle);
             break;
         /* case OUT_BUFFER: No more work needed */
     }

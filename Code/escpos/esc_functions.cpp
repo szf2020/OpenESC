@@ -1521,10 +1521,45 @@ int8_t BAR_68(RxBuffer* b, int s) {
     return bcodeB_helper(b, s);
 }
 
+
 // CODE39
 int8_t BAR_69(RxBuffer* b, int s) {
-    printf("(CODE39) data: ");
-    return bcodeB_helper(b, s);
+    printf("(CODE39) \n");
+    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
+
+    if (data != NULL) 
+    {
+        for (int i = 0; i < s; i++)
+            data[i] = (uint8_t)b->getNext();
+
+        struct zint_symbol* my_symbol;
+        my_symbol = ZBarcode_Create();
+        my_symbol->symbology = BARCODE_CODE39;
+        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
+        if (err != 0) 
+        {
+            printf("%s\n", my_symbol->errtxt); /* some warning or error occurred */
+        }
+        else 
+        {
+            int row, col, i = 0;
+            for (row = 0; row < my_symbol->bitmap_height; row++) 
+            {
+                for (col = 0; col < my_symbol->bitmap_width; col++) 
+                {
+                    if (my_symbol->bitmap[i] == 0xFF) printf("#");
+                    else                              printf(".");
+                    i+=3;
+                }
+                printf("\n");
+            }
+            printf("\n");
+        }
+        ZBarcode_Delete(my_symbol);
+        free(data);
+        return 0;
+    }
+    return 1;
 }
 
 // ITF (interleaved 2 of 5)

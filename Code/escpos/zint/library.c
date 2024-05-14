@@ -30,6 +30,8 @@
  */
 /* SPDX-License-Identifier: BSD-3-Clause */
 
+// original source modified by MJM, please see commit history.
+
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -59,11 +61,11 @@ static void set_symbol_defaults(struct zint_symbol *symbol) {
     symbol->fgcolor = &symbol->fgcolour[0];
     strcpy(symbol->bgcolour, "ffffff");
     symbol->bgcolor = &symbol->bgcolour[0];
-#ifdef ZINT_NO_PNG
-    strcpy(symbol->outfile, "out.gif");
-#else
+//#ifdef ZINT_NO_PNG
+//    strcpy(symbol->outfile, "out.gif");
+//#else
     strcpy(symbol->outfile, "out.png");
-#endif
+//#endif
     symbol->option_1 = -1;
     symbol->show_hrt = 1; /* Show human readable text */
     symbol->input_mode = DATA_MODE;
@@ -2200,11 +2202,11 @@ float ZBarcode_XdimDp_From_Scale(int symbol_id, float scale, float xdim_mm_or_dp
 
 /* Whether Zint built without PNG support */
 int ZBarcode_NoPng(void) {
-#ifdef ZINT_NO_PNG
-    return 1;
-#else
+//#ifdef ZINT_NO_PNG
+//    return 1;
+//#else
     return 0;
-#endif
+//#endif
 }
 
 /* Return the version of Zint linked to */

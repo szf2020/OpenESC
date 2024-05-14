@@ -24,12 +24,249 @@
     <ClCompile Include="esc_functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zint\2of5.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\auspost.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\aztec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\bc412.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\codablock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\code.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\code1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\code16k.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\code49.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\code128.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\composite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\dmatrix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\dotcode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\eci.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\general_field.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\gridmtx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\gs1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\hanxin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\imail.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\large.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\library.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\mailmark.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\maxicode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\medical.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\output.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\pdf417.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\plessey.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\postal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\qr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\raster.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\reedsol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\rss.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\telepen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\ultra.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\upcean.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zint\vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RxBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="esc_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\aztec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\big5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\channel_precalcs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\code1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\code49.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\code128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\composite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\dmatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\dmatrix_trace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\eci.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\eci_sb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\gb2312.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\gb18030.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\gbk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\general_field.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\gridmtx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\gs1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\gs1_lint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\hanxin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\iso3166.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\iso4217.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\ksx1001.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\large.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\maxicode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\pdf417.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\pdf417_tabs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\pdf417_trace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\qr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\raster_font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\reedsol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\reedsol_logs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\rss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\sjis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\zfiletypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\zint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\zintconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\fonts\normal_ttf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\fonts\normal_woff2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\fonts\upcean_ttf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zint\fonts\upcean_woff2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,6 +25,7 @@
 #include <cstdbool>
 
 #include "RxBuffer.h"
+#include "zint/zint.h"
 
 //-------------------------------------------------------
 //https://stackoverflow.com/a/3208376

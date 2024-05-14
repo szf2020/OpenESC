@@ -30,6 +30,8 @@
  */
 /* SPDX-License-Identifier: BSD-3-Clause */
 
+// original source modified by MJM, please see commit history.
+
 #include <assert.h>
 #include <math.h>
 
@@ -53,13 +55,13 @@
 #define ZFONT_HALIGN_RIGHT  2
 #define ZFONT_UPCEAN_TEXT   4   /* Helper flag to indicate dealing with EAN/UPC */
 
-#ifndef ZINT_NO_PNG
-INTERNAL int png_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
-#endif /* ZINT_NO_PNG */
-INTERNAL int bmp_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
-INTERNAL int pcx_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
-INTERNAL int gif_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
-INTERNAL int tif_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
+//#ifndef ZINT_NO_PNG
+//INTERNAL int png_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
+//#endif /* ZINT_NO_PNG */
+//INTERNAL int bmp_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
+//INTERNAL int pcx_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
+//INTERNAL int gif_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
+//INTERNAL int tif_pixel_plot(struct zint_symbol *symbol, const unsigned char *pixelbuf);
 
 static const char ultra_colour[] = "0CBMRYGKW";
 
@@ -241,32 +243,32 @@ static int save_raster_image_to_file(struct zint_symbol *symbol, const int image
             }
             break;
         case OUT_PNG_FILE:
-#ifndef ZINT_NO_PNG
-            error_number = png_pixel_plot(symbol, rotated_pixbuf);
-#else
+//#ifndef ZINT_NO_PNG
+//            error_number = png_pixel_plot(symbol, rotated_pixbuf);
+//#else
             error_number = ZINT_ERROR_INVALID_OPTION;
-#endif
+//#endif
             break;
-#if defined(__GNUC__) && !defined(__clang__) && defined(NDEBUG) && defined(ZINT_NO_PNG)
-/* Suppress gcc warning ‘<unknown>’ may be used uninitialized - only when Release and ZINT_NO_PNG */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
+//#if defined(__GNUC__) && !defined(__clang__) && defined(NDEBUG) && defined(ZINT_NO_PNG)
+///* Suppress gcc warning ‘<unknown>’ may be used uninitialized - only when Release and ZINT_NO_PNG */
+//#pragma GCC diagnostic push
+//#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+//#endif
         case OUT_PCX_FILE:
-            error_number = pcx_pixel_plot(symbol, rotated_pixbuf);
+            error_number = ZINT_ERROR_INVALID_OPTION; //pcx_pixel_plot(symbol, rotated_pixbuf);
             break;
         case OUT_GIF_FILE:
-            error_number = gif_pixel_plot(symbol, rotated_pixbuf);
+            error_number = ZINT_ERROR_INVALID_OPTION; //gif_pixel_plot(symbol, rotated_pixbuf);
             break;
         case OUT_TIF_FILE:
-            error_number = tif_pixel_plot(symbol, rotated_pixbuf);
+            error_number = ZINT_ERROR_INVALID_OPTION; //tif_pixel_plot(symbol, rotated_pixbuf);
             break;
         default:
-            error_number = bmp_pixel_plot(symbol, rotated_pixbuf);
+            error_number = ZINT_ERROR_INVALID_OPTION; //bmp_pixel_plot(symbol, rotated_pixbuf);
             break;
-#if defined(__GNUC__) && !defined(__clang__) && defined(NDEBUG) && defined(ZINT_NO_PNG)
-#pragma GCC diagnostic pop
-#endif
+//#if defined(__GNUC__) && !defined(__clang__) && defined(NDEBUG) && defined(ZINT_NO_PNG)
+//#pragma GCC diagnostic pop
+//#endif
     }
 
     if (rotate_angle) {
@@ -1413,12 +1415,12 @@ static int plot_raster_default(struct zint_symbol *symbol, const int rotate_angl
 INTERNAL int plot_raster(struct zint_symbol *symbol, int rotate_angle, int file_type) {
     int error;
 
-#ifdef ZINT_NO_PNG
-    if (file_type == OUT_PNG_FILE) {
-        strcpy(symbol->errtxt, "660: PNG format disabled at compile time");
-        return ZINT_ERROR_INVALID_OPTION;
-    }
-#endif /* ZINT_NO_PNG */
+//#ifdef ZINT_NO_PNG
+//    if (file_type == OUT_PNG_FILE) {
+//        strcpy(symbol->errtxt, "660: PNG format disabled at compile time");
+//        return ZINT_ERROR_INVALID_OPTION;
+//    }
+//#endif /* ZINT_NO_PNG */
 
     error = out_check_colour_options(symbol);
     if (error != 0) {
