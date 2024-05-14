@@ -941,29 +941,13 @@ int _GS_LWR_k(RxBuffer* b)
     uint8_t m = (uint8_t)b->getNext();
     printf("<GS k> m=0x%.2X (m=%d)\n", m, m);
 
-    //function a
-    if (m == 0)      { printf("{A} (UPC-A)\n"); }
-    else if (m == 1) { printf("{A} (UPC-E)\n"); }
-    else if (m == 2) { printf("{A} (JAN13 [EAN13])\n"); }
-    else if (m == 3) { printf("{A} (JAN8 [EAN8])\n"); }
-    else if (m == 4) { printf("{A} (CODE39)\n"); }
-    else if (m == 5) { printf("{A} (ITF [Interleaved 2 of 5])\n"); }
-    else if (m == 6) { printf("{A} (CODEBAR [NW-7])\n"); }
-    // function b
-    else if (m == 65) { printf("{B} (UPC-A)\n"); }
-    else if (m == 66) { printf("{B} (UPC-E)\n"); }
-    else if (m == 67) { printf("{B} (JAN13 [EAN13])\n"); }
-    else if (m == 68) { printf("{B} (JAN8 [EAN8])\n"); }
-    else if (m == 69) { printf("{B} (CODE39)\n"); }
-    else if (m == 70) { printf("{B} (ITF [Interleaved 2 of 5])\n"); }
-    else if (m == 71) { printf("{B} (CODEBAR [NW-7])\n"); }
-    else if (m == 72) { printf("{B} (CODE93)\n"); }
-    else if (m == 73) { printf("{B} (CODE128)\n"); }
-    else if (m == 74) { printf("{B} (UCC/EAN128)\n"); }
-    else if (m == 75) { printf("{B} (RSS-14)\n"); }
-    else if (m == 76) { printf("{B} (RSS-14) [Truncated]\n"); }
-    else if (m == 77) { printf("{B} (RSS) [Limited]\n"); }
-    else if (m == 78) { printf("{B} (RSS) [Expanded]\n"); }
+    if ((m >= 0) && (m <= 6)) {
+        barcode_function_a[m].ptr(b);
+    }
+    else if ((m >= 65) && (m <= 78)) {
+        uint8_t len = (uint8_t)b->getNext();
+        barcode_function_b[(m - 65)].ptr(b, len);
+    }
 
     return 0;
 }
@@ -1483,5 +1467,222 @@ int GS_function_112(RxBuffer* b, int s)
 int GS_function_113(RxBuffer* b, int s)
 {
     printf("(Function 113)\n");
+    return 0;
+}
+
+// UPC-A
+int BAR_00(RxBuffer* b)
+{
+    int i = 0;
+    printf("(UPC-A) data: ");
+    while (b->peekNext() != NULL)
+        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// UPC-E
+int BAR_01(RxBuffer* b)
+{
+    int i = 0;
+    printf("(UPC-E) data: ");
+    while (b->peekNext() != NULL)
+        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// JAN13 (EAN13)
+int BAR_02(RxBuffer* b)
+{
+    int i = 0;
+    printf("(JAN13|EAN13) data: ");
+    while (b->peekNext() != NULL)
+        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// JAN8 (EAN8)
+int BAR_03(RxBuffer* b)
+{
+    int i = 0;
+    printf("(JAN8|EAN8) data: ");
+    while (b->peekNext() != NULL)
+        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// CODE39
+int BAR_04(RxBuffer* b)
+{
+    int i = 0;
+    printf("(CODE39) data: ");
+    while (b->peekNext() != NULL)
+        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// ITF (interleaved 2 of 5)
+int BAR_05(RxBuffer* b)
+{
+    int i = 0;
+    printf("(ITF) data: ");
+    while (b->peekNext() != NULL)
+        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// CODABAR (NW-7)
+int BAR_06(RxBuffer* b)
+{
+    int i = 0;
+    printf("(CODABAR) data: ");
+    while (b->peekNext() != NULL)
+        printf("[%d] 0x%.2X ", i++, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// UPC-A
+int BAR_65(RxBuffer* b, int s)
+{
+    printf("(UPC-A) data: ");
+    for(int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// UPC-E
+int BAR_66(RxBuffer* b, int s)
+{
+    printf("(UPC-E) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// JAN13 (EAN13)
+int BAR_67(RxBuffer* b, int s)
+{
+    printf("(JAN13|EAN13) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// JAN8 (EAN8)
+int BAR_68(RxBuffer* b, int s)
+{
+    printf("(JAN8|EAN8) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// CODE39
+int BAR_69(RxBuffer* b, int s)
+{
+    printf("(CODE39) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// ITF (interleaved 2 of 5)
+int BAR_70(RxBuffer* b, int s)
+{
+    printf("(ITF) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// CODABAR (NW-7)
+int BAR_71(RxBuffer* b, int s)
+{
+    printf("(CODABAR) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// CODE93
+int BAR_72(RxBuffer* b, int s)
+{
+    printf("(CODE93) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// CODE128
+int BAR_73(RxBuffer* b, int s)
+{
+    printf("(CODE128) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// UCC/EAN128
+int BAR_74(RxBuffer* b, int s)
+{
+    printf("(UCC|EAN128) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// RSS-14
+int BAR_75(RxBuffer* b, int s)
+{
+    printf("(RSS-14) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// RSS-14 Truncated
+int BAR_76(RxBuffer* b, int s)
+{
+    printf("(RSS-14 Truncated) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// RSS Limited
+int BAR_77(RxBuffer* b, int s)
+{
+    printf("(RSS Limited) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
+    return 0;
+}
+
+// RSS Expanded
+int BAR_78(RxBuffer* b, int s)
+{
+    printf("(RSS Expanded) data: ");
+    for (int i = 0; i < s; i++)
+        printf("[%d] 0x%.2X ", i, (uint8_t)b->getNext());
+    printf("\n");
     return 0;
 }

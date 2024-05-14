@@ -45,6 +45,14 @@ struct symbols {
     operation_fpa ptr;
 };
 //-------------------------------------------------------
+struct barcode_a {
+    operation_fp ptr;
+};
+
+struct barcode_b {
+    operation_fpa ptr;
+};
+//-------------------------------------------------------
 int _HT(RxBuffer* b);                       // horizontal tab
 //-------------------------------------------------------
 int _LF(RxBuffer* b);                       // line feed
@@ -200,6 +208,29 @@ int GS_function_85(RxBuffer* b, int s);
 //-------------------------------------------------------
 int GS_function_112(RxBuffer* b, int s);
 int GS_function_113(RxBuffer* b, int s);
+//----------------------------------------------------------------
+int BAR_00(RxBuffer* b);    //UPC-A
+int BAR_01(RxBuffer* b);    //UPC-E
+int BAR_02(RxBuffer* b);    //JAN(EAN13)
+int BAR_03(RxBuffer* b);    //JAN8(EAN8)
+int BAR_04(RxBuffer* b);    //CODE39
+int BAR_05(RxBuffer* b);    //ITF(interleaved 2 of 5)
+int BAR_06(RxBuffer* b);    //CODABAR(NW-7)
+
+int BAR_65(RxBuffer* b, int s); //UPC-A
+int BAR_66(RxBuffer* b, int s); //UPC-E
+int BAR_67(RxBuffer* b, int s); //JAN(EAN13)
+int BAR_68(RxBuffer* b, int s); //JAN8(EAN8)
+int BAR_69(RxBuffer* b, int s); //CODE39
+int BAR_70(RxBuffer* b, int s); //ITF(interleaved 2 of 5)
+int BAR_71(RxBuffer* b, int s); //CODABAR(NW-7)
+int BAR_72(RxBuffer* b, int s); //CODE93
+int BAR_73(RxBuffer* b, int s); //CODE128
+int BAR_74(RxBuffer* b, int s); //UCC/EAN128
+int BAR_75(RxBuffer* b, int s); //RSS-14
+int BAR_76(RxBuffer* b, int s); //RSS-14 Truncated
+int BAR_77(RxBuffer* b, int s); //RSS Limited
+int BAR_78(RxBuffer* b, int s); //RSS Expanded
 //----------------------------------------------------------------
 static CMD escpos[CMD_SIZE] =
 {
@@ -425,5 +456,32 @@ static graphics gs_function[19] = {
     GS_function_85,
     GS_function_112,
     GS_function_113,
+};
+//-------------------------------------------------------
+static barcode_a barcode_function_a[7] = {
+    BAR_00,
+    BAR_01,
+    BAR_02,
+    BAR_03,
+    BAR_04,
+    BAR_05,
+    BAR_06
+};
+
+static barcode_b barcode_function_b[14] = {
+    BAR_65,
+    BAR_66,
+    BAR_67,
+    BAR_68,
+    BAR_69,
+    BAR_70,
+    BAR_71,
+    BAR_72,
+    BAR_73,
+    BAR_74,
+    BAR_75,
+    BAR_76,
+    BAR_77,
+    BAR_78
 };
 //-------------------------------------------------------
