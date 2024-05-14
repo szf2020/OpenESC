@@ -1261,7 +1261,7 @@ int8_t GS_function_49(RxBuffer* b, int s) {
 // Print the graphics data in the print buffer
 int8_t GS_function_50(RxBuffer* b, int s) {
     // TODO:
-    printf("(Function 50) s=%d\n", s);
+    printf("(Function 50)\n");
     return 0;
 }
 
@@ -1483,15 +1483,14 @@ static int8_t inline ascii_barcode_dump(zint_symbol* bmp) {
         for (col = 0; col < bmp->bitmap_width; col++) {
             if (bmp->bitmap[i] == 0xFF) printf(" ");
             else                        printf("#");
-            i += 3;
+            i += 3; // I'm Just looking at one of the RGB values
         } printf("\n");
     } printf("\n");
     return 0;
 }
 
-// Generic helper (UNTESTED!!!!)
-static inline int8_t barcodeA_parse_gen_dump(RxBuffer* b, int symbology)
-{
+// Generic helper
+static inline int8_t barcodeA_parse_gen_dump(RxBuffer* b, int symbology) {
     int s = 0;
     uint8_t c = 0x00;
     uint8_t* data = NULL;
@@ -1501,8 +1500,7 @@ static inline int8_t barcodeA_parse_gen_dump(RxBuffer* b, int symbology)
         uint8_t* _d = (uint8_t*)realloc(data, sizeof(uint8_t) * (s + 1));
         if (_d != NULL) {
             data = _d; data[s++] = c;
-        }
-        else {
+        } else {
             if (data != NULL) free(data);
             return -1;
         }
@@ -1516,8 +1514,7 @@ static inline int8_t barcodeA_parse_gen_dump(RxBuffer* b, int symbology)
 
         if (err != 0) {
             printf("%s\n", my_symbol->errtxt);
-        }
-        else {
+        } else {
             ascii_barcode_dump(my_symbol);
         }
 
@@ -1543,8 +1540,7 @@ static inline int8_t barcodeB_parse_gen_dump(RxBuffer* b, int s, int symbology) 
 
         if (err != 0) {
             printf("%s\n", my_symbol->errtxt);
-        }
-        else {
+        } else {
             ascii_barcode_dump(my_symbol);
         }
 

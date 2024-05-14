@@ -80,6 +80,11 @@ int main() {
 
 -----------------------------------------------------------------------------------*/
 
+// So... From what I can tell ESC/POS printers use a fixed width mono-space font
+// If I don't adhere to that, will things break!?
+// I may become smited by the all and power thermal printer in the sky
+// .... *tosses printer off rooftop* yay!
+
 int8_t ESCPOS_parse(RxBuffer* b) {
     if (b->peekNext() != -1) {
         uint8_t c = (uint8_t) b->getNext();
