@@ -25,6 +25,7 @@
 
 #define CMD_SIZE 87
 #define BMAX 3
+#define SYM_ARRAY_SIZE 18
 
 //-------------------------------------------------------
 typedef int (*operation_fp)(RxBuffer* b);
@@ -291,7 +292,7 @@ static CMD escpos[CMD_SIZE] =
     { 2, { 0x1D, 0x77, 0x00 }, _GS_LWR_w },                 // 86
 };
 //-------------------------------------------------------
-static symbols sym_000[18] = {     //48
+static symbols sym_000[SYM_ARRAY_SIZE] = {     //48
     SYM_function_065, //0
     SYM_function_065, //1
     SYM_function_067, //2
@@ -312,7 +313,7 @@ static symbols sym_000[18] = {     //48
     SYM_function_082, //17
 };
 //-------------------------------------------------------
-static symbols sym_001[18] = {     //49
+static symbols sym_001[SYM_ARRAY_SIZE] = {     //49
     SYM_function_165, //0
     SYM_NULL, //1
     SYM_function_167, //2
@@ -333,7 +334,7 @@ static symbols sym_001[18] = {     //49
     SYM_function_182, //17
 };
 //-------------------------------------------------------
-static symbols sym_002[18] = {     //50
+static symbols sym_002[SYM_ARRAY_SIZE] = {     //50
     SYM_function_265, //0
     SYM_NULL, //1
     SYM_NULL, //2
@@ -354,7 +355,7 @@ static symbols sym_002[18] = {     //50
     SYM_function_282, //17
 };
 //-------------------------------------------------------
-static symbols sym_003[18] = {     //51
+static symbols sym_003[SYM_ARRAY_SIZE] = {     //51
     SYM_NULL, //0
     SYM_NULL, //1
     SYM_function_367, //2
@@ -375,7 +376,7 @@ static symbols sym_003[18] = {     //51
     SYM_function_382, //17
 };
 //-------------------------------------------------------
-static symbols sym_004[18] = {       //52
+static symbols sym_004[SYM_ARRAY_SIZE] = {      //52
     SYM_NULL, //0
     SYM_NULL, //1
     SYM_function_467, //2

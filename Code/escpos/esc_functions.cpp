@@ -8,7 +8,7 @@ static const int DPI_203 = (int)(8.0 * 25.4); //real is 203.2 dots/inch
 
 static float vertical_motion_unit = 1;
 static float horizontal_motion_unit = 1;
-static int line_spacing = 30;
+static uint16_t line_spacing = 30;
 
 // Command: Horizontal Tab 
 int _HT(RxBuffer* b)
@@ -81,7 +81,8 @@ int _ESC_FF(RxBuffer* b)
 int _ESC_SP(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC SP> n=0x%.2X\n", n);
+    uint16_t right_scs = (uint16_t)(n * horizontal_motion_unit);
+    printf("<ESC SP> Right Side Char Spacing: %d\n", right_scs);
     return 0;
 }
 
@@ -90,6 +91,24 @@ int _ESC_EXCLAMATION_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC !> n=0x%.2X\n", n);
+
+    uint8_t char_font      = (n & 0b00000001);
+    uint8_t char_emph      = (n & 0b00001000);
+    uint8_t char_double_h  = (n & 0b00010000);
+    uint8_t char_double_w  = (n & 0b00100000);
+    uint8_t char_underline = (n & 0b10000000);
+
+    if (char_font)      printf("-Character font 2\n");
+    else                printf("-Character font 1\n");
+    if(char_emph)       printf("-Emphasized ON\n");
+    else                printf("-Emphasized OFF\n");
+    if (char_double_h)  printf("-Double height ON\n");
+    else                printf("-Double height OFF\n");
+    if (char_double_w)  printf("-Double width ON\n");
+    else                printf("-Double width OFF\n");
+    if (char_underline) printf("-Underline ON\n");
+    else                printf("-Underline OFF\n");
+
     return 0;
 }
 
@@ -98,8 +117,8 @@ int _ESC_DOLLAR_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<ESC $> nL=0x%.2X, nH=0x%.2X\n", nL, nH);
-    printf("-maths: %d\n", (int)((nL + nH * 256) * horizontal_motion_unit));
+    uint16_t app = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
+    printf("<ESC $> Absolute print position: %d\n", app);
     return 0;
 }
 
@@ -108,6 +127,8 @@ int _ESC_PERCENT_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC %%> n=0x%.2X\n", n);
+    if (n) printf("-User-defined character set is selected\n");
+    else   printf("-User-defined character set is canceled\n");
     return 0;
 }
 
@@ -132,6 +153,15 @@ int _ESC_SUBTRACT_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC -> n=0x%.2X\n", n);
+
+    switch (n)
+    {
+    case 0: case 48: printf("-Underline mode off\n");     break;
+    case 1: case 49: printf("-Underline 1 dot thick\n");  break;
+    case 2: case 50: printf("-Underline 2 dots thick\n"); break;
+    default:                                              break;
+    }
+
     return 0;
 }
 
@@ -139,6 +169,7 @@ int _ESC_SUBTRACT_SYM(RxBuffer* b)
 int _ESC_ASCII_TWO(RxBuffer* b)
 {
     printf("<ESC 2>\n");
+    printf("-Default line spacing set\n");
     line_spacing = 30;
     return 0;
 }
@@ -147,9 +178,8 @@ int _ESC_ASCII_TWO(RxBuffer* b)
 int _ESC_ASCII_THREE(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
-    line_spacing = (int)(n * vertical_motion_unit);
-    printf("<ESC 3> n=0x%.2X\n", n);
-    printf("-maths: %d\n", line_spacing);
+    line_spacing = (uint16_t)(n * vertical_motion_unit);
+    printf("<ESC 3> line spacing: %d\n", line_spacing);
     return 0;
 }
 
@@ -189,6 +219,8 @@ int _ESC_UPR_E(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC E> n=0x%.2X\n", n);
+    if (n) printf("-Emphasized mode ON\n");
+    else   printf("-Emphasized mode OFF\n");
     return 0;
 }
 
@@ -220,6 +252,16 @@ int _ESC_UPR_M(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC M> n=0x%.2X\n", n);
+
+    switch (n)
+    {
+    case 0: case 48: printf("-Font A\n");        break;
+    case 1: case 49: printf("-Font B\n");        break;
+    case 2: case 50: printf("-Font C\n");        break;
+    case 97:         printf("-Extended Font\n"); break;
+    default:                                     break;
+    }
+
     return 0;
 }
 
@@ -298,11 +340,11 @@ int _ESC_BACKSLASH_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<ESC \\> nL=0x%.2X, nH=0x%.2X\n", (char)nL & 0xFF, (char)nH & 0xFF);
+    uint16_t rpp = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
+    printf("<ESC \\> Relative print position: %d\n", rpp);
     // Moves the print position to 
     // (nL + nH × 256) × (horizontal or vertical motion unit) 
     // from the current position
-    printf("-maths: %d\n", (int)((nL + nH * 256) * horizontal_motion_unit));
     return 0;
 }
 
@@ -395,6 +437,8 @@ int _ESC_LEFT_QBRACKET_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC {> n=0x%.2X\n", n);
+    if (n) printf("-upside-down mode ON\n");
+    else   printf("-upside-down mode OFF\n");
     return 0;
 }
 
@@ -514,8 +558,8 @@ int _GS_EXCLAMATION_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS !> n=0x%.2X\n", n);
-    printf("-Character Width: %d\n", ((n >> 4) & 0x0F) + 1);
-    printf("-Character Height: %d\n", (n & 0x0F) + 1);
+    printf("-Character Width: x%d\n", ((n >> 4) & 0x0F) + 1);
+    printf("-Character Height: x%d\n", (n & 0x0F) + 1);
     return 0;
 }
 
@@ -524,8 +568,8 @@ int _GS_DOLLAR_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<GS $> nL=0x%.2X, nH=0x%.2X\n", nL, nH);
-    printf("-maths: %d\n", (int)((nL + nH * 256) * vertical_motion_unit));
+    uint16_t avpp = (uint16_t)((nL + nH * 256) * vertical_motion_unit);
+    printf("<GS $> Absolute Vertical Print Position: %d\n", avpp);
     return 0;
 }
 
@@ -712,7 +756,7 @@ int _GS_EIGHT_UPR_L(RxBuffer* b)
     int l = (args[0] + args[1] * 256 + args[2] * 65536 + args[3] * 16777216);
 
     if (l >= 3) {
-        uint8_t m = (uint8_t)b->getNext();  //48, also assumed to be color mode 
+        uint8_t m = (uint8_t)b->getNext();   //48, also assumed to be color mode byte? 
         uint8_t fn = (uint8_t)b->getNext();  //function mode
         uint8_t a = (uint8_t)b->getNext();
 
@@ -750,6 +794,8 @@ int _GS_UPR_B(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS B> n=0x%.2X\n", n);
+    if (n) printf("-Reverse print mode ON\n");
+    else   printf("-Reverse print mode OFF\n");
     return 0;
 }
 
@@ -774,7 +820,8 @@ int _GS_UPR_L(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<GS L> nL=0x%.2X, nH=0x%.2X\n", nL, nH);
+    uint16_t left_m = (uint16_t)(nL + nH * 256);
+    printf("<GS L> Left Margin: %d\n", left_m);
     return 0;
 }
 
@@ -809,7 +856,8 @@ int _GS_UPR_W(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<GS W> nL=0x%.2X, nH=0x%.2X\n", nL, nH);
+    uint16_t width = (nL + nH * 256);
+    printf("<GS W> Print area Width: %d\n", width);
     return 0;
 }
 
@@ -818,7 +866,8 @@ int _GS_BACKSLASH_SYM(RxBuffer* b)
 {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<GS \\> nL=0x%.2X, nH=0x%.2X\n", nL, nH);
+    uint16_t vertical = (nL + nH * 256);
+    printf("<GS \\> Set Relative Vertical Print Position: %d\n", vertical);
     return 0;
 }
 
@@ -862,7 +911,8 @@ int _GS_LWR_g_ZERO(RxBuffer* b)
     uint8_t m = (uint8_t)b->getNext();
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<GS g 0> m=0x%.2X, nL=0x%.2X, nH=0x%.2X\n", m, nL, nH);
+    uint16_t m_reg = (uint16_t)(nL + nH * 256);
+    printf("<GS g 0> m=0x%.2X, counter reg:%d\n", m, m_reg);
     return 0;
 }
 
@@ -872,7 +922,8 @@ int _GS_LWR_g_TWO(RxBuffer* b)
     uint8_t m = (uint8_t)b->getNext();
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    printf("<GS g 2> m=0x%.2X, nL=0x%.2X, nH=0x%.2X\n", m, nL, nH);
+    uint16_t m_reg = (uint16_t)(nL + nH * 256);
+    printf("<GS g 2> m=0x%.2X, counter reg:%d\n", m, m_reg);
     return 0;
 }
 
@@ -1406,17 +1457,16 @@ int GS_function_112(RxBuffer* b, int s)
         int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
 
         printf("--[raster info]--\n");
-        printf("bx:%d, by:%d\n", bx, by);
-        printf("c:%d\n", c);
-        printf("xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
-        printf("k:%d\n", k);
-        printf("X: %d, Y: %d\n", (xl + xh * 256), (yl + yh * 256));
-        printf("sum:%d, new:%d\n", s, s - 7);
+        printf("-bx:%d, by:%d\n", bx, by);
+        printf("-c:%d\n", c);
+        printf("-xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
+        printf("-k:%d\n", k);
+        printf("-X: %d, Y: %d\n", (xl + xh * 256), (yl + yh * 256));
+        printf("-sum:%d, new:%d\n", s, s - 7);
 
         //yBytes = (yl + 7) / 8; //total bytes in the y direction
 
-        if ((s -= 7) == k)
-        {
+        if ((s -= 7) == k) {
             printf("------ Raster Debug Dump ----------\n");
             for (int i = 0; i < k; i++) {
                 uint8_t h = (uint8_t)b->getNext();
