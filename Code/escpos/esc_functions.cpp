@@ -1036,8 +1036,16 @@ int8_t SYM_function_070(RxBuffer* b, int s)
 // PDF417: Store the data in the symbol storage area
 int8_t SYM_function_080(RxBuffer* b, int s)
 {
-    printf("(Function 80)\n");
-    return 0;
+    if (s >= 1) {
+        printf("(Function 80)\n");
+        /* trash m */
+        b->getNext(); s--;
+        for (int i = 0; i < s; i++)
+            printf("0x%.2X ", (uint8_t)b->getNext());
+        printf("\n");
+        return 0;
+    }
+    return -1;
 }
 
 // PDF417: Print the symbol data in the symbol storage area
@@ -1099,8 +1107,16 @@ int8_t SYM_function_169(RxBuffer* b, int s)
 // QR Code: Store the data in the symbol storage area
 int8_t SYM_function_180(RxBuffer* b, int s)
 {
-    printf("(Function 180)\n");
-    return 0;
+    if (s >= 1) {
+        printf("(Function 180)\n");
+        /* trash m */
+        b->getNext(); s--;
+        for (int i = 0; i < s; i++)
+            printf("0x%.2X ", (uint8_t)b->getNext());
+        printf("\n");
+        return 0;
+    }
+    return -1;
 }
 
 // QR Code: Print the symbol data in the symbol storage area
@@ -1139,8 +1155,16 @@ int8_t SYM_function_265(RxBuffer* b, int s)
 // MaxiCode: Store the data in the symbol storage area
 int8_t SYM_function_280(RxBuffer* b, int s)
 {
-    printf("(Function 280)\n");
-    return 0;
+    if (s >= 1) {
+        printf("(Function 280)\n");
+        /* trash m */
+        b->getNext(); s--;
+        for (int i = 0; i < s; i++)
+            printf("0x%.2X ", (uint8_t)b->getNext());
+        printf("\n");
+        return 0;
+    }
+    return -1;
 }
 
 // MaxiCode: Print the symbol data in the symbol storage area
@@ -1190,8 +1214,19 @@ int8_t SYM_function_371(RxBuffer* b, int s)
 // 2-dimensional RSS: Store the data in the symbol storage area
 int8_t SYM_function_380(RxBuffer* b, int s)
 {
-    printf("(Function 380)\n");
-    return 0;
+    if (s >= 2) {
+        printf("(Function 380)\n");
+        /* trash m */
+        b->getNext(); s--;
+        /* get n */
+        uint8_t n = (uint8_t)b->getNext(); s--;
+        printf("n: 0x%.2X\n", n);
+        for (int i = 0; i < s; i++)
+            printf("0x%.2X ", (uint8_t)b->getNext());
+        printf("\n");
+        return 0;
+    }
+    return -1;
 }
 
 // 2-dimensional RSS: Print the symbol data in the symbol storage area
@@ -1252,8 +1287,20 @@ int8_t SYM_function_472(RxBuffer* b, int s)
 // Composite Symbol: Store the data in the symbol storage area
 int8_t SYM_function_480(RxBuffer* b, int s)
 {
-    printf("(Function 480)\n");
-    return 0;
+    if (s >= 3) {
+        printf("(Function 80)\n");
+        /* trash m */
+        b->getNext(); s--;
+        /* get a b */
+        uint8_t A = (uint8_t)b->getNext(); s--;
+        uint8_t B = (uint8_t)b->getNext(); s--;
+        printf("A: 0x%.2X, B: 0x%.2X\n", A, B);
+        for (int i = 0; i < s; i++)
+            printf("0x%.2X ", (uint8_t)b->getNext());
+        printf("\n");
+        return 0;
+    }
+    return -1;
 }
 
 // Composite Symbol: Print the symbol data in the symbol storage area
