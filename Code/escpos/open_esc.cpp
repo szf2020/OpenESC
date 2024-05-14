@@ -12,7 +12,7 @@
  * 
  *   Wrote from the EPSON TM-T90 spec sheet                              (MJM 5-13-2024)
  *
- *   File: escpos.cpp (main)
+ *   File: open_esc.cpp (main)
  *   Note: none
  *
  *********************************************************************************************/

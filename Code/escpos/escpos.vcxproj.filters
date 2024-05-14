@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="escpos.cpp">
+    <ClCompile Include="open_esc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RxBuffer.cpp">
