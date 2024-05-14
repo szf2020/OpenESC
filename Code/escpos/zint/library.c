@@ -61,13 +61,10 @@ static void set_symbol_defaults(struct zint_symbol *symbol) {
     symbol->fgcolor = &symbol->fgcolour[0];
     strcpy(symbol->bgcolour, "ffffff");
     symbol->bgcolor = &symbol->bgcolour[0];
-//#ifdef ZINT_NO_PNG
-//    strcpy(symbol->outfile, "out.gif");
-//#else
     strcpy(symbol->outfile, "out.png");
-//#endif
     symbol->option_1 = -1;
-    symbol->show_hrt = 1; /* Show human readable text */
+    //symbol->show_hrt = 1; /* Show human readable text */
+    symbol->show_hrt = 0; /* Show human readable text */
     symbol->input_mode = DATA_MODE;
     symbol->eci = 0; /* Default 0 uses ECI 3 */
     symbol->dot_size = 0.8f; /* 0.4 / 0.5 */
@@ -2202,11 +2199,7 @@ float ZBarcode_XdimDp_From_Scale(int symbol_id, float scale, float xdim_mm_or_dp
 
 /* Whether Zint built without PNG support */
 int ZBarcode_NoPng(void) {
-//#ifdef ZINT_NO_PNG
-//    return 1;
-//#else
     return 0;
-//#endif
 }
 
 /* Return the version of Zint linked to */
