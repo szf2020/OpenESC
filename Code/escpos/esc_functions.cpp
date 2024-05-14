@@ -1395,8 +1395,8 @@ int8_t GS_function_85(RxBuffer* b, int s) {
     return 0;
 }
 
-// Helper dunction for debugging raster format
-static inline int16_t ascii_raster_dump(uint8_t* bmp, int s, int x, int y) {
+// Helper function for debugging raster format
+static inline int8_t ascii_raster_dump(uint8_t* bmp, int s, int x, int y) {
     int row_width = (x + 7) / 8;
     int col_width = (x + 7) / 8;
 
@@ -1489,217 +1489,196 @@ static int8_t inline ascii_barcode_dump(zint_symbol* bmp) {
     return 0;
 }
 
+// Generic helper (UNTESTED!!!!)
+static inline int8_t barcodeA_parse_gen_dump(RxBuffer* b, int symbology)
+{
+    int s = 0;
+    uint8_t c = 0x00;
+    uint8_t* data = NULL;
+
+    while (b->peekNext() != NULL) {
+        c = (uint8_t)b->getNext();
+        uint8_t* _d = (uint8_t*)realloc(data, sizeof(uint8_t) * (s + 1));
+        if (_d != NULL) {
+            data = _d; data[s++] = c;
+        }
+        else {
+            if (data != NULL) free(data);
+            return -1;
+        }
+    } c = (uint8_t)b->getNext(); //trash NULL char
+
+    if (data != NULL) {
+        struct zint_symbol* my_symbol;
+        my_symbol = ZBarcode_Create();
+        my_symbol->symbology = symbology;
+        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
+
+        if (err != 0) {
+            printf("%s\n", my_symbol->errtxt);
+        }
+        else {
+            ascii_barcode_dump(my_symbol);
+        }
+
+        ZBarcode_Delete(my_symbol);
+        free(data);
+        return 0;
+    }
+    return -1;
+}
+
+// Generic helper
+static inline int8_t barcodeB_parse_gen_dump(RxBuffer* b, int s, int symbology) {
+    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
+
+    if (data != NULL) {
+        for (int i = 0; i < s; i++)
+            data[i] = (uint8_t)b->getNext();
+
+        struct zint_symbol* my_symbol;
+        my_symbol = ZBarcode_Create();
+        my_symbol->symbology = symbology;
+        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
+
+        if (err != 0) {
+            printf("%s\n", my_symbol->errtxt);
+        }
+        else {
+            ascii_barcode_dump(my_symbol);
+        }
+
+        ZBarcode_Delete(my_symbol);
+        free(data);
+        return 0;
+    }
+    return -1;
+}
+
 // UPC-A
 int8_t BAR_00(RxBuffer* b) {
-    printf("(UPC-A) data: ");
-    return bcodeA_helper(b);    
+    printf("(UPC-A){A}\n");
+    return barcodeA_parse_gen_dump(b, BARCODE_UPCA);
 }
 
 // UPC-E
 int8_t BAR_01(RxBuffer* b) {
-    printf("(UPC-E) data: ");
-    return bcodeA_helper(b);
+    printf("(UPC-E){A}\n");
+    return barcodeA_parse_gen_dump(b, BARCODE_UPCE);
 }
 
 // JAN13 (EAN13)
 int8_t BAR_02(RxBuffer* b) {
-    printf("(JAN13|EAN13) data: ");
-    return bcodeA_helper(b);
+    printf("(JAN13|EAN13){A}\n");
+    return barcodeA_parse_gen_dump(b, BARCODE_EANX); //?
 }
 
 // JAN8 (EAN8)
 int8_t BAR_03(RxBuffer* b) { 
-    printf("(JAN8|EAN8) data: ");
-    return bcodeA_helper(b);
+    printf("(JAN8|EAN8){A}\n");
+    return barcodeA_parse_gen_dump(b, BARCODE_EANX); //?
 }
 
 // CODE39
 int8_t BAR_04(RxBuffer* b) {
-    printf("(CODE39) data: ");
-    return bcodeA_helper(b);
+    printf("(CODE39){A}\n");
+    return barcodeA_parse_gen_dump(b, BARCODE_CODE39);
 }
 
 // ITF (interleaved 2 of 5)
 int8_t BAR_05(RxBuffer* b) {
-    printf("(ITF) data: ");
-    return bcodeA_helper(b);
+    printf("(ITF){A}\n");
+    return barcodeA_parse_gen_dump(b, BARCODE_C25INTER);
 }
 
 // CODABAR (NW-7)
 int8_t BAR_06(RxBuffer* b) {
-    printf("(CODABAR) data: ");
-    return bcodeA_helper(b);
+    printf("(CODABAR){A}\n");
+    return barcodeA_parse_gen_dump(b, BARCODE_CODABAR);
 }
 
 // UPC-A
 int8_t BAR_65(RxBuffer* b, int s) {
     printf("(UPC-A)\n");
-    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
-
-    if (data != NULL) {
-        for (int i = 0; i < s; i++)
-            data[i] = (uint8_t)b->getNext();
-
-        struct zint_symbol* my_symbol;
-        my_symbol = ZBarcode_Create();
-        my_symbol->symbology = BARCODE_UPCA;
-        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
-
-        if (err != 0) {
-            printf("%s\n", my_symbol->errtxt);
-        }
-        else {
-            ascii_barcode_dump(my_symbol);
-        }
-
-        ZBarcode_Delete(my_symbol);
-        free(data);
-        return 0;
-    }
-    return -1;
+    return barcodeB_parse_gen_dump(b, s, BARCODE_UPCA);
 }
 
 // UPC-E
 int8_t BAR_66(RxBuffer* b, int s) {
-    printf("(UPC-E) data: ");
-    return bcodeB_helper(b, s);
+    printf("(UPC-E)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_UPCE);
 }
 
 // JAN13 (EAN13)
 int8_t BAR_67(RxBuffer* b, int s) {
-    printf("(JAN13|EAN13) data: ");
-    return bcodeB_helper(b, s);
+    printf("(JAN13|EAN13)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_EANX); //?
 }
 
 // JAN8 (EAN8)
 int8_t BAR_68(RxBuffer* b, int s) {
-    printf("(JAN8|EAN8) data: ");
-    return bcodeB_helper(b, s);
+    printf("(JAN8|EAN8)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_EANX); //?
 }
 
 // CODE39
 int8_t BAR_69(RxBuffer* b, int s) {
-    printf("(CODE39) \n");
-    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
-
-    if (data != NULL) {
-        for (int i = 0; i < s; i++)
-            data[i] = (uint8_t)b->getNext();
-
-        struct zint_symbol* my_symbol;
-        my_symbol = ZBarcode_Create();
-        my_symbol->symbology = BARCODE_CODE39;
-        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
-        
-        if (err != 0) {
-            printf("%s\n", my_symbol->errtxt);
-        } else {
-            ascii_barcode_dump(my_symbol);
-        }
-
-        ZBarcode_Delete(my_symbol);
-        free(data);
-        return 0;
-    }
-    return -1;
+    printf("(CODE39)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_CODE39);
 }
 
 // ITF (interleaved 2 of 5)
 int8_t BAR_70(RxBuffer* b, int s) {
-    printf("(ITF) data: ");
-    return bcodeB_helper(b, s);
+    printf("(ITF)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_C25INTER);
 }
 
 // CODABAR (NW-7)
 int8_t BAR_71(RxBuffer* b, int s) {
     printf("(CODABAR)\n");
-    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
-
-    if (data != NULL) {
-        for (int i = 0; i < s; i++)
-            data[i] = (uint8_t)b->getNext();
-
-        struct zint_symbol* my_symbol;
-        my_symbol = ZBarcode_Create();
-        my_symbol->symbology = BARCODE_CODABAR;
-        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
-
-        if (err != 0) {
-            printf("%s\n", my_symbol->errtxt);
-        }
-        else {
-            ascii_barcode_dump(my_symbol);
-        }
-
-        ZBarcode_Delete(my_symbol);
-        free(data);
-        return 0;
-    }
-    return -1;
+    return barcodeB_parse_gen_dump(b, s, BARCODE_CODABAR);
 }
 
 // CODE93
 int8_t BAR_72(RxBuffer* b, int s) {
-    printf("(CODE93) data: ");
-    return bcodeB_helper(b, s);
+    printf("(CODE93)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_CODE93);
 }
 
 // CODE128
 int8_t BAR_73(RxBuffer* b, int s) {
     printf("(CODE128)\n");
-    uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
-
-    if (data != NULL) {
-        for (int i = 0; i < s; i++)
-            data[i] = (uint8_t)b->getNext();
-
-        struct zint_symbol* my_symbol;
-        my_symbol = ZBarcode_Create();
-        my_symbol->symbology = BARCODE_CODE128;
-        int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
-
-        if (err != 0) {
-            printf("%s\n", my_symbol->errtxt);
-        }
-        else {
-            ascii_barcode_dump(my_symbol);
-        }
-
-        ZBarcode_Delete(my_symbol);
-        free(data);
-        return 0;
-    }
-    return -1;
+    return barcodeB_parse_gen_dump(b, s, BARCODE_CODE128);
 }
 
 // UCC/EAN128
 int8_t BAR_74(RxBuffer* b, int s) {
-    printf("(UCC|EAN128) data: ");
-    return bcodeB_helper(b, s);
+    printf("(UCC|EAN128)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_EAN128_CC);
 }
 
 // RSS-14
 int8_t BAR_75(RxBuffer* b, int s) {
-    printf("(RSS-14) data: ");
-    return bcodeB_helper(b, s);
+    printf("(RSS-14)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_RSS14);
 }
 
 // RSS-14 Truncated
 int8_t BAR_76(RxBuffer* b, int s) {
-    printf("(RSS-14 Truncated) data: ");
-    return bcodeB_helper(b, s);
+    printf("(RSS-14 Truncated)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_DBAR_OMN); //?
 }
 
 // RSS Limited
 int8_t BAR_77(RxBuffer* b, int s) {
-    printf("(RSS Limited) data: ");
-    return bcodeB_helper(b, s);
+    printf("(RSS Limited)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_DBAR_LTD); //?
 }
 
 // RSS Expanded
 int8_t BAR_78(RxBuffer* b, int s) {
-    printf("(RSS Expanded) data: ");
-    return bcodeB_helper(b, s);
+    printf("(RSS Expanded)\n");
+    return barcodeB_parse_gen_dump(b, s, BARCODE_DBAR_EXP); //?
 }
 
-// YaY only... 1584 lines!?
+// YaY only... nth Lines!?
