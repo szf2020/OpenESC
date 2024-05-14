@@ -156,10 +156,10 @@ int8_t _ESC_SUBTRACT_SYM(RxBuffer* b)
 
     switch (n)
     {
-    case 0: case 48: printf("-Underline mode off\n");     break;
-    case 1: case 49: printf("-Underline 1 dot thick\n");  break;
-    case 2: case 50: printf("-Underline 2 dots thick\n"); break;
-    default:                                              break;
+        case 0: case 48: printf("-Underline mode off\n");     break;
+        case 1: case 49: printf("-Underline 1 dot thick\n");  break;
+        case 2: case 50: printf("-Underline 2 dots thick\n"); break;
+        default:                                              break;
     }
     return 0;
 }
@@ -254,11 +254,11 @@ int8_t _ESC_UPR_M(RxBuffer* b)
 
     switch (n)
     {
-    case 0: case 48: printf("-Font A\n");        break;
-    case 1: case 49: printf("-Font B\n");        break;
-    case 2: case 50: printf("-Font C\n");        break;
-    case 97:         printf("-Extended Font\n"); break;
-    default:                                     break;
+        case 0: case 48: printf("-Font A\n");        break;
+        case 1: case 49: printf("-Font B\n");        break;
+        case 2: case 50: printf("-Font C\n");        break;
+        case 97:         printf("-Extended Font\n"); break;
+        default:                                     break;
     }
     return 0;
 }
@@ -467,10 +467,10 @@ int8_t _FS_LEFT_PERNTH_UPR_A(RxBuffer* b)
         printf("<FS ( A> pL=0x%.2X, pH=0x%.2X, fn=0x%.2X, m=0x%.2X\n", pL, pH, fn, m);
 
         switch (m) {
-        case 0: case 48: printf("-Select Kanji character Font A\n"); break;
-        case 1: case 49: printf("-Select Kanji character Font B\n"); break;
-        case 2: case 50: printf("-Select Kanji character Font C\n"); break;
-        default:                                                     break;
+            case 0: case 48: printf("-Select Kanji character Font A\n"); break;
+            case 1: case 49: printf("-Select Kanji character Font B\n"); break;
+            case 2: case 50: printf("-Select Kanji character Font C\n"); break;
+            default:                                                     break;
         }
         return 0;
     }
@@ -776,6 +776,7 @@ int8_t _GS_EIGHT_UPR_L(RxBuffer* b)
 // Command: Start/end macro definition 
 int8_t _GS_COLON_SYM(RxBuffer* b)
 {
+    // TODO:
     printf("<GS :>\n");
     return 0;
 }
@@ -953,8 +954,18 @@ int8_t _GS_LWR_r(RxBuffer* b)
 // Command: Print raster bit image
 int8_t _GS_LWR_v_ZERO(RxBuffer* b)
 {
-    // TODO:
+    uint8_t m  = (uint8_t)b->getNext();
+    uint8_t xL = (uint8_t)b->getNext();
+    uint8_t xH = (uint8_t)b->getNext();
+    uint8_t yL = (uint8_t)b->getNext();
+    uint8_t yH = (uint8_t)b->getNext();
+    int k = (xL + xH * 256) * (yL + yH * 256);
+    
     printf("<GS v 0>\n");
+    printf("Raster Bit Image: ");
+    for (int i = 0; i < k; i++)
+        printf("0x%.2X ", (uint8_t)b->getNext());
+    printf("\n");
     return 0;
 }
 
@@ -1335,6 +1346,7 @@ int8_t SYM_NULL(RxBuffer* b, int s)
 // Transmit the NV graphics memory capacity
 int8_t GS_function_48(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 480)\n");
     return 0;
 }
@@ -1354,6 +1366,7 @@ int8_t GS_function_49(RxBuffer* b, int s)
 // Print the graphics data in the print buffer
 int8_t GS_function_50(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 50) s=%d\n", s);
     return 0;
 }
@@ -1361,6 +1374,7 @@ int8_t GS_function_50(RxBuffer* b, int s)
 // Transmit the remaining capacity of the NV graphics memory
 int8_t GS_function_51(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 51)\n");
     return 0;
 }
@@ -1368,6 +1382,7 @@ int8_t GS_function_51(RxBuffer* b, int s)
 // Transmit the remaining capacity of the download graphics memory
 int8_t GS_function_52(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 52)\n");
     return 0;
 }
@@ -1412,6 +1427,7 @@ int8_t GS_function_66(RxBuffer* b, int s)
 // Define the NV graphics data (raster format)
 int8_t GS_function_67(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 67)\n");
     return 0;
 }
@@ -1419,6 +1435,7 @@ int8_t GS_function_67(RxBuffer* b, int s)
 // Define the NV graphics data(column format)
 int8_t GS_function_68(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 69)\n");
     return 0;
 }
@@ -1477,6 +1494,7 @@ int8_t GS_function_82(RxBuffer* b, int s)
 // Define the downloaded graphics data (raster format)
 int8_t GS_function_83(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 83)\n");
     return 0;
 }
@@ -1484,6 +1502,7 @@ int8_t GS_function_83(RxBuffer* b, int s)
 // Define the downloaded graphics data
 int8_t GS_function_84(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 84)\n");
     return 0;
 }
@@ -1491,6 +1510,7 @@ int8_t GS_function_84(RxBuffer* b, int s)
 // Print the specified download graphics data
 int8_t GS_function_85(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 85)\n");
     return 0;
 }
@@ -1536,10 +1556,12 @@ int8_t GS_function_112(RxBuffer* b, int s)
 // Store the graphics data in the print buffer (column format)
 int8_t GS_function_113(RxBuffer* b, int s)
 {
+    // TODO:
     printf("(Function 113)\n");
     return 0;
 }
 
+// Inline Barcode Type A Helper function (NULL TERM)
 static int8_t inline bcodeA_helper(RxBuffer* b)
 {
     int i = 0;
@@ -1549,6 +1571,7 @@ static int8_t inline bcodeA_helper(RxBuffer* b)
     return 0;
 }
 
+// Inline Barcode Type B Helper function (SIZE = s)
 static int8_t inline bcodeB_helper(RxBuffer* b, int s)
 {
     for (int i = 0; i < s; i++)
