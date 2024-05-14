@@ -1,14 +1,21 @@
-// escpos.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-//
-//
-// (used as starting point, may revise)
-// https://stackoverflow.com/a/7671028  
-// 
-// Wrote from the EPSON TM-T90 spec sheet (MJM 2024)
-//
-// ESCPOS parser test
-//
+/**********************************************************************************************
+ *
+ *     .oooooo.                                    oooooooooooo  .oooooo..o   .oooooo.   
+ *    d8P'  `Y8b                                   `888'     `8 d8P'    `Y8  d8P'  `Y8b  
+ *   888      888 oo.ooooo.   .ooooo.  ooo. .oo.    888         Y88bo.      888          
+ *   888      888  888' `88b d88' `88b `888P"Y88b   888oooo8     `"Y8888o.  888          
+ *   888      888  888   888 888ooo888  888   888   888    "         `"Y88b 888          
+ *   `88b    d88'  888   888 888    .o  888   888   888       o oo     .d8P `88b    ooo  
+ *   `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o o888ooooood8 8""88888P'   `Y8bood8P'  
+ *                 888                                                                   
+ *                o888o                                                                  
+ * 
+ *   Wrote from the EPSON TM-T90 spec sheet                              (MJM 5-13-2024)
+ *
+ *   File: escpos.cpp (main)
+ *   Note: none
+ *
+ *********************************************************************************************/
 
 #include <cstdio>
 #include <cstdint>
@@ -23,6 +30,7 @@
 //const char* file_under_test = "testFiles/004.prn";
 //const char* file_under_test = "testFiles/005.prn";
 //const char* file_under_test = "testFiles/006.prn";
+
 const char* file_under_test = "testFiles/007.prn";
 
 //-------------------------------------------------------
@@ -41,7 +49,6 @@ int main()
     return 0;
 }
 
-
 // I don't see how ESCPOS can be used with a steaming buffer
 // I think one would need to buffer the chars up first, then parse.
 
@@ -54,12 +61,10 @@ int8_t ESCPOS_parse(RxBuffer* b)
             int u = 0, depth = 1, i = 1;
             uint8_t g[BMAX] = { c, 0x00, 0x00 };
 
-            while ((u = find_esc_pos(u, escpos, depth++, g)) >= 0)          //check at nth depth
-            {
+            while ((u = find_esc_pos(u, escpos, depth++, g)) >= 0) {        //check at nth depth
                 if ((depth <= escpos[u].depth) && (b->peekNext() != -1)) {  //if we can go deeper
                     g[i++] = (uint8_t)b->getNext();                         //pop a char
-                } 
-                else {
+                } else {
                     break; //else break
                 }
             }
@@ -70,17 +75,16 @@ int8_t ESCPOS_parse(RxBuffer* b)
                         printf("something broke!\n");
                         return -1;
                     }
-            } 
-            else {
+            } else {
                 printf("NA [0x%.2X]\n", g[0]);
             }
         }
         /* -------- human readable text ------------ */
         else {
-            std::string str; str += (char)c;
+            printf("[");
             while (b->peekNext() > 0x1F)
-                str += (char) b->getNext();
-            printf("[%s]\n", str.c_str()); 
+                printf("%c", (uint8_t)b->getNext());
+            printf("]\n");
         }
 
         return 0;
