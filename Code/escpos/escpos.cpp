@@ -34,10 +34,9 @@ extern CMD escpos[CMD_SIZE]; //located in esc_functionc.cpp
 
 int main()
 {
-    printf("Hello World\n");
-
-    RxBuffer rx(file_under_test);       //open up file
-    while (ESCPOS_parse(&rx) != -1);    //start parsing
+    printf("File:%s\n", file_under_test);   //dump file name for debugging
+    RxBuffer rx(file_under_test);           //open up file
+    while (ESCPOS_parse(&rx) != -1);        //start parsing
 
     return 0;
 }

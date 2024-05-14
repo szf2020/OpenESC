@@ -50,6 +50,7 @@ int _DLE_ENQ(RxBuffer* b)
 int _DLE_DC4(RxBuffer* b)
 {
     // TODO:
+    printf("<DLE DC4>\n");
     return 0;
 }
 
@@ -114,6 +115,7 @@ int _ESC_PERCENT_SYM(RxBuffer* b)
 int _ESC_AND_SYM(RxBuffer* b)
 {
     // TODO:
+    printf("<ESC &>\n");
     return 0;
 }
 
@@ -121,6 +123,7 @@ int _ESC_AND_SYM(RxBuffer* b)
 int _ESC_STAR_SYM(RxBuffer* b)
 {
     // TODO:
+    printf("<ESC *>\n");
     return 0;
 }
 
@@ -177,6 +180,7 @@ int _ESC_AT_SYM(RxBuffer* b)
 int _ESC_UPR_D(RxBuffer* b)
 {
     // TODO:
+    printf("<ESC D>\n");
     return 0;
 }
 
@@ -460,6 +464,7 @@ int _FS_PERIOD_SYM(RxBuffer* b)
 int _FS_ASCII_TWO(RxBuffer* b)
 {
     // TODO:
+    printf("<FS 2>\n");
     return 0;
 }
 
@@ -509,7 +514,6 @@ int _GS_EXCLAMATION_SYM(RxBuffer* b)
 {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS !> n=0x%.2X\n", n);
-
     printf("-Character Width: %d\n", ((n >> 4) & 0x0F) + 1);
     printf("-Character Height: %d\n", (n & 0x0F) + 1);
     return 0;
@@ -558,6 +562,7 @@ int _GS_LEFT_PERNTH_UPR_A(RxBuffer* b)
 int _GS_LEFT_PERNTH_UPR_C(RxBuffer* b)
 {
     // TODO:
+    printf("<GS ( C>\n");
     return 0;
 }
 
@@ -565,6 +570,7 @@ int _GS_LEFT_PERNTH_UPR_C(RxBuffer* b)
 int _GS_LEFT_PERNTH_UPR_D(RxBuffer* b)
 {
     // TODO:
+    printf("<GS ( D>\n");
     return 0;
 }
 
@@ -572,6 +578,7 @@ int _GS_LEFT_PERNTH_UPR_D(RxBuffer* b)
 int _GS_LEFT_PERNTH_UPR_E(RxBuffer* b)
 {
     // TODO:
+    printf("<GS ( E>\n");
     return 0;
 }
 
@@ -579,6 +586,7 @@ int _GS_LEFT_PERNTH_UPR_E(RxBuffer* b)
 int _GS_LEFT_PERNTH_UPR_H(RxBuffer* b)
 {
     // TODO:
+    printf("<GS ( H>\n");
     return 0;
 }
 
@@ -586,6 +594,7 @@ int _GS_LEFT_PERNTH_UPR_H(RxBuffer* b)
 int _GS_LEFT_PERNTH_UPR_K(RxBuffer* b)
 {
     // TODO:
+    printf("<GS ( K>\n");
     return 0;
 }
 
@@ -636,6 +645,7 @@ int _GS_LEFT_PERNTH_UPR_L(RxBuffer* b)
 int _GS_LEFT_PERNTH_UPR_M(RxBuffer* b)
 {
     // TODO:
+    printf("<GS ( M>\n");
     return 0;
 }
 
@@ -643,6 +653,7 @@ int _GS_LEFT_PERNTH_UPR_M(RxBuffer* b)
 int _GS_LEFT_PERNTH_UPR_N(RxBuffer* b)
 {
     // TODO:
+    printf("<GS ( N>\n");
     return 0;
 }
 
@@ -675,6 +686,7 @@ int _GS_LEFT_PERNTH_LWR_k(RxBuffer* b)
 int _GS_STAR_SYM(RxBuffer* b)
 {
     // TODO:
+    printf("<GS *>\n");
     return 0;
 }
 
@@ -880,7 +892,7 @@ int _GS_LWR_k(RxBuffer* b)
 
     //function a
     if (m == 0)      { printf("{A} (UPC-A)\n"); }
-    else if(m == 1)  { printf("{A} (UPC-E)\n"); }
+    else if (m == 1) { printf("{A} (UPC-E)\n"); }
     else if (m == 2) { printf("{A} (JAN13 [EAN13])\n"); }
     else if (m == 3) { printf("{A} (JAN8 [EAN8])\n"); }
     else if (m == 4) { printf("{A} (CODE39)\n"); }
@@ -917,6 +929,7 @@ int _GS_LWR_r(RxBuffer* b)
 int _GS_LWR_v_ZERO(RxBuffer* b)
 {
     // TODO:
+    printf("<GS v 0>\n");
     return 0;
 }
 
@@ -992,6 +1005,7 @@ int SYM_function_070(RxBuffer* b, int s)
 // PDF417: Store the data in the symbol storage area
 int SYM_function_080(RxBuffer* b, int s)
 {
+    printf("(Function 80)\n");
     return 0;
 }
 
@@ -1049,6 +1063,7 @@ int SYM_function_169(RxBuffer* b, int s)
 // QR Code: Store the data in the symbol storage area
 int SYM_function_180(RxBuffer* b, int s)
 {
+    printf("(Function 180)\n");
     return 0;
 }
 
@@ -1085,6 +1100,7 @@ int SYM_function_265(RxBuffer* b, int s)
 // MaxiCode: Store the data in the symbol storage area
 int SYM_function_280(RxBuffer* b, int s)
 {
+    printf("(Function 280)\n");
     return 0;
 }
 
@@ -1131,6 +1147,7 @@ int SYM_function_371(RxBuffer* b, int s)
 // 2-dimensional RSS: Store the data in the symbol storage area
 int SYM_function_380(RxBuffer* b, int s)
 {
+    printf("(Function 380)\n");
     return 0;
 }
 
@@ -1187,6 +1204,7 @@ int SYM_function_472(RxBuffer* b, int s)
 // Composite Symbol: Store the data in the symbol storage area
 int SYM_function_480(RxBuffer* b, int s)
 {
+    printf("(Function 480)\n");
     return 0;
 }
 
@@ -1213,6 +1231,7 @@ int SYM_function_482(RxBuffer* b, int s)
 // NULL function to fill up pointer array
 int SYM_NULL(RxBuffer* b, int s)
 {
+    printf("<NOT LOLZ, BUT NULLZ!>\n");
     return -1;
 }
 
@@ -1353,18 +1372,21 @@ int GS_function_82(RxBuffer* b, int s)
 // Define the downloaded graphics data (raster format)
 int GS_function_83(RxBuffer* b, int s)
 {
+    printf("(Function 83)\n");
     return 0;
 }
 
 // Define the downloaded graphics data
 int GS_function_84(RxBuffer* b, int s)
 {
+    printf("(Function 84)\n");
     return 0;
 }
 
 // Print the specified download graphics data
 int GS_function_85(RxBuffer* b, int s)
 {
+    printf("(Function 85)\n");
     return 0;
 }
 
@@ -1410,5 +1432,6 @@ int GS_function_112(RxBuffer* b, int s)
 // Store the graphics data in the print buffer (column format)
 int GS_function_113(RxBuffer* b, int s)
 {
+    printf("(Function 113)\n");
     return 0;
 }
