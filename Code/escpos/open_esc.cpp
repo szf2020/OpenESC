@@ -6,14 +6,14 @@
  *   888      888  888' `88b d88' `88b `888P"Y88b   888oooo8     `"Y8888o.  888          
  *   888      888  888   888 888ooo888  888   888   888    "         `"Y88b 888          
  *   `88b    d88'  888   888 888    .o  888   888   888       o oo     .d8P `88b    ooo  
- *   `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o o888ooooood8 8""88888P'   `Y8bood8P'  
+ *    `Y8bood8P'   888bod8P' `Y8bod8P' o888o o888o o888ooooood8 8""88888P'   `Y8bood8P'  
  *                 888                                                                   
  *                o888o                                                                  
  * 
  *   Wrote from the EPSON TM-T90 spec sheet                              (MJM 5-13-2024)
  *
  *   File: open_esc.cpp (main)
- *   Note: none
+ *   Note: This is a prelude to the firmware implementation.
  *
  *********************************************************************************************/
 
@@ -35,25 +35,26 @@ const char* file_under_test = "testFiles/007.prn";
 
 //-------------------------------------------------------
 
+extern CMD escpos[CMD_SIZE]; //located in esc_functions.cpp
+
+//-------------------------------------------------------
+
 int8_t ESCPOS_parse(RxBuffer* b);
 int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c);
 
-extern CMD escpos[CMD_SIZE]; //located in esc_functionc.cpp
+//-------------------------------------------------------
 
-int main()
-{
+int main() {
     printf("File:%s\n", file_under_test);   //dump file name for debugging
     RxBuffer rx(file_under_test);           //open up file
     while (ESCPOS_parse(&rx) != -1);        //start parsing
-
     return 0;
 }
 
 // I don't see how ESCPOS can be used with a steaming buffer
 // I think one would need to buffer the chars up first, then parse.
 
-int8_t ESCPOS_parse(RxBuffer* b)
-{
+int8_t ESCPOS_parse(RxBuffer* b) {
     if (b->peekNext() != -1) {
         uint8_t c = (uint8_t) b->getNext();
         /* ------------ operation codes ------------- */
@@ -64,7 +65,8 @@ int8_t ESCPOS_parse(RxBuffer* b)
             while ((u = find_esc_pos(u, escpos, depth++, g)) >= 0) {        //check at nth depth
                 if ((depth <= escpos[u].depth) && (b->peekNext() != -1)) {  //if we can go deeper
                     g[i++] = (uint8_t)b->getNext();                         //pop a char
-                } else {
+                } 
+                else {
                     break; //else break
                 }
             }
@@ -75,7 +77,8 @@ int8_t ESCPOS_parse(RxBuffer* b)
                         printf("something broke!\n");
                         return -1;
                     }
-            } else {
+            } 
+            else {
                 printf("NA [0x%.2X]\n", g[0]);
             }
         }
@@ -86,29 +89,24 @@ int8_t ESCPOS_parse(RxBuffer* b)
                 printf("%c", (uint8_t)b->getNext());
             printf("]\n");
         }
-
         return 0;
     }
     else {
         printf("buffer empty\n");
     }
-
     return -1; //EOF
 }
 
-int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c)
-{
+int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c) {
     int f = 1, i = rec;
-
-    while (i < CMD_SIZE)
-    {
+    while (i < CMD_SIZE) {
         for (int j = 0; j < depth; j++)
             f &= (c[j] == ptr[i].c[j]);
-
         if (f) break;
         i++; f = 1;
     }
-
     if (i >= CMD_SIZE) return -1; //over run / not found
     return i;
 }
+
+// line 112
