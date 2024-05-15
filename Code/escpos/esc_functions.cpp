@@ -29,7 +29,6 @@ static const int DPI_203 = (int)(8.0 * 25.4); //real is 203.2 dots/inch
 
 static float vertical_motion_unit = 1;
 static float horizontal_motion_unit = 1;
-static uint16_t line_spacing = 30;
 
 // Command: Horizontal Tab 
 int8_t _HT(RxBuffer* b) {
@@ -93,7 +92,15 @@ int8_t _ESC_FF(RxBuffer* b) {
 int8_t _ESC_SP(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC SP>\n");
-    device.right_side_char_spacing = n;
+    if (device.mode == 1) {
+        if ((device.page_mode.print_direction == 0) || (device.page_mode.print_direction == 180)) {
+            device.page_mode.right_side_char_spacing = (uint16_t)(n * horizontal_motion_unit); //rot [0 | 180]
+        } else {
+            device.page_mode.right_side_char_spacing = (uint16_t)(n * vertical_motion_unit); //rot [90 | 270]
+        }
+    } else {
+        device.std_mode.right_side_char_spacing = (uint16_t)(n * horizontal_motion_unit);
+    }
     return 0;
 }
 
@@ -111,11 +118,11 @@ int8_t _ESC_EXCLAMATION_SYM(RxBuffer* b) {
         Font B(9 × 17) : 16 dots from the top of a character.
     */
 
-    device.char_font     = (n & 0b00000001) ? 1 : 0;
-    device.emphasize     = (n & 0b00001000) ? 1 : 0;
-    device.double_height = (n & 0b00010000) ? 1 : 0;
-    device.double_width  = (n & 0b00100000) ? 1 : 0;
-    device.underline     = (n & 0b10000000) ? 1 : 0;
+    //device.char_font     = (n & 0b00000001) ? 1 : 0;
+    //device.emphasize     = (n & 0b00001000) ? 1 : 0;
+    //device.double_height = (n & 0b00010000) ? 1 : 0;
+    //device.double_width  = (n & 0b00100000) ? 1 : 0;
+    //device.underline     = (n & 0b10000000) ? 1 : 0;
     return 0;
 }
 
@@ -124,7 +131,7 @@ int8_t _ESC_DOLLAR_SYM(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
     printf("<ESC $>\n");
-    device.abs_h_ppos = (uint16_t)(nL + nH * 256);
+    //device.abs_h_ppos = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
@@ -132,7 +139,7 @@ int8_t _ESC_DOLLAR_SYM(RxBuffer* b) {
 int8_t _ESC_PERCENT_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC %%>\n");
-    device.user_char_set = (n > 0) ? 1 : 0;
+    //device.user_char_set = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -156,28 +163,31 @@ int8_t _ESC_SUBTRACT_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC ->\n");
 
-    switch (n) {
-        case 0: case 48: device.underline = 1;      break;
-        case 1: case 49: device.underline_dots = 0; break;
-        case 2: case 50: device.underline_dots = 1; break;
-        default:                                    break;
-    }
+    //switch (n) {
+    //    case 0: case 48: device.underline = 1;      break;
+    //    case 1: case 49: device.underline_dots = 0; break;
+    //    case 2: case 50: device.underline_dots = 1; break;
+    //    default:                                    break;
+    //}
     return 0;
 }
 
 // Command: Select default line spacing
 int8_t _ESC_ASCII_TWO(RxBuffer* b) {
     printf("<ESC 2>\n");
-    printf("-Default line spacing set\n");
-    line_spacing = 30;
+    (device.mode > 0) ? \
+        device.page_mode.line_spaceing = DEFAULT_LINE_SPACEING : \
+        device.std_mode.line_spaceing = DEFAULT_LINE_SPACEING;
     return 0;
 }
 
 // Command: Set line spacing
 int8_t _ESC_ASCII_THREE(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    line_spacing = (uint16_t)(n * vertical_motion_unit);
-    printf("<ESC 3> line spacing: %d\n", line_spacing);
+    printf("<ESC 3>\n");
+    (device.mode > 0) ? \
+        device.page_mode.line_spaceing = n : \
+        device.std_mode.line_spaceing = n;
     return 0;
 }
 
@@ -213,7 +223,7 @@ int8_t _ESC_UPR_D(RxBuffer* b) {
 int8_t _ESC_UPR_E(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC E>\n");
-    device.emphasize = (n > 0) ? 1 : 0;
+    //device.emphasize = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -221,7 +231,7 @@ int8_t _ESC_UPR_E(RxBuffer* b) {
 int8_t _ESC_UPR_G(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC G>\n");
-    device.double_strike = (n > 0) ? 1 : 0;
+    //device.double_strike = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -244,13 +254,13 @@ int8_t _ESC_UPR_M(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC M>\n");
 
-    switch (n) {
-        case 0: case 48: device.char_font = 0; break; //Font A (12x24)
-        case 1: case 49: device.char_font = 1; break; //Font B (9x17)
-        case 2: case 50: device.char_font = 1; break; //Font B
-        case 97:         device.char_font = 2; break; //Extended
-        default:                               break;
-    }
+    //switch (n) {
+    //    case 0: case 48: device.char_font = 0; break; //Font A (12x24)
+    //    case 1: case 49: device.char_font = 1; break; //Font B (9x17)
+    //    case 2: case 50: device.char_font = 1; break; //Font B
+    //    case 97:         device.char_font = 2; break; //Extended
+    //    default:                               break;
+    //}
     return 0;
 }
 
@@ -258,7 +268,7 @@ int8_t _ESC_UPR_M(RxBuffer* b) {
 int8_t _ESC_UPR_R(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC R>\n");    
-    device.country_code = ((n > 0) && (n < 16)) ? n : 0; //region 0-15 
+    //device.country_code = ((n > 0) && (n < 16)) ? n : 0; //region 0-15 
     return 0;
 }
 
@@ -274,11 +284,11 @@ int8_t _ESC_UPR_T(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC T>\n");
     switch (n) {
-        case 0: case 48: device.cw_pmd = 0;   break; //Upper Left
-        case 1: case 49: device.cw_pmd = 90;  break; //Lower Left
-        case 2: case 50: device.cw_pmd = 180; break; //Lower Right
-        case 3: case 51: device.cw_pmd = 270; break; //Upper Right 
-        default:                              break;
+        case 0: case 48: device.page_mode.print_direction = 0;   break; //Upper Left
+        case 1: case 49: device.page_mode.print_direction = 90;  break; //Lower Left
+        case 2: case 50: device.page_mode.print_direction = 180; break; //Lower Right
+        case 3: case 51: device.page_mode.print_direction = 270; break; //Upper Right 
+        default:                                                 break;
     }
     return 0;
 }
@@ -288,12 +298,12 @@ int8_t _ESC_UPR_V(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC V>\n");
 
-    switch (n) {
-        case 0: case 48: device.cw_rotation = 0; break; //clockwise rotation mode off
-        case 1: case 49: device.cw_rotation = 1; break; //clockwise rotation mode on (1 dot)
-        case 2: case 50: device.cw_rotation = 2; break; //clockwise rotation mode on (1.5 dot)
-        default:                                 break;
-    }
+    //switch (n) {
+    //    case 0: case 48: device.cw_rotation = 0; break; //clockwise rotation mode off
+    //    case 1: case 49: device.cw_rotation = 1; break; //clockwise rotation mode on (1 dot)
+    //    case 2: case 50: device.cw_rotation = 2; break; //clockwise rotation mode on (1.5 dot)
+    //    default:                                 break;
+    //}
     return 0;
 }
 
@@ -310,10 +320,10 @@ int8_t _ESC_UPR_W(RxBuffer* b) {
     uint8_t dyH = (uint8_t)b->getNext();
     printf("<ESC W>\n");
 
-    device.x      = (uint16_t)((xL + xH * 256) * horizontal_motion_unit);
-    device.y      = (uint16_t)((yL + yH * 256) * vertical_motion_unit);
-    device.width  = (uint16_t)((dxL + dxH * 256) * horizontal_motion_unit);
-    device.height = (uint16_t)((dyL + dyH * 256) * vertical_motion_unit);   
+    //device.x      = (uint16_t)((xL + xH * 256) * horizontal_motion_unit);
+    //device.y      = (uint16_t)((yL + yH * 256) * vertical_motion_unit);
+    //device.width  = (uint16_t)((dxL + dxH * 256) * horizontal_motion_unit);
+    //device.height = (uint16_t)((dyL + dyH * 256) * vertical_motion_unit);   
     return 0;
 }
 
@@ -322,7 +332,7 @@ int8_t _ESC_BACKSLASH_SYM(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
     printf("<ESC \\>\n");
-    device.r_ppos = (uint16_t)(nL + nH * 256);
+    //device.r_ppos = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
@@ -330,12 +340,12 @@ int8_t _ESC_BACKSLASH_SYM(RxBuffer* b) {
 int8_t _ESC_LWR_a(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC a> n=0x%.2X\n", n);
-    switch (n) {
-        case 0: case 48: device.justification = -1; break; //left
-        case 1: case 49: device.justification = 0;  break; //center
-        case 2: case 50: device.justification = 1;  break; //right
-        default:                                    break;
-    }
+    //switch (n) {
+    //    case 0: case 48: device.justification = -1; break; //left
+    //    case 1: case 49: device.justification = 0;  break; //center
+    //    case 2: case 50: device.justification = 1;  break; //right
+    //    default:                                    break;
+    //}
     return 0;
 }
 
@@ -364,7 +374,7 @@ int8_t _ESC_LWR_c_FOUR(RxBuffer* b) {
 int8_t _ESC_LWR_c_FIVE(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC c 5>\n");
-    device.panel_but = (n > 0) ? 1 : 0;
+    device.panel_btn = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -388,7 +398,7 @@ int8_t _ESC_LWR_p(RxBuffer* b) {
 int8_t _ESC_LWR_t(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC t>\n");
-    device.code_table = ((n > 0) && (n < 20)) ? n : 0;
+    //device.code_table = ((n > 0) && (n < 20)) ? n : 0;
     return 0;
 }
 
@@ -396,7 +406,7 @@ int8_t _ESC_LWR_t(RxBuffer* b) {
 int8_t _ESC_LEFT_QBRACKET_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC {>\n");
-    device.upside_dwn = (n > 0) ? 1 : 0;
+    //device.upside_dwn = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -503,8 +513,8 @@ int8_t _FS_LWR_p(RxBuffer* b) {
 int8_t _GS_EXCLAMATION_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS !>\n");
-    device.char_width  = ((n >> 4) & 0x0F) + 1; //This multiplied by the normal font size
-    device.char_height = (n & 0x0F) + 1;        //This multiplied by the normal font size
+    //device.char_width  = ((n >> 4) & 0x0F) + 1; //This multiplied by the normal font size
+    //device.char_height = (n & 0x0F) + 1;        //This multiplied by the normal font size
     return 0;
 }
 
@@ -513,7 +523,7 @@ int8_t _GS_DOLLAR_SYM(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
     printf("<GS $>\n");
-    device.abs_v_ppos = (uint16_t)(nL + nH * 256);
+    //device.abs_v_ppos = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
@@ -721,7 +731,7 @@ int8_t _GS_COLON_SYM(RxBuffer* b) {
 int8_t _GS_UPR_B(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS B>\n");
-    device.reverse = (n > 0) ? 1 : 0;
+    //device.reverse = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -744,7 +754,7 @@ int8_t _GS_UPR_L(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();    
     printf("<GS L>\n");
-    device.left_margin = (uint16_t)(nL + nH * 256);
+    //device.left_margin = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
@@ -809,7 +819,7 @@ int8_t _GS_LWR_a(RxBuffer* b) {
 int8_t _GS_LWR_b(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS b>\n");
-    device.smoothing = (n > 0) ? 1 : 0;
+    //device.smoothing = (n > 0) ? 1 : 0;
     return 0;
 }
 

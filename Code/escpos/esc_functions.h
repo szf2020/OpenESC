@@ -51,6 +51,7 @@ typedef int8_t (*operation_fp)(RxBuffer* b);
 typedef int8_t (*operation_fpa)(RxBuffer* b, int s);
 //-------------------------------------------------------
 
+#define DEFAULT_LINE_SPACEING 30
 
 
 //-------------------------------------------------------

@@ -24,6 +24,23 @@
 #include <cstring>
 #include <cstdbool>
 
+
+struct _page_mode
+{
+    uint8_t line_spaceing;
+    uint16_t print_direction;
+
+    uint16_t right_side_char_spacing;
+};
+
+struct _std_mode
+{
+    uint8_t line_spaceing;
+
+    uint16_t right_side_char_spacing;
+};
+
+
 struct settings 
 {
     uint8_t mode; //page mode = 1, standard mode = 0
@@ -34,41 +51,13 @@ struct settings
     uint8_t RP_E_A;     //roll paper end
     uint8_t RP_E_B;     //roll paper end
 
-    uint8_t panel_but;  //panel buttons
+    uint8_t panel_btn;  //panel buttons
 
-    int8_t right_side_char_spacing;     //right side
-    uint8_t underline_dots;             //underline thickness
-    uint8_t cw_rotation;                //font clockwise rotation mode
-    uint8_t char_width;                 //multiplier value
-    uint8_t char_height;                //multiplier value
-    int8_t justification;               //justification
 
-    uint8_t char_font;      //font selection
-    uint8_t user_char_set;  //user defined character set
-    uint8_t emphasize;      //emphasized mode
-    uint8_t double_height;  //double height mode
-    uint8_t double_width;   //double width mode
-    uint8_t underline;      //underline mode
-    uint8_t double_strike;  //double strike mode
-    uint8_t reverse;        //reverse printing mode
-    uint8_t code_table;     //character code table
-    uint8_t country_code;   //region code
-    uint8_t smoothing;      //smoothing mode
 
-    uint8_t upside_dwn;     //upside down print mode
-
-    uint16_t left_margin;   //left margin
-
-    uint16_t abs_h_ppos;    //absolute horizontal print position
-    uint16_t abs_v_ppos;    //absolute vertical print position
-    uint16_t r_ppos;        //relative print position
-    uint16_t cw_pmd;        //page mode direction
-
-    /* page mode print area */
-    uint16_t x;             //position x
-    uint16_t y;             //position y
-    uint16_t width;         //area width
-    uint16_t height;        //area height
+    //------------------------------------------------
+    _page_mode page_mode;   //page mode settings
+    _std_mode std_mode;     //page mode settings
 
 };
 
