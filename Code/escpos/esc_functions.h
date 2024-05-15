@@ -26,6 +26,7 @@
 
 #include "RxBuffer.h"
 #include "zint/zint.h"
+#include "settings.h"
 
 //-------------------------------------------------------
 //https://stackoverflow.com/a/3208376
@@ -48,6 +49,10 @@
 //-------------------------------------------------------
 typedef int8_t (*operation_fp)(RxBuffer* b);
 typedef int8_t (*operation_fpa)(RxBuffer* b, int s);
+//-------------------------------------------------------
+
+
+
 //-------------------------------------------------------
 struct CMD {
     uint8_t depth;
@@ -142,7 +147,7 @@ int8_t _GS_LEFT_PERNTH_UPR_L(RxBuffer* b);     // ( L
 int8_t _GS_LEFT_PERNTH_UPR_M(RxBuffer* b);     // ( M
 int8_t _GS_LEFT_PERNTH_UPR_N(RxBuffer* b);     // ( N
 int8_t _GS_LEFT_PERNTH_LWR_k(RxBuffer* b);     // ( k
-int8_t _GS_STAR_SYM(RxBuffer* b);              // *
+int8_t _GS_STAR_SYM(RxBuffer* b);              // '*'
 int8_t _ESC_FWRDSLASH_SYM(RxBuffer* b);        // '/'
 int8_t _GS_EIGHT_UPR_L(RxBuffer* b);           // 8 L
 int8_t _GS_COLON_SYM(RxBuffer* b);             // :

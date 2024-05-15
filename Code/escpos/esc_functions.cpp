@@ -21,6 +21,10 @@
 
 //----------------------------------------------------------------
 
+extern settings device;
+
+//----------------------------------------------------------------
+
 static const int DPI_203 = (int)(8.0 * 25.4); //real is 203.2 dots/inch
 
 static float vertical_motion_unit = 1;
@@ -88,33 +92,30 @@ int8_t _ESC_FF(RxBuffer* b) {
 // Command: Set right-side character spacing
 int8_t _ESC_SP(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    uint16_t right_scs = (uint16_t)(n * horizontal_motion_unit);
-    printf("<ESC SP> Right Side Char Spacing: %d\n", right_scs);
+    printf("<ESC SP>\n");
+    device.right_side_char_spacing = n;
     return 0;
 }
 
 // Command: Select print modes(s)
 int8_t _ESC_EXCLAMATION_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC !> n=0x%.2X\n", n);
+    printf("<ESC !>\n");
 
-    uint8_t char_font      = (n & 0b00000001);
-    uint8_t char_emph      = (n & 0b00001000);
-    uint8_t char_double_h  = (n & 0b00010000);
-    uint8_t char_double_w  = (n & 0b00100000);
-    uint8_t char_underline = (n & 0b10000000);
+    /*
+    Character configurations
+        Bit 0: Font 1 = Font A(12 × 24)
+               Font 2 = Font B(9 × 17)
+    Each character’s baseline is as follows :
+        Font A(12 × 24) : 21 dots from the top of a character.
+        Font B(9 × 17) : 16 dots from the top of a character.
+    */
 
-    if (char_font)      printf("-Character font 2\n");
-    else                printf("-Character font 1\n");
-    if(char_emph)       printf("-Emphasized ON\n");
-    else                printf("-Emphasized OFF\n");
-    if (char_double_h)  printf("-Double height ON\n");
-    else                printf("-Double height OFF\n");
-    if (char_double_w)  printf("-Double width ON\n");
-    else                printf("-Double width OFF\n");
-    if (char_underline) printf("-Underline ON\n");
-    else                printf("-Underline OFF\n");
-
+    device.char_font     = (n & 0b00000001) ? 1 : 0;
+    device.emphasize     = (n & 0b00001000) ? 1 : 0;
+    device.double_height = (n & 0b00010000) ? 1 : 0;
+    device.double_width  = (n & 0b00100000) ? 1 : 0;
+    device.underline     = (n & 0b10000000) ? 1 : 0;
     return 0;
 }
 
@@ -122,17 +123,16 @@ int8_t _ESC_EXCLAMATION_SYM(RxBuffer* b) {
 int8_t _ESC_DOLLAR_SYM(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    uint16_t app = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
-    printf("<ESC $> Absolute print position: %d\n", app);
+    printf("<ESC $>\n");
+    device.abs_h_ppos = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
 // Command: Select / cancel user-defined character set
 int8_t _ESC_PERCENT_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC %%> n=0x%.2X\n", n);
-    if (n) printf("-User-defined character set is selected\n");
-    else   printf("-User-defined character set is canceled\n");
+    printf("<ESC %%>\n");
+    device.user_char_set = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -140,6 +140,7 @@ int8_t _ESC_PERCENT_SYM(RxBuffer* b) {
 int8_t _ESC_AND_SYM(RxBuffer* b) {
     // TODO:
     printf("<ESC &>\n");
+    printf("Define user-defined chars <here>\n");
     return 0;
 }
 
@@ -153,13 +154,13 @@ int8_t _ESC_STAR_SYM(RxBuffer* b) {
 // Command: Turn underline mode on/off
 int8_t _ESC_SUBTRACT_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC -> n=0x%.2X\n", n);
+    printf("<ESC ->\n");
 
     switch (n) {
-        case 0: case 48: printf("-Underline mode off\n");     break;
-        case 1: case 49: printf("-Underline 1 dot thick\n");  break;
-        case 2: case 50: printf("-Underline 2 dots thick\n"); break;
-        default:                                              break;
+        case 0: case 48: device.underline = 1;      break;
+        case 1: case 49: device.underline_dots = 0; break;
+        case 2: case 50: device.underline_dots = 1; break;
+        default:                                    break;
     }
     return 0;
 }
@@ -187,16 +188,17 @@ int8_t _ESC_EQUAL_SYM(RxBuffer* b) {
     return 0;
 }
 
-// Command: Cancel user-defined characters
+// Command: Cancel user-defined characters, or delete? I'm not really sure at the moment
 int8_t _ESC_QUESTION_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC ?> n=0x%.2X\n", n);
+    printf("<ESC ?> n=0x%.2X\n", n); //?
     return 0;
 }
 
 // Command: initialize printer
 int8_t _ESC_AT_SYM(RxBuffer* b) {
     printf("<ESC @>\n");
+    default_settings(); //move later
     return 0;
 }
 
@@ -210,16 +212,16 @@ int8_t _ESC_UPR_D(RxBuffer* b) {
 // Command: Turn emphasized mode on/off
 int8_t _ESC_UPR_E(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC E> n=0x%.2X\n", n);
-    if (n) printf("-Emphasized mode ON\n");
-    else   printf("-Emphasized mode OFF\n");
+    printf("<ESC E>\n");
+    device.emphasize = (n > 0) ? 1 : 0;
     return 0;
 }
 
 // Command: Turn double-strike mode on/off
 int8_t _ESC_UPR_G(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC G> n=0x%.2X\n", n);
+    printf("<ESC G>\n");
+    device.double_strike = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -233,20 +235,21 @@ int8_t _ESC_UPR_J(RxBuffer* b) {
 // Command: Select page mode
 int8_t _ESC_UPR_L(RxBuffer* b) {
     printf("<ESC L>\n");
+    device.mode = 1; //switch to page mode
     return 0;
 }
 
 // Command: Select character font
 int8_t _ESC_UPR_M(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC M> n=0x%.2X\n", n);
+    printf("<ESC M>\n");
 
     switch (n) {
-        case 0: case 48: printf("-Font A\n");        break; //Font A (12x24)
-        case 1: case 49: printf("-Font B\n");        break; //Font B (9x17)
-        case 2: case 50: printf("-Font C\n");        break;
-        case 97:         printf("-Extended Font\n"); break;
-        default:                                     break;
+        case 0: case 48: device.char_font = 0; break; //Font A (12x24)
+        case 1: case 49: device.char_font = 1; break; //Font B (9x17)
+        case 2: case 50: device.char_font = 1; break; //Font B
+        case 97:         device.char_font = 2; break; //Extended
+        default:                               break;
     }
     return 0;
 }
@@ -254,26 +257,28 @@ int8_t _ESC_UPR_M(RxBuffer* b) {
 // Command: Select an international character set
 int8_t _ESC_UPR_R(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC R> n=0x%.2X\n", n);
+    printf("<ESC R>\n");    
+    device.country_code = ((n > 0) && (n < 16)) ? n : 0; //region 0-15 
     return 0;
 }
 
 // Command: Select standard mode
 int8_t _ESC_UPR_S(RxBuffer* b) {
     printf("<ESC S>\n");
+    device.mode = 1; //switch to std mode
     return 0;
 }
 
 // Command: Select print direction in page mode
 int8_t _ESC_UPR_T(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC T> n=0x%.2X\n", n);
+    printf("<ESC T>\n");
     switch (n) {
-        case 0: case 48: printf("-Upper Left\n");   break;
-        case 1: case 49: printf("-Lower Left\n");   break;
-        case 2: case 50: printf("-Lower Right\n");  break;
-        case 3: case 51: printf("-Upper Right\n");  break;
-        default:                                    break;
+        case 0: case 48: device.cw_pmd = 0;   break; //Upper Left
+        case 1: case 49: device.cw_pmd = 90;  break; //Lower Left
+        case 2: case 50: device.cw_pmd = 180; break; //Lower Right
+        case 3: case 51: device.cw_pmd = 270; break; //Upper Right 
+        default:                              break;
     }
     return 0;
 }
@@ -281,7 +286,14 @@ int8_t _ESC_UPR_T(RxBuffer* b) {
 // Command: Turn clockwise rotation mode on/off
 int8_t _ESC_UPR_V(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC V> n=0x%.2X\n", n);
+    printf("<ESC V>\n");
+
+    switch (n) {
+        case 0: case 48: device.cw_rotation = 0; break; //clockwise rotation mode off
+        case 1: case 49: device.cw_rotation = 1; break; //clockwise rotation mode on (1 dot)
+        case 2: case 50: device.cw_rotation = 2; break; //clockwise rotation mode on (1.5 dot)
+        default:                                 break;
+    }
     return 0;
 }
 
@@ -296,23 +308,12 @@ int8_t _ESC_UPR_W(RxBuffer* b) {
     uint8_t dxH = (uint8_t)b->getNext();
     uint8_t dyL = (uint8_t)b->getNext();
     uint8_t dyH = (uint8_t)b->getNext();
+    printf("<ESC W>\n");
 
-    printf("<ESC W> xL=0x%.2X, xH=0x%.2X, \
-        yL=0x%.2X, yH=0x%.2X, dxL=0x%.2X, \
-        dxH=0x%.2X, dyL=0x%.2X, dyH=0x%.2X\n",
-        xL, xH, yL, yH, dxL, dxH, dyL, dyH);
-
-    printf("-maths: %d, %d, %d, %d\n",
-        (int)((xL + xH * 256) * horizontal_motion_unit),
-        (int)((yL + yH * 256) * vertical_motion_unit),
-        (int)((dxL + dxH * 256) * horizontal_motion_unit),
-        (int)((dyL + dyH * 256) * vertical_motion_unit));
-
-    // Horizontal logical origin = (xL + xH × 256)   × (horizontal motion unit) from absolute origin.
-    // Vertical logical origin   = (yL + yH × 256)   × (vertical motion unit) from absolute origin.
-    // Print area width          = (dxL + dxH × 256) × (horizontal motion unit)
-    // Print area height         = (dyL + dyH × 256) × (vertical motion unit)
-
+    device.x      = (uint16_t)((xL + xH * 256) * horizontal_motion_unit);
+    device.y      = (uint16_t)((yL + yH * 256) * vertical_motion_unit);
+    device.width  = (uint16_t)((dxL + dxH * 256) * horizontal_motion_unit);
+    device.height = (uint16_t)((dyL + dyH * 256) * vertical_motion_unit);   
     return 0;
 }
 
@@ -320,11 +321,8 @@ int8_t _ESC_UPR_W(RxBuffer* b) {
 int8_t _ESC_BACKSLASH_SYM(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    uint16_t rpp = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
-    printf("<ESC \\> Relative print position: %d\n", rpp);
-    // Moves the print position to 
-    // (nL + nH × 256) × (horizontal or vertical motion unit) 
-    // from the current position
+    printf("<ESC \\>\n");
+    device.r_ppos = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
@@ -333,10 +331,10 @@ int8_t _ESC_LWR_a(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC a> n=0x%.2X\n", n);
     switch (n) {
-        case 0: case 48: printf("-Left Justification\n");    break;
-        case 1: case 49: printf("-Centered\n");              break;
-        case 2: case 50: printf("-Right Justification\n");   break;
-        default:                                             break;
+        case 0: case 48: device.justification = -1; break; //left
+        case 1: case 49: device.justification = 0;  break; //center
+        case 2: case 50: device.justification = 1;  break; //right
+        default:                                    break;
     }
     return 0;
 }
@@ -344,21 +342,29 @@ int8_t _ESC_LWR_a(RxBuffer* b) {
 // Command: Select paper sensor to output paper-end signals
 int8_t _ESC_LWR_c_THREE(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC c 3> n=0x%.2X\n", n);
+    printf("<ESC c 3>\n");
+    device.RP_NE_A = (n & 0b00000001) ? 1 : 0;
+    device.RP_NE_B = (n & 0b00000010) ? 1 : 0;
+    device.RP_E_A  = (n & 0b00000100) ? 1 : 0;
+    device.RP_E_B  = (n & 0b00001000) ? 1 : 0;
     return 0;
 }
 
 // Command: Select paper sensor to stop printing
 int8_t _ESC_LWR_c_FOUR(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC c 4> n=0x%.2X\n", n);
+    device.RP_NE_A = (n & 0b00000001) ? 2 : 0;
+    device.RP_NE_B = (n & 0b00000010) ? 2 : 0;
+    device.RP_E_A  = (n & 0b00000100) ? 2 : 0;
+    device.RP_E_B  = (n & 0b00001000) ? 2 : 0;
     return 0;
 }
 
 // Command: Enable / disable panel buttons
 int8_t _ESC_LWR_c_FIVE(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC c 5> n=0x%.2X\n", n);
+    printf("<ESC c 5>\n");
+    device.panel_but = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -381,34 +387,16 @@ int8_t _ESC_LWR_p(RxBuffer* b) {
 // Command: Select character code table
 int8_t _ESC_LWR_t(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC t> n=0x%.2X\n", n);
-    switch (n) {
-        case 0:   printf("-Page 0 [PC437 (U.S.A)]\n");              break;
-        case 1:   printf("-Page 1 [Katakana]\n");                   break;
-        case 2:   printf("-Page 2 [PC850 (Multilingual)]\n");       break;
-        case 3:   printf("-Page 3 [PC860 (Portuguese)]\n");         break;
-        case 4:   printf("-Page 4 [PC863 (Canadian-French)]\n");    break;
-        case 5:   printf("-Page 5 [PC865 (Nordic)]\n");             break;
-        case 6:   printf("-Page 6 [Simplified Kanji, Hirakana]\n"); break;
-        case 7:   printf("-Page 7 [Simplified Kanji]\n");           break;
-        case 8:   printf("-Page 8 [Simplified Kanji]\n");           break;
-        case 16:  printf("-Page 16 [WPC1252]\n");                   break;
-        case 17:  printf("-Page 17 [PC866 (Cyrillic #2)]\n");       break;
-        case 18:  printf("-Page 18 [PC852 (Latin 2)]\n");           break;
-        case 19:  printf("-Page 19 [PC858 (Euro)]\n");              break;
-        case 254: printf("-Page 254\n");                            break;
-        case 255: printf("-Page 255\n");                            break;
-        default:                                                    break;
-    }
+    printf("<ESC t>\n");
+    device.code_table = ((n > 0) && (n < 20)) ? n : 0;
     return 0;
 }
 
 // Command: Turn upside-down print mode on/off
 int8_t _ESC_LEFT_QBRACKET_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<ESC {> n=0x%.2X\n", n);
-    if (n) printf("-upside-down mode ON\n");
-    else   printf("-upside-down mode OFF\n");
+    printf("<ESC {>\n");
+    device.upside_dwn = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -514,9 +502,9 @@ int8_t _FS_LWR_p(RxBuffer* b) {
 // Command: Select character size
 int8_t _GS_EXCLAMATION_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<GS !> n=0x%.2X\n", n);
-    printf("-Character Width: x%d\n", ((n >> 4) & 0x0F) + 1);
-    printf("-Character Height: x%d\n", (n & 0x0F) + 1);
+    printf("<GS !>\n");
+    device.char_width  = ((n >> 4) & 0x0F) + 1; //This multiplied by the normal font size
+    device.char_height = (n & 0x0F) + 1;        //This multiplied by the normal font size
     return 0;
 }
 
@@ -524,8 +512,8 @@ int8_t _GS_EXCLAMATION_SYM(RxBuffer* b) {
 int8_t _GS_DOLLAR_SYM(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    uint16_t avpp = (uint16_t)((nL + nH * 256) * vertical_motion_unit);
-    printf("<GS $> Absolute Vertical Print Position: %d\n", avpp);
+    printf("<GS $>\n");
+    device.abs_v_ppos = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
@@ -732,9 +720,8 @@ int8_t _GS_COLON_SYM(RxBuffer* b) {
 // Command: Turn white/black reverse print mode on/off
 int8_t _GS_UPR_B(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<GS B> n=0x%.2X\n", n);
-    if (n) printf("-Reverse print mode ON\n");
-    else   printf("-Reverse print mode OFF\n");
+    printf("<GS B>\n");
+    device.reverse = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -755,9 +742,9 @@ int8_t _GS_UPR_I(RxBuffer* b) {
 // Command: Set left margin
 int8_t _GS_UPR_L(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
-    uint8_t nH = (uint8_t)b->getNext();
-    uint16_t left_m = (uint16_t)(nL + nH * 256);
-    printf("<GS L> Left Margin: %d\n", left_m);
+    uint8_t nH = (uint8_t)b->getNext();    
+    printf("<GS L>\n");
+    device.left_margin = (uint16_t)(nL + nH * 256);
     return 0;
 }
 
@@ -821,7 +808,8 @@ int8_t _GS_LWR_a(RxBuffer* b) {
 // Command: Turn smoothing mode on / off
 int8_t _GS_LWR_b(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<GS b> n=0x%.2X\n", n);
+    printf("<GS b>\n");
+    device.smoothing = (n > 0) ? 1 : 0;
     return 0;
 }
 
