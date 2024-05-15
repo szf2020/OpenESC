@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <cstring>
 #include <cstdbool>
+#include <cstdlib>
 
 #include "RxBuffer.h"
 #include "zint/zint.h"

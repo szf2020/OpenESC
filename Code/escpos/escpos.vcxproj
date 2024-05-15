@@ -134,6 +134,7 @@
     <ClCompile Include="esc_functions.cpp" />
     <ClCompile Include="RxBuffer.cpp" />
     <ClCompile Include="settings.cpp" />
+    <ClCompile Include="virtual_mem.cpp" />
     <ClCompile Include="zint\2of5.c" />
     <ClCompile Include="zint\auspost.c" />
     <ClCompile Include="zint\aztec.c" />
@@ -177,6 +178,7 @@
     <ClInclude Include="font\font_mono.h" />
     <ClInclude Include="RxBuffer.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="virtual_mem.h" />
     <ClInclude Include="zint\aztec.h" />
     <ClInclude Include="zint\big5.h" />
     <ClInclude Include="zint\channel_precalcs.h" />

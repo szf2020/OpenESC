@@ -144,6 +144,9 @@
     <ClCompile Include="font\mono-one_24x12\mono-one_24x12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="virtual_mem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RxBuffer.h">
@@ -282,6 +285,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="font\font_mono.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="virtual_mem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

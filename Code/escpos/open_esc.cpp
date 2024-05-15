@@ -25,6 +25,8 @@
 #include "esc_functions.h"
 #include "font/font_mono.h"
 
+#include "virtual_mem.h"
+
 //const char* file_under_test = "testFiles/001.prn";
 //const char* file_under_test = "testFiles/002.prn";
 //const char* file_under_test = "testFiles/003.prn";
@@ -36,16 +38,21 @@ const char* file_under_test = "testFiles/007.prn";
 
 //-------------------------------------------------------
 
+
 //-------------------------------------------------------
 
 int8_t ESCPOS_parse(RxBuffer* b);
 int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c);
 
 void font_test(void);
+void test_vmem(void);
+//-------------------------------------------------------
+
 
 //-------------------------------------------------------
 
 int main() {
+    test_vmem(); return 0;
     font_test(); //return 0;
     printf("File:%s\n", file_under_test);   //dump file name for debugging
     RxBuffer rx(file_under_test);           //open up file
@@ -153,7 +160,7 @@ static inline void _test_font(fontStyle_t* ptr, char c) {
             int u = j + (i * ptr->GlyphBytesWidth);
             while (mask) {
                 if (m[u] & mask) printf("# ");
-                else               printf("  ");
+                else             printf("  ");
                 mask = mask >> 1;
             }
         } printf("\n");
@@ -166,3 +173,12 @@ void font_test(void) {
         _test_font(&FontStyle_mono_one_17x8, i);
     } return;
 }
+
+void test_vmem(void) {
+    v_create(10, 10);
+    v_set(10, 10, 5, 5);
+    printf("got:%d\n", (v_get(10, 10, 5, 5) > 0) ? 1 : 0);
+    v_destroy();
+    return;
+}
+
