@@ -24,6 +24,7 @@
 #include <cstring>
 #include <cstdbool>
 
+static const int DPI_203 = (int)(8.0 * 25.4); //real is 203.2 dots/inch
 
 struct _page_mode
 {
@@ -83,6 +84,10 @@ struct settings
 
     uint8_t usermode_font;      //select user-mode font
     uint8_t char_code_table;    //select which code page to use
+
+    //------------------------------------------------
+    float vertical_motion_unit   = 1;
+    float horizontal_motion_unit = 1;
 
     //------------------------------------------------
     _page_mode page_mode;               //page mode settings

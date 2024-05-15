@@ -25,10 +25,7 @@ extern settings device;
 
 //----------------------------------------------------------------
 
-static const int DPI_203 = (int)(8.0 * 25.4); //real is 203.2 dots/inch
 
-static float vertical_motion_unit = 1;
-static float horizontal_motion_unit = 1;
 
 // Command: Horizontal Tab 
 int8_t _HT(RxBuffer* b) {
@@ -94,12 +91,12 @@ int8_t _ESC_SP(RxBuffer* b) {
     printf("<ESC SP>\n");
     if (device.mode == 1) {
         if ((device.page_mode.print_direction == 0) || (device.page_mode.print_direction == 180)) {
-            device.page_mode.right_side_char_spacing = (uint16_t)(n * horizontal_motion_unit); //rot [0 | 180]
+            device.page_mode.right_side_char_spacing = (uint16_t)(n * device.horizontal_motion_unit); //rot [0 | 180]
         } else {
-            device.page_mode.right_side_char_spacing = (uint16_t)(n * vertical_motion_unit); //rot [90 | 270]
+            device.page_mode.right_side_char_spacing = (uint16_t)(n * device.vertical_motion_unit); //rot [90 | 270]
         }
     } else {
-        device.std_mode.right_side_char_spacing = (uint16_t)(n * horizontal_motion_unit);
+        device.std_mode.right_side_char_spacing = (uint16_t)(n * device.horizontal_motion_unit);
     }
     return 0;
 }
@@ -760,7 +757,7 @@ int8_t _GS_UPR_L(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();    
     printf("<GS L>\n");
-    device.std_mode.left_margin = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
+    device.std_mode.left_margin = (uint16_t)((nL + nH * 256) * device.horizontal_motion_unit);
     return 0;
 }
 
@@ -768,7 +765,21 @@ int8_t _GS_UPR_L(RxBuffer* b) {
 int8_t _GS_UPR_P(RxBuffer* b) {
     uint8_t x = (uint8_t)b->getNext();
     uint8_t y = (uint8_t)b->getNext();
-    printf("<GS P> x=0x%.2X, y=0x%.2X\n", (int)(x / DPI_203), (int)(y / DPI_203));
+    printf("<GS P>\n");
+    device.horizontal_motion_unit = (float)(x / DPI_203);
+    device.vertical_motion_unit   = (float)(y / DPI_203);
+
+    /* ------------------------------------------------------------
+        unit maths might be wrong, spec sheet says default is zero
+            but the pos * 0, would always be 0.... so it should be 1
+
+        if x = 203, 203/203 = 1
+        if x = 406, 406/203 = 2
+        if x = 102, 102/203 = 0.5    
+
+        (I'll spare you my compounded rounding error rant...)
+        (thank goodness this isn't banking software)
+    ------------------------------------------------------------ */
     return 0;
 }
 
@@ -792,7 +803,7 @@ int8_t _GS_UPR_W(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
     printf("<GS W>\n");
-    device.std_mode.print_area_width = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
+    device.std_mode.print_area_width = (uint16_t)((nL + nH * 256) * device.horizontal_motion_unit);
     return 0;
 }
 
@@ -1533,7 +1544,7 @@ static inline int8_t barcodeA_parse_gen_dump(RxBuffer* b, int symbology) {
     return -1;
 }
 
-// Generic helper
+// Generic helper (will be removed once I figure out what I'm doing)
 static inline int8_t barcodeB_parse_gen_dump(RxBuffer* b, int s, int symbology) {
     uint8_t* data = (uint8_t*)malloc(s * sizeof(uint8_t));
 
@@ -1546,7 +1557,15 @@ static inline int8_t barcodeB_parse_gen_dump(RxBuffer* b, int s, int symbology) 
         my_symbol->symbology = symbology;
         my_symbol->show_hrt = device.general_barcode.HRI;
         my_symbol->height = device.general_barcode.h;
+        
         int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
+
+        /* --- more bread crumbs ---------------------------------------
+            I can use my_symbol->text to get the HRI
+            then render it myself independent of the bar-code rasterizer
+            at a [position / font] defined by the escpos stream (over/under/both).
+                                    IE per the technical specification.
+        ----------------------------------------------------------------- */
 
         if (err != 0) {
             printf("%s\n", my_symbol->errtxt);
