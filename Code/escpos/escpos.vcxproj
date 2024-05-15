@@ -128,6 +128,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="font\mono-one_17x8\mono-one_17x8.cpp" />
+    <ClCompile Include="font\mono-one_24x12\mono-one_24x12.cpp" />
     <ClCompile Include="open_esc.cpp" />
     <ClCompile Include="esc_functions.cpp" />
     <ClCompile Include="RxBuffer.cpp" />
@@ -172,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="esc_functions.h" />
+    <ClInclude Include="font\font_mono.h" />
     <ClInclude Include="RxBuffer.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="zint\aztec.h" />

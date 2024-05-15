@@ -1422,8 +1422,8 @@ static inline int8_t ascii_raster_dump(uint8_t* bmp, int s, int x, int y) {
         for (int col = 0; col < col_width; col++) {
             int mask = 128;
             while (mask) {
-                if (r[col] & mask) printf("#");
-                else               printf(" ");
+                if (r[col] & mask) printf("# ");
+                else               printf("  ");
                 mask = mask >> 1;
             }
         } printf("\n");
@@ -1498,8 +1498,8 @@ static int8_t inline ascii_barcode_dump(zint_symbol* bmp) {
     int row, col, i = 0;
     for (row = 0; row < bmp->bitmap_height; row++) {
         for (col = 0; col < bmp->bitmap_width; col++) {
-            if (bmp->bitmap[i] == 0xFF) printf(" ");
-            else                        printf("#");
+            if (bmp->bitmap[i] == 0xFF) printf("  ");
+            else                        printf("# ");
             i += 3; // I'm Just looking at one of the RGB values
         } printf("\n");
     } printf("\n");

@@ -1,2 +1,2 @@
-escpos.exe > wooden.log
+OpenESC.exe > wooden.log
 pause

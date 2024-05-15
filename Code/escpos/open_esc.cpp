@@ -23,6 +23,7 @@
 #include <cstdbool>
 
 #include "esc_functions.h"
+#include "font/font_mono.h"
 
 //const char* file_under_test = "testFiles/001.prn";
 //const char* file_under_test = "testFiles/002.prn";
@@ -35,16 +36,17 @@ const char* file_under_test = "testFiles/007.prn";
 
 //-------------------------------------------------------
 
-extern CMD escpos[CMD_SIZE]; //located in esc_functions.cpp
-
 //-------------------------------------------------------
 
 int8_t ESCPOS_parse(RxBuffer* b);
 int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c);
 
+void font_test(void);
+
 //-------------------------------------------------------
 
 int main() {
+    font_test(); //return 0;
     printf("File:%s\n", file_under_test);   //dump file name for debugging
     RxBuffer rx(file_under_test);           //open up file
     while (ESCPOS_parse(&rx) != -1);        //start parsing
@@ -138,4 +140,29 @@ int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c) {
     }
     if (i >= CMD_SIZE) return -1; //over run / not found
     return i;
+}
+
+
+//----------- Sloppy ascii render to check indexing ---------
+
+static inline void _test_font(fontStyle_t* ptr, char c) {
+    uint8_t* m = (uint8_t*)&ptr->GlyphBitmaps[(c - 32) * (ptr->GlyphHeight * ptr->GlyphBytesWidth)];
+    for (int i = 0; i < ptr->GlyphHeight; i++) {
+        for (int j = 0; j < ptr->GlyphBytesWidth; j++) {
+            int mask = 128;
+            int u = j + (i * ptr->GlyphBytesWidth);
+            while (mask) {
+                if (m[u] & mask) printf("# ");
+                else               printf("  ");
+                mask = mask >> 1;
+            }
+        } printf("\n");
+    } return;
+}
+
+void font_test(void) {
+    for (int i = 32; i < 127; i++) {
+        _test_font(&FontStyle_mono_one_24x12, i);
+        _test_font(&FontStyle_mono_one_17x8, i);
+    } return;
 }

@@ -509,4 +509,5 @@ static barcode_b barcode_function_b[14] = {
     BAR_78
 };
 //-------------------------------------------------------
-// line 505
+
+extern CMD escpos[CMD_SIZE];
