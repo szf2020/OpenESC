@@ -118,11 +118,11 @@ int8_t _ESC_EXCLAMATION_SYM(RxBuffer* b) {
         Font B(9 × 17) : 16 dots from the top of a character.
     */
 
-    //device.char_font     = (n & 0b00000001) ? 1 : 0;
-    //device.emphasize     = (n & 0b00001000) ? 1 : 0;
-    //device.double_height = (n & 0b00010000) ? 1 : 0;
-    //device.double_width  = (n & 0b00100000) ? 1 : 0;
-    //device.underline     = (n & 0b10000000) ? 1 : 0;
+    device.font_sel     = (n & 0b00000001) ? 1 : 0; //0=F1, 1=F2
+    device.style_emph   = (n & 0b00001000) ? 1 : 0;
+    device.style_dh     = (n & 0b00010000) ? 1 : 0;
+    device.style_dw     = (n & 0b00100000) ? 1 : 0;
+    device.style_unline = (n & 0b10000000) ? 1 : 0;
     return 0;
 }
 
@@ -131,7 +131,7 @@ int8_t _ESC_DOLLAR_SYM(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
     printf("<ESC $>\n");
-    //device.abs_h_ppos = (uint16_t)(nL + nH * 256);
+    //move print position
     return 0;
 }
 
@@ -139,7 +139,7 @@ int8_t _ESC_DOLLAR_SYM(RxBuffer* b) {
 int8_t _ESC_PERCENT_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC %%>\n");
-    //device.user_char_set = (n > 0) ? 1 : 0;
+    device.usermode_font = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -162,13 +162,12 @@ int8_t _ESC_STAR_SYM(RxBuffer* b) {
 int8_t _ESC_SUBTRACT_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC ->\n");
-
-    //switch (n) {
-    //    case 0: case 48: device.underline = 1;      break;
-    //    case 1: case 49: device.underline_dots = 0; break;
-    //    case 2: case 50: device.underline_dots = 1; break;
-    //    default:                                    break;
-    //}
+    switch (n) {
+        case 0: case 48: device.style_unline = 0; break; //0 dots thick
+        case 1: case 49: device.style_unline = 1; break; //1 dots thick
+        case 2: case 50: device.style_unline = 2; break; //2 dots thick
+        default:                                  break;
+    }
     return 0;
 }
 
@@ -223,7 +222,7 @@ int8_t _ESC_UPR_D(RxBuffer* b) {
 int8_t _ESC_UPR_E(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC E>\n");
-    //device.emphasize = (n > 0) ? 1 : 0;
+    device.style_emph = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -231,7 +230,8 @@ int8_t _ESC_UPR_E(RxBuffer* b) {
 int8_t _ESC_UPR_G(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC G>\n");
-    //device.double_strike = (n > 0) ? 1 : 0;
+    //assumed the be a TTY physical hammer strike emulation?
+    device.style_strike = (n > 0) ? 1 : 0; 
     return 0;
 }
 
@@ -253,14 +253,13 @@ int8_t _ESC_UPR_L(RxBuffer* b) {
 int8_t _ESC_UPR_M(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC M>\n");
-
-    //switch (n) {
-    //    case 0: case 48: device.char_font = 0; break; //Font A (12x24)
-    //    case 1: case 49: device.char_font = 1; break; //Font B (9x17)
-    //    case 2: case 50: device.char_font = 1; break; //Font B
-    //    case 97:         device.char_font = 2; break; //Extended
-    //    default:                               break;
-    //}
+    switch (n) {
+        case 0: case 48: device.font_sel = 0; break; //Font A (12x24)
+        case 1: case 49: device.font_sel = 1; break; //Font B (9x17)
+        case 2: case 50: device.font_sel = 1; break; //also Font B, but should be C (8x16)
+        case 97:         device.font_sel = 2; break; //Extended (special font: 24x48)
+        default:                              break;
+    }
     return 0;
 }
 
@@ -268,7 +267,7 @@ int8_t _ESC_UPR_M(RxBuffer* b) {
 int8_t _ESC_UPR_R(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC R>\n");    
-    //device.country_code = ((n > 0) && (n < 16)) ? n : 0; //region 0-15 
+    device.region = ((n > 0) && (n < 16)) ? n : 0; //region 0-15 
     return 0;
 }
 
@@ -298,12 +297,14 @@ int8_t _ESC_UPR_V(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC V>\n");
 
-    //switch (n) {
-    //    case 0: case 48: device.cw_rotation = 0; break; //clockwise rotation mode off
-    //    case 1: case 49: device.cw_rotation = 1; break; //clockwise rotation mode on (1 dot)
-    //    case 2: case 50: device.cw_rotation = 2; break; //clockwise rotation mode on (1.5 dot)
-    //    default:                                 break;
-    //}
+    if(device.mode == 0) {
+        switch (n) {
+            case 0: case 48: device.std_mode.clockwise_char_rotation = 0; break; //clockwise rotation mode off
+            case 1: case 49: device.std_mode.clockwise_char_rotation = 1; break; //clockwise rotation mode on (1 dot)
+            case 2: case 50: device.std_mode.clockwise_char_rotation = 2; break; //clockwise rotation mode on (1.5 dot)
+            default:                                                      break;
+        }
+    }
     return 0;
 }
 
@@ -340,12 +341,14 @@ int8_t _ESC_BACKSLASH_SYM(RxBuffer* b) {
 int8_t _ESC_LWR_a(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC a> n=0x%.2X\n", n);
-    //switch (n) {
-    //    case 0: case 48: device.justification = -1; break; //left
-    //    case 1: case 49: device.justification = 0;  break; //center
-    //    case 2: case 50: device.justification = 1;  break; //right
-    //    default:                                    break;
-    //}
+    if(device.mode == 0) {
+        switch (n) {
+            case 0: case 48: device.std_mode.justification = -1; break; //left
+            case 1: case 49: device.std_mode.justification = 0;  break; //center
+            case 2: case 50: device.std_mode.justification = 1;  break; //right
+            default:                                             break;
+        }
+    }
     return 0;
 }
 
@@ -398,7 +401,7 @@ int8_t _ESC_LWR_p(RxBuffer* b) {
 int8_t _ESC_LWR_t(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC t>\n");
-    //device.code_table = ((n > 0) && (n < 20)) ? n : 0;
+    device.char_code_table = ((n > 0) && (n < 20)) ? n : 0; //ignores page 254 & 255
     return 0;
 }
 
@@ -406,7 +409,9 @@ int8_t _ESC_LWR_t(RxBuffer* b) {
 int8_t _ESC_LEFT_QBRACKET_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<ESC {>\n");
-    //device.upside_dwn = (n > 0) ? 1 : 0;
+    if (device.mode == 0) {
+        device.std_mode.upside_down = (n > 0) ? 1 : 0;
+    }
     return 0;
 }
 
@@ -513,8 +518,8 @@ int8_t _FS_LWR_p(RxBuffer* b) {
 int8_t _GS_EXCLAMATION_SYM(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS !>\n");
-    //device.char_width  = ((n >> 4) & 0x0F) + 1; //This multiplied by the normal font size
-    //device.char_height = (n & 0x0F) + 1;        //This multiplied by the normal font size
+    device.style_size[0] = ((n >> 4) & 0x0F) + 1; //This multiplied by the normal font size
+    device.style_size[1] = (n & 0x0F) + 1;        //This multiplied by the normal font size
     return 0;
 }
 
@@ -731,14 +736,15 @@ int8_t _GS_COLON_SYM(RxBuffer* b) {
 int8_t _GS_UPR_B(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS B>\n");
-    //device.reverse = (n > 0) ? 1 : 0;
+    device.reverse = (n > 0) ? 1 : 0;
     return 0;
 }
 
 // Command: Select print position of HRI characters
 int8_t _GS_UPR_H(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<GS H> n=0x%.2X\n", n);
+    printf("<GS H>\n");
+    device.general_barcode.HRI = (n != 2) ? 0 : 1; //HRI on/off, uses zint default config
     return 0;
 }
 
@@ -754,7 +760,7 @@ int8_t _GS_UPR_L(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();    
     printf("<GS L>\n");
-    //device.left_margin = (uint16_t)(nL + nH * 256);
+    device.std_mode.left_margin = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
     return 0;
 }
 
@@ -785,8 +791,8 @@ int8_t _GS_UPR_V(RxBuffer* b) {
 int8_t _GS_UPR_W(RxBuffer* b) {
     uint8_t nL = (uint8_t)b->getNext();
     uint8_t nH = (uint8_t)b->getNext();
-    uint16_t width = (nL + nH * 256);
-    printf("<GS W> Print area Width: %d\n", width);
+    printf("<GS W>\n");
+    device.std_mode.print_area_width = (uint16_t)((nL + nH * 256) * horizontal_motion_unit);
     return 0;
 }
 
@@ -819,7 +825,7 @@ int8_t _GS_LWR_a(RxBuffer* b) {
 int8_t _GS_LWR_b(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
     printf("<GS b>\n");
-    //device.smoothing = (n > 0) ? 1 : 0;
+    device.smoothing = (n > 0) ? 1 : 0;
     return 0;
 }
 
@@ -853,7 +859,8 @@ int8_t _GS_LWR_g_TWO(RxBuffer* b) {
 // Command: Set bar code height
 int8_t _GS_LWR_h(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<GS h> n=0x%.2X\n", n);
+    printf("<GS h>\n");
+    device.general_barcode.h = n;
     return 0;
 }
 
@@ -899,7 +906,8 @@ int8_t _GS_LWR_v_ZERO(RxBuffer* b) {
 // Command: Set bar code width
 int8_t _GS_LWR_w(RxBuffer* b) {
     uint8_t n = (uint8_t)b->getNext();
-    printf("<GS w> n=0x%.2X\n", n);
+    printf("<GS w>\n");
+    device.general_barcode.w = n; //ignored for now, using zint default
     return 0;
 }
 
@@ -1508,6 +1516,8 @@ static inline int8_t barcodeA_parse_gen_dump(RxBuffer* b, int symbology) {
         struct zint_symbol* my_symbol;
         my_symbol = ZBarcode_Create();
         my_symbol->symbology = symbology;
+        my_symbol->show_hrt = device.general_barcode.HRI;
+        my_symbol->height = device.general_barcode.h;
         int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
 
         if (err != 0) {
@@ -1534,6 +1544,8 @@ static inline int8_t barcodeB_parse_gen_dump(RxBuffer* b, int s, int symbology) 
         struct zint_symbol* my_symbol;
         my_symbol = ZBarcode_Create();
         my_symbol->symbology = symbology;
+        my_symbol->show_hrt = device.general_barcode.HRI;
+        my_symbol->height = device.general_barcode.h;
         int err = ZBarcode_Encode_and_Buffer(my_symbol, data, s, 0);
 
         if (err != 0) {
