@@ -1,6 +1,4 @@
-
-/Code/escpos/.vs
-/Code/escpos/OpenESC/x64
-/Code/escpos/x64
+/Code/OpenESC/.vs
+/Code/OpenESC/OpenESC/x64
+/Code/OpenESC/x64
 /Code/docs/
-/Code/escpos/escpos/x64
