@@ -130,7 +130,7 @@
   <ItemGroup>
     <ClCompile Include="font\mono-one_17x8\mono-one_17x8.cpp" />
     <ClCompile Include="font\mono-one_24x12\mono-one_24x12.cpp" />
-    <ClCompile Include="open_esc.cpp" />
+    <ClCompile Include="OpenESC.cpp" />
     <ClCompile Include="esc_functions.cpp" />
     <ClCompile Include="RxBuffer.cpp" />
     <ClCompile Include="settings.cpp" />

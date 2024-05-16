@@ -50,7 +50,7 @@ void font_test(void);
 
 int main() {
 
-    //font_test(); return 0;
+    font_test(); //return 0;
     printf("File:%s\n", file_under_test);   //dump file name for debugging
     RxBuffer rx(file_under_test);           //open up file
     while (ESCPOS_parse(&rx) != -1);        //start parsing
@@ -155,7 +155,7 @@ static inline void _test_font(fontStyle_t* ptr, char c) {
         for (int j = 0; j < ptr->GlyphBytesWidth; j++) {
             int u = j + (i * ptr->GlyphBytesWidth);
             for (int k = 0; k < 8; k++) {
-                l = (m[u] & 0x80 >> k) ? 219 : 32;
+                l = (m[u] & 0x80 >> k) ? 35 : 32;
                 printf("%c%c", l, l);
             }
         } printf("\n");
