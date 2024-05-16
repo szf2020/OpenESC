@@ -37,8 +37,9 @@ int8_t v_get(int x_max, int y_max, int x, int y);
 int8_t v_set(int x_max, int y_max, int x, int y);
 
 int8_t v_clear(uint8_t init_val);
+int8_t v_dump(int x_max, int y_max, const char* file);
 
-//vmem* v_get_ptr(void);
+vmem* v_get_ptr(void);
 
 void v_destroy();
 

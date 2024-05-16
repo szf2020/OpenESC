@@ -18,14 +18,11 @@
  *********************************************************************************************/
 
 #include "esc_functions.h"
-
 //----------------------------------------------------------------
-
+#include "virtual_mem.h"
+//----------------------------------------------------------------
 extern settings device;
-
 //----------------------------------------------------------------
-
-
 
 // Command: Horizontal Tab 
 int8_t _HT(RxBuffer* b) {
@@ -1414,20 +1411,14 @@ int8_t GS_function_85(RxBuffer* b, int s) {
 
 // Helper function for debugging raster format
 static inline int8_t ascii_raster_dump(uint8_t* bmp, int s, int x, int y) {
-    int row_width = (x + 7) / 8;
-    int col_width = (x + 7) / 8;
-
-    for (int i = 0; i < s; i += row_width) {
-        uint8_t* r = &bmp[i];
-        for (int col = 0; col < col_width; col++) {
-            int mask = 128;
-            while (mask) {
-                if (r[col] & mask) printf("# ");
-                else               printf("  ");
-                mask = mask >> 1;
-            }
-        } printf("\n");
-    }    
+    uint8_t l; int fancy_mod = (x + 7) / 8;
+    for (int i = 0; i < s; i++) {
+        if (!(i % fancy_mod)) printf("\n");
+        for(int j = 0; j < 8; j++) {
+            l = (bmp[i] & (0x80 >> j)) ? 219 : 32;
+            printf("%c%c", l, l);
+        }
+    } printf("\n");
     return 0;
 }
 
@@ -1442,29 +1433,37 @@ int8_t GS_function_112(RxBuffer* b, int s) {
         uint8_t yl = (uint8_t)b->getNext();
         uint8_t yh = (uint8_t)b->getNext();
 
-        int k = (((xl + xh * 256) + 7) / 8) * (yl + yh * 256);
         int X = (xl + xh * 256);
         int Y = (yl + yh * 256);
+        int k = ((X + 7) / 8) * Y;
 
-        //printf("\n--[raster info]--\n");
-        //printf("-bx:%d, by:%d\n", bx, by);
-        //printf("-c:%d\n", c);
-        //printf("-xl:%d, xh:%d, yl:%d, yh:%d\n", xl, xh, yl, yh);
-        //printf("-k:%d\n", k);
-        //printf("-X: %d, Y: %d\n", X, Y);
-        //printf("-sum:%d, new:%d\n", s, s - 7);
-
+        //------------------------------------------------------------
         if ((s -= 7) == k) {
-            uint8_t* raster_data = (uint8_t*)malloc(k * sizeof(uint8_t));
-            if (raster_data != NULL) {
-                for (int i = 0; i < k; i++) {
-                    raster_data[i] = (uint8_t)b->getNext();
-                }
-                ascii_raster_dump(raster_data, k, X, Y);
-                free(raster_data);
+            if (v_create(k) != -1) {
+                vmem* ptr = v_get_ptr();
+                for (int i = 0; i < k; i++)
+                    ptr->v_memory[i] = (uint8_t)b->getNext();
+                v_dump(X, Y, "raster.xbm");
+                v_destroy();
                 return 0;
-            }
+            } 
+            //----------------------------------------------------------------
+            //uint8_t* raster_data = (uint8_t*)malloc(k * sizeof(uint8_t));
+            //if (raster_data != NULL) {
+            //    int fancy_mod = (X + 7) / 8;
+            //    for (int i = 0; i < k; i++) {
+            //        raster_data[i] = (uint8_t)b->getNext();
+            //        if (!(i % fancy_mod)) printf("\n");
+            //        printf("0x%.2X ", raster_data[i]);
+            //    } printf("\n");
+            //    ascii_raster_dump(raster_data, k, X, Y);
+            //    free(raster_data);
+            //    return 0;
+            //}
+            //----------------------------------------------------------------
+            return - 1;
         }
+        return -1;
     }
     return -1;
 }
@@ -1495,11 +1494,11 @@ static int8_t inline bcodeB_helper(RxBuffer* b, int s) {
 
 // Helper function for preliminary debugging
 static int8_t inline ascii_barcode_dump(zint_symbol* bmp) {
+    uint8_t l;
     int row, col, i = 0;
     for (row = 0; row < bmp->bitmap_height; row++) {
         for (col = 0; col < bmp->bitmap_width; col++) {
-            if (bmp->bitmap[i] == 0xFF) printf("  ");
-            else                        printf("# ");
+            l = (bmp->bitmap[i] == 0xFF) ? 32 : 219;
             i += 3; // I'm Just looking at one of the RGB values
         } printf("\n");
     } printf("\n");

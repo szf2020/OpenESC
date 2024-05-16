@@ -25,8 +25,6 @@
 #include "esc_functions.h"
 #include "font/font_mono.h"
 
-#include "virtual_mem.h"
-
 //const char* file_under_test = "testFiles/001.prn";
 //const char* file_under_test = "testFiles/002.prn";
 //const char* file_under_test = "testFiles/003.prn";
@@ -45,15 +43,14 @@ int8_t ESCPOS_parse(RxBuffer* b);
 int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c);
 
 void font_test(void);
-void test_vmem(void);
 //-------------------------------------------------------
 
 
 //-------------------------------------------------------
 
 int main() {
-    test_vmem(); return 0;
-    font_test(); //return 0;
+
+    //font_test(); return 0;
     printf("File:%s\n", file_under_test);   //dump file name for debugging
     RxBuffer rx(file_under_test);           //open up file
     while (ESCPOS_parse(&rx) != -1);        //start parsing
@@ -149,19 +146,17 @@ int find_esc_pos(int rec, CMD* ptr, int depth, uint8_t* c) {
     return i;
 }
 
-
 //----------- Sloppy ascii render to check indexing ---------
 
 static inline void _test_font(fontStyle_t* ptr, char c) {
+    uint8_t l;
     uint8_t* m = (uint8_t*)&ptr->GlyphBitmaps[(c - 32) * (ptr->GlyphHeight * ptr->GlyphBytesWidth)];
     for (int i = 0; i < ptr->GlyphHeight; i++) {
         for (int j = 0; j < ptr->GlyphBytesWidth; j++) {
-            int mask = 128;
             int u = j + (i * ptr->GlyphBytesWidth);
-            while (mask) {
-                if (m[u] & mask) printf("# ");
-                else             printf("  ");
-                mask = mask >> 1;
+            for (int k = 0; k < 8; k++) {
+                l = (m[u] & 0x80 >> k) ? 219 : 32;
+                printf("%c%c", l, l);
             }
         } printf("\n");
     } return;
@@ -172,13 +167,5 @@ void font_test(void) {
         _test_font(&FontStyle_mono_one_24x12, i);
         _test_font(&FontStyle_mono_one_17x8, i);
     } return;
-}
-
-void test_vmem(void) {
-    v_create(10, 10);
-    v_set(10, 10, 5, 5);
-    printf("got:%d\n", (v_get(10, 10, 5, 5) > 0) ? 1 : 0);
-    v_destroy();
-    return;
 }
 
